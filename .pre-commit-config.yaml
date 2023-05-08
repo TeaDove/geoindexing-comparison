@@ -1,0 +1,33 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-ast # checks python syntax tree for errors
+      - id: debug-statements
+      - id: check-yaml # checks .yaml for errors
+      - id: check-toml # checks .toml for errors
+      - id: check-json # checks .json for errors
+      - id: check-xml # checks .xml for errors
+      - id: detect-aws-credentials # detects aws cred
+      - id: detect-private-key # detects private keys
+      # - id: no-commit-to-branch # prevent direct commit to master/main
+      - id: requirements-txt-fixer # fixes requirements txt and sorts it
+      - id: name-tests-test
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+    - id: go-fmt
+    - id: go-vet
+    - id: go-imports
+    - id: go-cyclo
+      args: [-over=15]
+    - id: validate-toml
+    - id: golangci-lint
+    - id: go-critic
+    - id: go-unit-tests
+    - id: go-build
+    - id: go-mod-tidy
