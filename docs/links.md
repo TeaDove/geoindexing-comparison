@@ -1,0 +1,15 @@
+Материалы:
+- [Spatial Indexes](https://db.in.tum.de/downloads/publications/learnedspatial.pdf)
+- Индексы:
+	- Tree:
+		- R-based:
+			- R Tree [wiki](https://en.wikipedia.org/wiki/R-tree), [goimpl](https://github.com/tidwall/rtree), [goimpl_2](https://github.com/dhconnelly/rtreego)
+			- R Star Tree [wiki](https://en.wikipedia.org/wiki/R*-tree),
+			- Hubert R Tree
+		- Quad tree [wiki](https://en.wikipedia.org/wiki/Quadtree), [goimpl](https://github.com/JamesLMilner/quadtree-go)
+		- K-d tree [wiki](https://en.wikipedia.org/wiki/K-d_tree), [goimpl](https://github.com/kyroy/kdtree)
+	- Geohash:
+		- Geohash [wiki](https://en.wikipedia.org/wiki/Geohash), [goimpl](https://github.com/mmcloughlin/geohash)
+		- S2, [docs](https://s2geometry.io/), [goimpl](https://pkg.go.dev/github.com/golang/geo/s2)
+		- H3, [docs](https://www.uber.com/blog/h3/), [goimpl](https://github.com/uber/h3-go)
+- TeX: [overleaf](https://www.overleaf.com/project/64594cfe9c8fa3c587c5d604)
