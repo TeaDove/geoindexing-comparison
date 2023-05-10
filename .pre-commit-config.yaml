@@ -17,17 +17,3 @@ repos:
       # - id: no-commit-to-branch # prevent direct commit to master/main
       - id: requirements-txt-fixer # fixes requirements txt and sorts it
       - id: name-tests-test
-  - repo: https://github.com/dnephin/pre-commit-golang
-    rev: v0.5.1
-    hooks:
-    - id: go-fmt
-    - id: go-vet
-    - id: go-imports
-    - id: go-cyclo
-      args: [-over=15]
-    - id: validate-toml
-    - id: golangci-lint
-    - id: go-critic
-    - id: go-unit-tests
-    - id: go-build
-    - id: go-mod-tidy
