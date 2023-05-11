@@ -5,10 +5,10 @@ import (
 )
 
 const (
-	latLowerBoundDefault float64 = 0
-	latUpperBoundDefault float64 = 180
-	lonLowerBoundDefault float64 = -90
-	lonUpperBoundDefault float64 = 90
+	latLowerBoundDefault float64 = 48.226506
+	latUpperBoundDefault float64 = 58.016099
+	lonLowerBoundDefault float64 = 27.178174
+	lonUpperBoundDefault float64 = 41.563808
 	pointsAmountDefault  int     = 5_000
 )
 

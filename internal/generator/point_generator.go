@@ -1,16 +1,21 @@
 package generator
 
-import "geoindexing_comparison/geo"
+import (
+	"geoindexing_comparison/geo"
+	"github.com/google/uuid"
+)
 
 func (r *Generator) GeneratePoint() geo.Point {
 	coord := geo.Point{
-		Lat: r.randLat(),
-		Lon: r.randLon(),
+		Lat:      r.randLat(),
+		Lon:      r.randLon(),
+		Category: geo.EMPTY,
+		ID:       uuid.New(),
 	}
 	return coord
 }
 
-func (r *Generator) GeneratePoints(amount int) []geo.Point {
+func (r *Generator) GeneratePoints(amount int) geo.Points {
 	var points = make([]geo.Point, amount)
 	for i := 0; i < amount; i++ {
 		points[i] = r.GeneratePoint()
@@ -18,6 +23,6 @@ func (r *Generator) GeneratePoints(amount int) []geo.Point {
 	return points
 }
 
-func (r *Generator) GeneratePointsDefaultAmount() []geo.Point {
+func (r *Generator) GeneratePointsDefaultAmount() geo.Points {
 	return r.GeneratePoints(r.PointsAmount)
 }
