@@ -1,15 +1,17 @@
 package generator
 
-func (r *Generator) GeneratePoint() Point {
-	coord := Point{
+import "geoindexing_comparison/geo"
+
+func (r *Generator) GeneratePoint() geo.Point {
+	coord := geo.Point{
 		Lat: r.randLat(),
 		Lon: r.randLon(),
 	}
 	return coord
 }
 
-func (r *Generator) GeneratePoints(amount int) []Point {
-	var points = make([]Point, amount)
+func (r *Generator) GeneratePoints(amount int) []geo.Point {
+	var points = make([]geo.Point, amount)
 	for i := 0; i < amount; i++ {
 		points[i] = r.GeneratePoint()
 	}

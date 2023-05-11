@@ -1,29 +1,28 @@
 package generator
 
 import (
+	"geoindexing_comparison/geo"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-var generator = DefaultGenerator()
-
 func TestUnit_PointGenerator_GeneratePoint_Ok(t *testing.T) {
-	point := generator.GeneratePoint()
+	testPoint := DefaultGenerator.GeneratePoint()
 
-	assert.LessOrEqual(t, generator.LatLowerBound, point.Lat)
-	assert.GreaterOrEqual(t, generator.LatUpperBound, point.Lat)
-	assert.LessOrEqual(t, generator.LonLowerBound, point.Lon)
-	assert.GreaterOrEqual(t, generator.LonUpperBound, point.Lon)
+	assert.LessOrEqual(t, DefaultGenerator.LatLowerBound, testPoint.Lat)
+	assert.GreaterOrEqual(t, DefaultGenerator.LatUpperBound, testPoint.Lat)
+	assert.LessOrEqual(t, DefaultGenerator.LonLowerBound, testPoint.Lon)
+	assert.GreaterOrEqual(t, DefaultGenerator.LonUpperBound, testPoint.Lon)
 }
 
 func TestUnit_PointGenerator_GeneratePoints_Ok(t *testing.T) {
-	points := generator.GeneratePoints(5_000_000)
+	points := DefaultGenerator.GeneratePoints(5_000_000)
 
 	assert.Equal(t, 5_000_000, len(points))
 }
 
 func TestUnit_PointGenerator_MustExport_Ok(t *testing.T) {
-	points := generator.GeneratePoints(10_000)
-	MustExport(points)
+	points := DefaultGenerator.GeneratePoints(10_000)
+	geo.MustExport(points)
 }

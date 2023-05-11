@@ -18,7 +18,9 @@ type Generator struct {
 	LonUpperBound float64
 }
 
-func DefaultGenerator() Generator {
+var DefaultGenerator = GetDefaultGenerator()
+
+func GetDefaultGenerator() Generator {
 	return Generator{
 		LatLowerBound: latLowerBoundDefault,
 		LatUpperBound: latUpperBoundDefault,

@@ -1,4 +1,4 @@
-package generator
+package geo
 
 import (
 	"encoding/csv"
@@ -11,6 +11,19 @@ import (
 type Point struct {
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
+}
+
+func (r Point) Dimensions() int {
+	return 2
+}
+
+func (r Point) Dimension(i int) float64 {
+	switch i {
+	case 0:
+		return r.Lat
+	default:
+		return r.Lon
+	}
 }
 
 func MustExport(points []Point) {
