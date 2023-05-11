@@ -9,6 +9,7 @@ const (
 	latUpperBoundDefault float64 = 180
 	lonLowerBoundDefault float64 = -90
 	lonUpperBoundDefault float64 = 90
+	pointsAmountDefault  int     = 5_000
 )
 
 type Generator struct {
@@ -16,6 +17,7 @@ type Generator struct {
 	LatUpperBound float64
 	LonLowerBound float64
 	LonUpperBound float64
+	PointsAmount  int
 }
 
 var DefaultGenerator = GetDefaultGenerator()
@@ -26,6 +28,7 @@ func GetDefaultGenerator() Generator {
 		LatUpperBound: latUpperBoundDefault,
 		LonLowerBound: lonLowerBoundDefault,
 		LonUpperBound: lonUpperBoundDefault,
+		PointsAmount:  pointsAmountDefault,
 	}
 }
 

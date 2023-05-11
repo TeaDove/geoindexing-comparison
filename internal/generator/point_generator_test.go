@@ -17,12 +17,12 @@ func TestUnit_PointGenerator_GeneratePoint_Ok(t *testing.T) {
 }
 
 func TestUnit_PointGenerator_GeneratePoints_Ok(t *testing.T) {
-	points := DefaultGenerator.GeneratePoints(5_000_000)
+	points := DefaultGenerator.GeneratePointsDefaultAmount()
 
-	assert.Equal(t, 5_000_000, len(points))
+	assert.Equal(t, DefaultGenerator.PointsAmount, len(points))
 }
 
 func TestUnit_PointGenerator_MustExport_Ok(t *testing.T) {
-	points := DefaultGenerator.GeneratePoints(10_000)
+	points := DefaultGenerator.GeneratePoints(DefaultGenerator.PointsAmount)
 	geo.MustExport(points)
 }

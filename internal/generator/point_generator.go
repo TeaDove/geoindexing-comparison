@@ -17,3 +17,7 @@ func (r *Generator) GeneratePoints(amount int) []geo.Point {
 	}
 	return points
 }
+
+func (r *Generator) GeneratePointsDefaultAmount() []geo.Point {
+	return r.GeneratePoints(r.PointsAmount)
+}

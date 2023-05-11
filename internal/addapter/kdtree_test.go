@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var points = generator.DefaultGenerator.GeneratePoints(10)
+var points = generator.DefaultGenerator.GeneratePointsDefaultAmount()
 
 func TestUnit_PointGenerator_GeneratePoint_Ok(t *testing.T) {
 	collection := CollectionKDTree{}

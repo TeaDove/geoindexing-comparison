@@ -31,9 +31,22 @@ func (r *CollectionKDTree) Remove(point geo.Point) {
 	r.impl.Remove(point)
 }
 
-func (r *CollectionKDTree) RangeSearch(ran float64) []geo.Point {
-	_ = r.impl.RangeSearch(kdrange.New(ran))
-	return []geo.Point{}
+func (r *CollectionKDTree) RangeSearch(radius float64) []geo.Point {
+	pointsInterface := r.impl.RangeSearch(kdrange.New(radius))
+	result := make([]geo.Point, len(pointsInterface))
+	for idx, pointInterface := range pointsInterface {
+		result[idx] = pointInterface.(geo.Point)
+	}
+	return result
+}
+
+func (r *CollectionKDTree) KNN(point geo.Point, n int) []geo.Point {
+	pointsInterface := r.impl.KNN(point, n)
+	result := make([]geo.Point, len(pointsInterface))
+	for idx, pointInterface := range pointsInterface {
+		result[idx] = pointInterface.(geo.Point)
+	}
+	return result
 }
 
 func (r *CollectionKDTree) String() string {
