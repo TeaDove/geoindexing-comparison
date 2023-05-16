@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"geoindexing_comparison/utils"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/google/uuid"
 	"os"
 )
@@ -57,10 +58,21 @@ func (r Points) MustExport(filename string) {
 	csvwriter.Flush()
 }
 
-func (r Points) Paint(category Category) {
+func (r Points) Paint(category Category) Points {
 	for idx := range r {
 		r[idx].Category = category
 	}
+	return r
+}
+
+func (r Points) PaintPartially(category Category, points Points) Points {
+	set := points.ToSet()
+	for idx := range r {
+		if set.Contains(r[idx].ID) {
+			r[idx].Category = category
+		}
+	}
+	return r
 }
 
 func (r Points) String() string {
@@ -70,4 +82,12 @@ func (r Points) String() string {
 		buffer.WriteString(string(result))
 	}
 	return buffer.String()
+}
+
+func (r Points) ToSet() mapset.Set[uuid.UUID] {
+	result := mapset.NewSet[uuid.UUID]()
+	for _, point := range r {
+		result.Add(point.ID)
+	}
+	return result
 }

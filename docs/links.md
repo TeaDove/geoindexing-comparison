@@ -8,6 +8,8 @@
 			- Hubert R Tree
 		- Quad tree [wiki](https://en.wikipedia.org/wiki/Quadtree), [goimpl](https://github.com/JamesLMilner/quadtree-go)
 		- K-d tree [wiki](https://en.wikipedia.org/wiki/K-d_tree), [goimpl](https://github.com/kyroy/kdtree)
+        - BSP tree https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D0%BE%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D1%80%D0%B0%D0%B7%D0%B1%D0%B8%D0%B5%D0%BD%D0%B8%D0%B5_%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%B0
+        - VP tree https://ru.wikipedia.org/wiki/VP-%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE
 	- Geohash:
 		- Geohash [wiki](https://en.wikipedia.org/wiki/Geohash), [goimpl](https://github.com/mmcloughlin/geohash)
 		- S2, [docs](https://s2geometry.io/), [goimpl](https://pkg.go.dev/github.com/golang/geo/s2)

@@ -13,8 +13,6 @@ func TestUnit_PointGenerator_GeneratePoint_Ok(t *testing.T) {
 	collection.FromArray(points)
 
 	result := collection.KNN(generator.DefaultGenerator.GeneratePoint(), 10)
-	result.Paint(geo.FOUND)
-	print(result.String())
 
-	collection.Points().MustExport("points.csv")
+	collection.Points().PaintPartially(geo.FOUND, result).MustExport("points.csv")
 }

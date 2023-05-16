@@ -43,8 +43,8 @@ func (r *CollectionKDTree) Remove(point geo.Point) {
 	r.impl.Remove(point)
 }
 
-func (r *CollectionKDTree) RangeSearch(radius float64) geo.Points {
-	return toConcrete(r.impl.RangeSearch(kdrange.New(radius)))
+func (r *CollectionKDTree) RangeSearch(point geo.Point, radius float64) geo.Points {
+	return toConcrete(r.impl.RangeSearch(kdrange.New(point.Lat-radius, point.Lat+radius, point.Lon-radius, point.Lon+radius)))
 }
 
 func (r *CollectionKDTree) KNN(point geo.Point, n int) geo.Points {
