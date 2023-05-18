@@ -4,31 +4,27 @@ import (
 	"math/rand"
 )
 
-const (
-	latLowerBoundDefault float64 = 48.226506
-	latUpperBoundDefault float64 = 58.016099
-	lonLowerBoundDefault float64 = 27.178174
-	lonUpperBoundDefault float64 = 41.563808
-	pointsAmountDefault  int     = 5_000
-)
-
 type Generator struct {
-	LatLowerBound float64
-	LatUpperBound float64
-	LonLowerBound float64
-	LonUpperBound float64
-	PointsAmount  int
+	LatLowerBound    float64
+	LatUpperBound    float64
+	LonLowerBound    float64
+	LonUpperBound    float64
+	PointsAmount     int
+	KNNSearchSize    int
+	RadiusSearchSize float64
 }
 
 var DefaultGenerator = GetDefaultGenerator()
 
 func GetDefaultGenerator() Generator {
 	return Generator{
-		LatLowerBound: latLowerBoundDefault,
-		LatUpperBound: latUpperBoundDefault,
-		LonLowerBound: lonLowerBoundDefault,
-		LonUpperBound: lonUpperBoundDefault,
-		PointsAmount:  pointsAmountDefault,
+		LatLowerBound:    48.226506,
+		LatUpperBound:    58.016099,
+		LonLowerBound:    27.178174,
+		LonUpperBound:    41.563808,
+		PointsAmount:     1_00,
+		KNNSearchSize:    10,
+		RadiusSearchSize: 0.5,
 	}
 }
 

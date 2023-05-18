@@ -2,19 +2,16 @@ package geo
 
 import (
 	"bytes"
-	"encoding/csv"
 	"encoding/json"
-	"fmt"
-	"geoindexing_comparison/utils"
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/google/uuid"
-	"os"
+	"math/rand"
 )
 
 // Point represents a geographic coordinate
 type Point struct {
-	ID       uuid.UUID `json:"id"`
-	Category Category  `json:"category"`
+	ID    uuid.UUID `json:"id"`
+	Color Color     `json:"color"`
 
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
@@ -22,11 +19,13 @@ type Point struct {
 
 type Points []Point
 
-type Category string
+type Color string
 
 const (
-	EMPTY Category = "EMPTY"
-	FOUND          = "FOUND"
+	Blue   Color = "Blue"
+	Green        = "Green"
+	Yellow       = "Yellow"
+	Red          = "Red"
 )
 
 func (r Point) Dimensions() int {
@@ -42,34 +41,22 @@ func (r Point) Dimension(i int) float64 {
 	}
 }
 
-func (r Points) MustExport(filename string) {
-	csvFile, err := os.Create(filename)
-	defer csvFile.Close()
-	utils.Check(err)
-
-	csvwriter := csv.NewWriter(csvFile)
-	err = csvwriter.Write([]string{"id", "lat", "lon", "category"})
-	utils.Check(err)
-
-	for _, point := range r {
-		err = csvwriter.Write([]string{point.ID.String(), fmt.Sprintf("%f", point.Lat), fmt.Sprintf("%f", point.Lon), string(point.Category)})
-		utils.Check(err)
-	}
-	csvwriter.Flush()
+func (r Points) GetRandomPoint() Point {
+	return r[rand.Intn(len(r))]
 }
 
-func (r Points) Paint(category Category) Points {
+func (r Points) Paint(category Color) Points {
 	for idx := range r {
-		r[idx].Category = category
+		r[idx].Color = category
 	}
 	return r
 }
 
-func (r Points) PaintPartially(category Category, points Points) Points {
+func (r Points) PaintPartially(category Color, points Points) Points {
 	set := points.ToSet()
 	for idx := range r {
 		if set.Contains(r[idx].ID) {
-			r[idx].Category = category
+			r[idx].Color = category
 		}
 	}
 	return r

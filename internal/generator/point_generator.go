@@ -7,10 +7,10 @@ import (
 
 func (r *Generator) GeneratePoint() geo.Point {
 	coord := geo.Point{
-		Lat:      r.randLat(),
-		Lon:      r.randLon(),
-		Category: geo.EMPTY,
-		ID:       uuid.New(),
+		Lat:   r.randLat(),
+		Lon:   r.randLon(),
+		Color: geo.Blue,
+		ID:    uuid.New(),
 	}
 	return coord
 }
