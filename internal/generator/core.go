@@ -22,7 +22,7 @@ func GetDefaultGenerator() Generator {
 		LatUpperBound:    58.016099,
 		LonLowerBound:    27.178174,
 		LonUpperBound:    41.563808,
-		PointsAmount:     1_00,
+		PointsAmount:     1_000,
 		KNNSearchSize:    10,
 		RadiusSearchSize: 0.5,
 	}
