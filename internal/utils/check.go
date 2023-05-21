@@ -1,7 +1,9 @@
 package utils
 
+import "github.com/rs/zerolog/log"
+
 func Check(err error) {
 	if err != nil {
-		panic(err)
+		log.Panic().Str("status", "check.failed").Stack().Err(err).Send()
 	}
 }

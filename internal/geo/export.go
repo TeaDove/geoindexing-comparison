@@ -3,14 +3,17 @@ package geo
 import (
 	"bytes"
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"geoindexing_comparison/utils"
-	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
+	"io"
+	"net/http"
 	"os"
-	"os/exec"
 )
 
 func (r Points) MustExport(filename string) {
+	log.Info().Str("status", "exporting.points").Int("count", len(r)).Send()
 	csvFile, err := os.Create(filename)
 	defer csvFile.Close()
 	utils.Check(err)
@@ -24,21 +27,24 @@ func (r Points) MustExport(filename string) {
 		utils.Check(err)
 	}
 	csvwriter.Flush()
+	log.Info().Str("status", "points.exported").Int("count", len(r)).Send()
 }
 
-func (r Points) Draw() {
-	filename := fmt.Sprintf("/tmp/%s.csv", uuid.New().String())
-	r.MustExport(filename)
-	fmt.Println(filename)
-	cmd := exec.Command("./draw.py", filename, "points.png")
-
-	var outb, errb bytes.Buffer
-	cmd.Stdout = &outb
-	cmd.Stderr = &errb
-	err := cmd.Run()
-
-	fmt.Println(outb.String())
-	fmt.Println(errb.String())
-	err = os.Remove(filename)
+func (r Points) MustDraw() {
+	log.Info().Str("status", "sending.request.for.draw").Int("count", len(r)).Send()
+	file, err := os.Create("file.png")
 	utils.Check(err)
+	defer file.Close()
+
+	pointsBytes, err := json.Marshal(r)
+	utils.Check(err)
+
+	res, err := http.Post("http://localhost:8000/draw", "Application/json", bytes.NewBuffer(pointsBytes))
+	utils.Check(err)
+
+	body, err := io.ReadAll(res.Body)
+	utils.Check(err)
+	_, err = file.Write(body)
+	utils.Check(err)
+	log.Info().Str("status", "draw.completed").Int("count", len(r)).Send()
 }

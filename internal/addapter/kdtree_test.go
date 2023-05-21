@@ -25,5 +25,5 @@ func TestUnit_KDTree_FindRange_Ok(t *testing.T) {
 	origin := points.GetRandomPoint()
 	result := collection.RangeSearch(origin, generator.DefaultGenerator.RadiusSearchSize)
 
-	collection.Points().PaintPartially(geo.Green, result).PaintPartially(geo.Red, []geo.Point{origin}).Draw()
+	collection.Points().PaintPartially(geo.Green, result).PaintPartially(geo.Red, []geo.Point{origin}).MustDraw()
 }
