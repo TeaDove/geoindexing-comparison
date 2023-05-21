@@ -42,11 +42,13 @@ class Points(BaseModel):
     )
 
 
-@app.post("/draw", response_class=StreamingResponse)
+@app.post("/draw-points", response_class=StreamingResponse)
 def draw_fig(points: Points) -> StreamingResponse:
     points_list = [jsonable_encoder(item, by_alias=True) for item in points.__root__]
     df = pd.DataFrame(points_list)
-    ax = plt.gca()
+    fig = plt.figure()
+    ax = fig.gca()
+
     for color in df["color"].unique():
         colored_df = df[df["color"] == color]
         colored_df.plot(
@@ -58,13 +60,16 @@ def draw_fig(points: Points) -> StreamingResponse:
             ax=ax,
             color=color,
             s=10,
+            fig=fig,
         )
 
     buf = BytesIO()
-    plt.savefig(buf, format="png")
+    fig.savefig(buf, format="png")
     buf.seek(0)
+    plt.close(fig)
     return StreamingResponse(buf, media_type="image/png")
 
 
 if __name__ == "__main__":
+    # TODO move settings to settings
     uvicorn.run("draw:app")
