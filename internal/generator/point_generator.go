@@ -2,15 +2,15 @@ package generator
 
 import (
 	"geoindexing_comparison/geo"
+
 	"github.com/google/uuid"
 )
 
 func (r *Generator) GeneratePoint() geo.Point {
 	coord := geo.Point{
-		Lat:   r.randLat(),
-		Lon:   r.randLon(),
-		Color: geo.Blue,
-		ID:    uuid.New(),
+		Lat: r.randLat(),
+		Lon: r.randLon(),
+		ID:  uuid.New(),
 	}
 	return coord
 }

@@ -7,19 +7,20 @@ import (
 	"errors"
 	"fmt"
 	"geoindexing_comparison/utils"
-	"github.com/guregu/null"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/guregu/null"
+	"github.com/rs/zerolog/log"
 )
 
-type ExportConfig struct {
+type ExportInput struct {
 	Filename null.String
 }
 
-func (r Points) MustExport(config ExportConfig) {
+func (r PointsExtended) MustExport(config ExportInput) {
 	log.Info().Str("status", "exporting.points").Int("count", len(r)).Send()
 	if !config.Filename.Valid {
 		config.Filename.SetValid("points.csv")
@@ -29,23 +30,31 @@ func (r Points) MustExport(config ExportConfig) {
 	utils.Check(err)
 
 	csvwriter := csv.NewWriter(csvFile)
-	err = csvwriter.Write([]string{"id", "lat", "lon", "color"})
+	err = csvwriter.Write([]string{"id", "lat", "lon", "color", "description"})
 	utils.Check(err)
 
 	for _, point := range r {
-		err = csvwriter.Write([]string{point.ID.String(), fmt.Sprintf("%f", point.Lat), fmt.Sprintf("%f", point.Lon), string(point.Color)})
+		err = csvwriter.Write(
+			[]string{
+				point.ID.String(),
+				fmt.Sprintf("%f", point.Lat),
+				fmt.Sprintf("%f", point.Lon),
+				string(point.Color),
+				point.Description,
+			},
+		)
 		utils.Check(err)
 	}
 	csvwriter.Flush()
 	log.Info().Str("status", "points.exported").Int("count", len(r)).Send()
 }
 
-type DrawConfig struct {
+type DrawInput struct {
 	URL           null.String
 	OperationType null.String
 }
 
-func (r Points) MustDraw(config DrawConfig) {
+func (r PointsExtended) MustDraw(config DrawInput) {
 	log.Info().Str("status", "sending.request.for.draw").Int("count", len(r)).Send()
 	if !config.URL.Valid {
 		config.URL.SetValid("http://127.0.0.1:8000/draw-points")
@@ -56,7 +65,6 @@ func (r Points) MustDraw(config DrawConfig) {
 
 	pointsBytes, err := json.Marshal(r)
 	utils.Check(err)
-	// TODO move to settings
 	res, err := http.Post(config.URL.String, "Application/json", bytes.NewBuffer(pointsBytes))
 	utils.Check(err)
 	if res.StatusCode != http.StatusOK {
@@ -65,7 +73,11 @@ func (r Points) MustDraw(config DrawConfig) {
 	body, err := io.ReadAll(res.Body)
 	utils.Check(err)
 
-	filename := fmt.Sprintf("%s-%s-draw.png", config.OperationType.String, time.Now().Format("2006-01-02T03:04:05"))
+	filename := fmt.Sprintf(
+		"%s-%s-draw.png",
+		config.OperationType.String,
+		time.Now().Format("2006-01-02T03:04:05"),
+	)
 	file, err := os.Create(filename)
 	utils.Check(err)
 	defer file.Close()

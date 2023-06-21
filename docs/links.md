@@ -14,10 +14,14 @@
 		- Geohash [wiki](https://en.wikipedia.org/wiki/Geohash), [goimpl](https://github.com/mmcloughlin/geohash)
 		- S2, [docs](https://s2geometry.io/), [goimpl](https://pkg.go.dev/github.com/golang/geo/s2)
 		- H3, [docs](https://www.uber.com/blog/h3/), [goimpl](https://github.com/uber/h3-go)
+    - Range:
+  		- BRIN
 - TeX: [overleaf](https://www.overleaf.com/project/64594cfe9c8fa3c587c5d604)
 
-Литература:
 
+Литература:
+- https://onlinelibrary.wiley.com/doi/10.1002/cpe.6029
+- https://sci-hub.ru/https://onlinelibrary.wiley.com/doi/10.1002/cpe.6029
 
     A. Guttman. R-trees: A Dynamic Index Structure for Spatial Searching. Proceedings of ACM SIGMOD, pages 47-57, 1984. http://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Guttman84.pdf
 

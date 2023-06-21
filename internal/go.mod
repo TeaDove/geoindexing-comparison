@@ -12,6 +12,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/google/btree v1.1.2 // indirect
 	github.com/guregu/null v4.0.0+incompatible // indirect
 	github.com/kyroy/priority-queue v0.0.0-20180327160706-6e21825e7e0c // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect

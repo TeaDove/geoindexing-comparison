@@ -1,8 +1,8 @@
 package geo
 
 import (
-	"bytes"
 	"encoding/json"
+	"geoindexing_comparison/utils"
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/google/uuid"
 	"math/rand"
@@ -10,14 +10,21 @@ import (
 
 // Point represents a geographic coordinate
 type Point struct {
-	ID    uuid.UUID `json:"id"`
-	Color Color     `json:"color"`
+	ID uuid.UUID `json:"id"`
 
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
 }
 
+type PointExtended struct {
+	Point
+	Color       Color  `json:"color"`
+	Description string `json:"description"`
+}
+
 type Points []Point
+
+type PointsExtended []PointExtended
 
 type Color string
 
@@ -45,14 +52,14 @@ func (r Points) GetRandomPoint() Point {
 	return r[rand.Intn(len(r))]
 }
 
-func (r Points) Paint(category Color) Points {
+func (r PointsExtended) Paint(category Color) PointsExtended {
 	for idx := range r {
 		r[idx].Color = category
 	}
 	return r
 }
 
-func (r Points) PaintPartially(category Color, points Points) Points {
+func (r PointsExtended) PaintPartially(category Color, points Points) PointsExtended {
 	set := points.ToSet()
 	for idx := range r {
 		if set.Contains(r[idx].ID) {
@@ -63,18 +70,26 @@ func (r Points) PaintPartially(category Color, points Points) Points {
 }
 
 func (r Points) String() string {
-	var buffer bytes.Buffer
-	for _, point := range r {
-		result, _ := json.Marshal(point)
-		buffer.WriteString(string(result))
-	}
-	return buffer.String()
+	byteArray, err := json.Marshal(r)
+	utils.Check(err)
+	return string(byteArray)
 }
 
 func (r Points) ToSet() mapset.Set[uuid.UUID] {
 	result := mapset.NewSet[uuid.UUID]()
 	for _, point := range r {
 		result.Add(point.ID)
+	}
+	return result
+}
+
+func (r Points) ToPointExtended() PointsExtended {
+	var result = make(PointsExtended, len(r))
+	for idx := range r {
+		result[idx] = PointExtended{
+			Point: r[idx],
+			Color: Blue,
+		}
 	}
 	return result
 }

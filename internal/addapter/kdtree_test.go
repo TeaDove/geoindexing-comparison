@@ -15,7 +15,11 @@ func TestUnit_PointGenerator_GeneratePoint_Ok(t *testing.T) {
 	origin := points.GetRandomPoint()
 	result := collection.KNN(origin, generator.DefaultGenerator.KNNSearchSize)
 
-	collection.Points().PaintPartially(geo.Green, result).PaintPartially(geo.Red, []geo.Point{origin}).MustExport(geo.ExportConfig{})
+	collection.Points().
+		ToPointExtended().
+		PaintPartially(geo.Green, result).
+		PaintPartially(geo.Red, []geo.Point{origin}).
+		MustExport(geo.ExportInput{})
 }
 
 func TestUnit_KDTree_FindRange_Ok(t *testing.T) {
@@ -25,5 +29,9 @@ func TestUnit_KDTree_FindRange_Ok(t *testing.T) {
 	origin := points.GetRandomPoint()
 	result := collection.KNN(origin, generator.DefaultGenerator.KNNSearchSize)
 
-	collection.Points().PaintPartially(geo.Green, result).PaintPartially(geo.Red, []geo.Point{origin}).MustDraw(geo.DrawConfig{})
+	collection.Points().
+		ToPointExtended().
+		PaintPartially(geo.Green, result).
+		PaintPartially(geo.Red, []geo.Point{origin}).
+		MustExport(geo.ExportInput{})
 }
