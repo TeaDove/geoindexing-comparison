@@ -7,7 +7,7 @@
 \usepackage{float}
 \usepackage{pdfpages}
 \usepackage{tabularx}
-
+ 
 % Остальные стандартные настройки убраны в preamble.inc.tex.
 \include{preamble.inc}
 
@@ -28,6 +28,7 @@
 % \nobreakingbeforechapters
 \breakingbeforechapters
 
+\includepdf{pdf/title-page.pdf}
 
 \include{00-abstract}
 
@@ -38,6 +39,9 @@
 \include{12-intro}
 
 \include{20-analysis}
+
+\include{30-conclusion}
+\include{31-biblio}
 
 \end{document}
 
