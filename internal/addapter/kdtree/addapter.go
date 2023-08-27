@@ -27,7 +27,15 @@ func (r *CollectionKDTree) FromArray(points geo.Points) {
 func toConcrete(pointsInterface []kdtree.Point) geo.Points {
 	result := make([]geo.Point, len(pointsInterface))
 	for idx, pointInterface := range pointsInterface {
-		result[idx] = pointInterface.(geo.Point)
+		switch r := pointInterface.(type) {
+		// TODO remove this poor taste solution
+		case geo.Point:
+			result[idx] = r
+		case *geo.Point:
+			result[idx] = *r
+		default:
+			panic("invalid type")
+		}
 	}
 	return result
 }
