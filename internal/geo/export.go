@@ -6,11 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"geoindexing_comparison/utils"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"geoindexing_comparison/utils"
 
 	"github.com/guregu/null"
 	"github.com/rs/zerolog/log"

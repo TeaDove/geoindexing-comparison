@@ -1,8 +1,9 @@
 package generator
 
 import (
-	"geoindexing_comparison/geo"
 	"testing"
+
+	"geoindexing_comparison/geo"
 
 	"github.com/guregu/null"
 

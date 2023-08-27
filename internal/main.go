@@ -1,9 +1,10 @@
 package geoindexing_comparison
 
 import (
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 func init() {

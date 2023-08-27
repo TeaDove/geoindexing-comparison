@@ -16,7 +16,7 @@ func (r *Generator) GeneratePoint() geo.Point {
 }
 
 func (r *Generator) GeneratePoints(amount int) geo.Points {
-	var points = make([]geo.Point, amount)
+	points := make([]geo.Point, amount)
 	for i := 0; i < amount; i++ {
 		points[i] = r.GeneratePoint()
 	}

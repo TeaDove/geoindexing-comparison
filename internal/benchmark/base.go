@@ -7,5 +7,5 @@ import (
 
 type Benchmark struct {
 	Generator  *generator.Generator
-	Collection *addapter.Collection
+	Collection addapter.Collection
 }

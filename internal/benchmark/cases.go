@@ -9,12 +9,12 @@ import (
 
 func (r *Benchmark) KNNCheck() {
 	points := r.Generator.GeneratePointsDefaultAmount()
-	(*r.Collection).FromArray(points)
+	r.Collection.FromArray(points)
 
 	origin := points.GetRandomPoint()
-	result := (*r.Collection).KNN(origin, generator.DefaultGenerator.KNNSearchSize)
+	result := r.Collection.KNN(origin, generator.DefaultGenerator.KNNSearchSize)
 
-	(*r.Collection).Points().
+	r.Collection.Points().
 		ToPointExtended().
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin}).
@@ -23,12 +23,12 @@ func (r *Benchmark) KNNCheck() {
 
 func (r *Benchmark) SearchCheck() {
 	points := r.Generator.GeneratePointsDefaultAmount()
-	(*r.Collection).FromArray(points)
+	r.Collection.FromArray(points)
 
 	origin := points.GetRandomPoint()
-	result := (*r.Collection).RangeSearch(origin, generator.DefaultGenerator.RadiusSearchSize)
+	result := r.Collection.RangeSearch(origin, generator.DefaultGenerator.RadiusSearchSize)
 
-	(*r.Collection).Points().
+	r.Collection.Points().
 		ToPointExtended().
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin}).

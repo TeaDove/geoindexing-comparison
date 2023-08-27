@@ -1,9 +1,10 @@
-package addapter
+package kdtree
 
 import (
+	"testing"
+
 	"geoindexing_comparison/generator"
 	"geoindexing_comparison/geo"
-	"testing"
 )
 
 var points = generator.DefaultGenerator.GeneratePointsDefaultAmount()

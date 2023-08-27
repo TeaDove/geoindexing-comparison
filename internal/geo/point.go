@@ -2,10 +2,11 @@ package geo
 
 import (
 	"encoding/json"
+	"math/rand"
+
 	"geoindexing_comparison/utils"
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/google/uuid"
-	"math/rand"
 )
 
 // Point represents a geographic coordinate
@@ -35,19 +36,6 @@ const (
 	Red          = "Red"
 )
 
-func (r Point) Dimensions() int {
-	return 2
-}
-
-func (r Point) Dimension(i int) float64 {
-	switch i {
-	case 0:
-		return r.Lat
-	default:
-		return r.Lon
-	}
-}
-
 func (r Points) GetRandomPoint() Point {
 	return r[rand.Intn(len(r))]
 }
@@ -75,6 +63,15 @@ func (r Points) String() string {
 	return string(byteArray)
 }
 
+func (r Points) Delete(pointID uuid.UUID) {
+	for idx, point := range r {
+		if pointID == point.ID {
+			r = append(r[:idx], r[idx+1:]...)
+			return
+		}
+	}
+}
+
 func (r Points) ToSet() mapset.Set[uuid.UUID] {
 	result := mapset.NewSet[uuid.UUID]()
 	for _, point := range r {
@@ -84,7 +81,7 @@ func (r Points) ToSet() mapset.Set[uuid.UUID] {
 }
 
 func (r Points) ToPointExtended() PointsExtended {
-	var result = make(PointsExtended, len(r))
+	result := make(PointsExtended, len(r))
 	for idx := range r {
 		result[idx] = PointExtended{
 			Point: r[idx],
