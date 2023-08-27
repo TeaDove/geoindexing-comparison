@@ -16,6 +16,7 @@ type Point struct {
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
 }
+type Points []Point
 
 type PointExtended struct {
 	Point
@@ -23,17 +24,15 @@ type PointExtended struct {
 	Description string `json:"description"`
 }
 
-type Points []Point
-
 type PointsExtended []PointExtended
 
 type Color string
 
 const (
 	Blue   Color = "Blue"
-	Green        = "Green"
-	Yellow       = "Yellow"
-	Red          = "Red"
+	Green  Color = "Green"
+	Yellow Color = "Yellow"
+	Red    Color = "Red"
 )
 
 func (r Points) GetRandomPoint() Point {
@@ -88,5 +87,6 @@ func (r Points) ToPointExtended() PointsExtended {
 			Color: Blue,
 		}
 	}
+
 	return result
 }

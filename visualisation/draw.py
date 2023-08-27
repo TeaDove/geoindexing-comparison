@@ -2,7 +2,6 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys
 from fastapi import FastAPI
 from pydantic import Field, BaseModel
 from typing import List
@@ -17,7 +16,7 @@ from starlette.responses import StreamingResponse
 import matplotlib
 
 matplotlib.use("agg")
-
+colors = ("RED", 'BLUE', 'GREEN')
 app = FastAPI()
 
 
@@ -33,7 +32,7 @@ class Points(BaseModel):
     __root__: List[Point] = Field(
         example=[
             Point(
-                color=random.choice(("Red", "Blue", "Green")),
+                color=random.choice(colors),
                 lat=random.rand() * 20 + 40,
                 lon=random.rand() * 20 + 40,
             )
@@ -72,4 +71,4 @@ def draw_fig(points: Points) -> StreamingResponse:
 
 if __name__ == "__main__":
     # TODO move settings to settings
-    uvicorn.run("draw:app")
+    uvicorn.run("draw:app", host='0.0.0.0', port=8000)
