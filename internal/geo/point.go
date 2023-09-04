@@ -18,13 +18,13 @@ type Point struct {
 }
 type Points []Point
 
-type PointExtended struct {
+type PointColored struct {
 	Point
 	Color       Color  `json:"color"`
 	Description string `json:"description"`
 }
 
-type PointsExtended []PointExtended
+type PointsColored []PointColored
 
 type Color string
 
@@ -39,14 +39,14 @@ func (r Points) GetRandomPoint() Point {
 	return r[rand.Intn(len(r))]
 }
 
-func (r PointsExtended) Paint(category Color) PointsExtended {
+func (r PointsColored) Paint(category Color) PointsColored {
 	for idx := range r {
 		r[idx].Color = category
 	}
 	return r
 }
 
-func (r PointsExtended) PaintPartially(category Color, points Points) PointsExtended {
+func (r PointsColored) PaintPartially(category Color, points Points) PointsColored {
 	set := points.ToSet()
 	for idx := range r {
 		if set.Contains(r[idx].ID) {
@@ -79,10 +79,10 @@ func (r Points) ToSet() mapset.Set[uuid.UUID] {
 	return result
 }
 
-func (r Points) ToPointExtended() PointsExtended {
-	result := make(PointsExtended, len(r))
+func (r Points) ToPointExtended() PointsColored {
+	result := make(PointsColored, len(r))
 	for idx := range r {
-		result[idx] = PointExtended{
+		result[idx] = PointColored{
 			Point: r[idx],
 			Color: Blue,
 		}

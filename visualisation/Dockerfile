@@ -14,7 +14,7 @@ COPY . /backend
 
 WORKDIR /backend
 
-RUN poetry config virtualenvs.create false \
+RUN poetry input virtualenvs.create false \
     && poetry install --only main --no-interaction --no-ansi
 
 CMD ["python3", "draw.py"]

@@ -18,19 +18,19 @@ func (r *Benchmark) KNNCheck() {
 		ToPointExtended().
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin}).
-		MustDraw(geo.DrawInput{OperationType: null.StringFrom("KNN")})
+		MustDraw(&geo.DrawInput{OperationType: null.StringFrom("KNN")})
 }
 
-func (r *Benchmark) SearchCheck() {
-	points := r.Generator.GeneratePointsDefaultAmount()
-	r.Collection.FromArray(points)
-
-	origin := points.GetRandomPoint()
-	result := r.Collection.RangeSearch(origin, generator.DefaultGenerator.RadiusSearchSize)
-
-	r.Collection.Points().
-		ToPointExtended().
-		PaintPartially(geo.Green, result).
-		PaintPartially(geo.Red, []geo.Point{origin}).
-		MustDraw(geo.DrawInput{OperationType: null.StringFrom("Search")})
-}
+//func (r *Benchmark) SearchCheck() {
+//	points := r.Generator.GeneratePointsDefaultAmount()
+//	r.Collection.FromArray(points)
+//
+//	origin := points.GetRandomPoint()
+//	result := r.Collection.RangeSearch(origin, generator.DefaultGenerator.RadiusSearchSize)
+//
+//	r.Collection.Points().
+//		ToPointExtended().
+//		PaintPartially(geo.Green, result).
+//		PaintPartially(geo.Red, []geo.Point{origin}).
+//		MustDraw(geo.DrawInput{OperationType: null.StringFrom("Search")})
+//}

@@ -14,9 +14,9 @@ type Generator struct {
 	RadiusSearchSize float64
 }
 
-var DefaultGenerator = GetDefaultGenerator()
+var DefaultGenerator = NewDefaultGenerator()
 
-func GetDefaultGenerator() Generator {
+func NewDefaultGenerator() Generator {
 	return Generator{
 		LatLowerBound:    48.226506,
 		LatUpperBound:    58.016099,

@@ -24,7 +24,7 @@ type Collection interface {
 	// KNN returns array of closest n geo.Points to given geo.Point
 	KNN(point geo.Point, n int) geo.Points
 	// RangeSearch returns all geo.Points in radius around geo.Point
-	RangeSearch(point geo.Point, radius float64) geo.Points
+	// RangeSearch(point geo.Point, radius float64) geo.Points
 
 	// String returns string representation of Collection
 	// Allowed to be unoptimized
