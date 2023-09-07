@@ -5,10 +5,10 @@ import (
 )
 
 type Collection interface {
-	// Init
-	// Initialize empty collection
+	// Name returns name of struct
 	// Allowed to be unoptimized
-	Init()
+	Name() string
+
 	// FromArray creates Collection from geo.Points
 	// Allowed to be unoptimized
 	FromArray(points geo.Points)

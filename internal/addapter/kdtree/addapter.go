@@ -11,8 +11,14 @@ type CollectionKDTree struct {
 	impl kdtree.KDTree
 }
 
-func (r *CollectionKDTree) Init() {
+func New() *CollectionKDTree {
+	r := CollectionKDTree{}
 	r.impl = *kdtree.New([]kdtree.Point{})
+	return &r
+}
+
+func (r *CollectionKDTree) Name() string {
+	return "KDTree"
 }
 
 func (r *CollectionKDTree) FromArray(points geo.Points) {

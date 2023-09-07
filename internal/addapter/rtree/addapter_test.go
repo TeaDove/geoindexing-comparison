@@ -1,4 +1,4 @@
-package kdtree
+package rtree
 
 import (
 	"geoindexing_comparison/generator"
@@ -9,7 +9,7 @@ import (
 var points = generator.DefaultGenerator.GeneratePointsDefaultAmount()
 
 func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
-	collection := CollectionRTree{}
+	collection := New()
 	collection.FromArray(points)
 
 	origin := points.GetRandomPoint()
@@ -23,7 +23,7 @@ func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
 }
 
 func TestUnit_RTree_FindRange_Ok(t *testing.T) {
-	collection := CollectionRTree{}
+	collection := New()
 	collection.FromArray(points)
 
 	origin := points.GetRandomPoint()

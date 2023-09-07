@@ -1,4 +1,4 @@
-package kdtree
+package rtree
 
 import (
 	"geoindexing_comparison/geo"
@@ -10,14 +10,15 @@ type CollectionRTree struct {
 	points geo.Points
 }
 
-func (r *CollectionRTree) Init() {
-	// TODO init from config
-	r.impl = *rtreego.NewTree(2, 25, 50)
+func New() *CollectionRTree {
+	return &CollectionRTree{impl: *rtreego.NewTree(2, 25, 50)}
+}
 
+func (r *CollectionRTree) Name() string {
+	return "RTree"
 }
 
 func (r *CollectionRTree) FromArray(points geo.Points) {
-	r.impl = *rtreego.NewTree(2, 25, 50)
 	for _, point := range points {
 		r.impl.Insert(point)
 	}

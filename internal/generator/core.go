@@ -5,11 +5,13 @@ import (
 )
 
 type Generator struct {
-	LatLowerBound    float64
-	LatUpperBound    float64
-	LonLowerBound    float64
-	LonUpperBound    float64
-	PointsAmount     int
+	LatLowerBound float64
+	LatUpperBound float64
+	LonLowerBound float64
+	LonUpperBound float64
+	PointsAmount  int
+	Distribution  string
+
 	KNNSearchSize    int
 	RadiusSearchSize float64
 }
