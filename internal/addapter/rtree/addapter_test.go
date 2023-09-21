@@ -15,7 +15,8 @@ func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
 	origin := points.GetRandomPoint()
 	result := collection.KNN(origin, generator.DefaultGenerator.KNNSearchSize)
 
-	collection.Points().
+	collectionPoints := collection.Points()
+	collectionPoints.
 		ToPointExtended().
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin}).
@@ -29,7 +30,8 @@ func TestUnit_RTree_FindRange_Ok(t *testing.T) {
 	origin := points.GetRandomPoint()
 	result := collection.KNN(origin, generator.DefaultGenerator.KNNSearchSize)
 
-	collection.Points().
+	collectionPoints := collection.Points()
+	collectionPoints.
 		ToPointExtended().
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin}).

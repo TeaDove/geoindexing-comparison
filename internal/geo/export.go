@@ -27,7 +27,12 @@ func (r PointsColored) MustExport(input *ExportInput) {
 		input.Filename.SetValid("points.csv")
 	}
 	csvFile, err := os.Create(input.Filename.String)
-	defer csvFile.Close()
+	defer func(csvFile *os.File) {
+		err := csvFile.Close()
+		if err != nil {
+			log.Error().Stack().Err(errors.WithStack(err)).Str("status", "unable to close file").Send()
+		}
+	}(csvFile)
 	utils.Check(err)
 
 	csvwriter := csv.NewWriter(csvFile)

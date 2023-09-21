@@ -26,7 +26,8 @@ func TestUnit_PointGenerator_GeneratePoints_Ok(t *testing.T) {
 }
 
 func TestUnit_PointGenerator_MustExport_Ok(t *testing.T) {
-	DefaultGenerator.GeneratePoints(DefaultGenerator.PointsAmount).
+	points := DefaultGenerator.GeneratePoints(DefaultGenerator.PointsAmount)
+	points.
 		ToPointExtended().
 		MustExport(&geo.ExportInput{Filename: null.StringFrom("/tmp/test-points.csv")})
 }

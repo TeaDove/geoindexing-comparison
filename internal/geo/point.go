@@ -35,8 +35,8 @@ const (
 	Red    Color = "Red"
 )
 
-func (r Points) GetRandomPoint() Point {
-	return r[rand.Intn(len(r))]
+func (r *Points) GetRandomPoint() Point {
+	return (*r)[rand.Intn(len(*r))]
 }
 
 func (r PointsColored) Paint(category Color) PointsColored {
@@ -56,34 +56,34 @@ func (r PointsColored) PaintPartially(category Color, points Points) PointsColor
 	return r
 }
 
-func (r Points) String() string {
+func (r *Points) String() string {
 	byteArray, err := json.Marshal(r)
 	utils.Check(err)
 	return string(byteArray)
 }
 
-func (r Points) Delete(pointID uuid.UUID) {
-	for idx, point := range r {
+func (r *Points) Delete(pointID uuid.UUID) {
+	for idx, point := range *r {
 		if pointID == point.ID {
-			r = append(r[:idx], r[idx+1:]...)
+			*r = append((*r)[:idx], (*r)[idx+1:]...)
 			return
 		}
 	}
 }
 
-func (r Points) ToSet() mapset.Set[uuid.UUID] {
+func (r *Points) ToSet() mapset.Set[uuid.UUID] {
 	result := mapset.NewSet[uuid.UUID]()
-	for _, point := range r {
+	for _, point := range *r {
 		result.Add(point.ID)
 	}
 	return result
 }
 
-func (r Points) ToPointExtended() PointsColored {
-	result := make(PointsColored, len(r))
-	for idx := range r {
+func (r *Points) ToPointExtended() PointsColored {
+	result := make(PointsColored, len(*r))
+	for idx := range *r {
 		result[idx] = PointColored{
-			Point: r[idx],
+			Point: (*r)[idx],
 			Color: Blue,
 		}
 	}

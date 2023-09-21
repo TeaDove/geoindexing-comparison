@@ -42,10 +42,10 @@ func randFloat(min, max float64) float64 {
 	return min + rand.Float64()*(max-min)
 }
 
-func randFloats(min, max float64, n int) []float64 {
-	res := make([]float64, n)
-	for i := range res {
-		res[i] = randFloat(min, max)
-	}
-	return res
-}
+//func randFloats(min, max float64, n int) []float64 {
+//	res := make([]float64, n)
+//	for i := range res {
+//		res[i] = randFloat(min, max)
+//	}
+//	return res
+//}
