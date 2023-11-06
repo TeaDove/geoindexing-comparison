@@ -1,0 +1,10 @@
+[package]
+name = "geoindexing_comparison"
+version = "0.1.0"
+authors = ["Peter Ibragimov <peter.ibragimov@gmail.com>"]
+
+[[bin]]
+name = "main"
+path = "main.rs"
+
+#[dependencies]
