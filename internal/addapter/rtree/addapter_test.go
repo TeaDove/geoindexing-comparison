@@ -3,6 +3,7 @@ package rtree
 import (
 	"geoindexing_comparison/generator"
 	"geoindexing_comparison/geo"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -13,10 +14,10 @@ func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
 	collection.FromArray(points)
 
 	origin := points.GetRandomPoint()
-	result := collection.KNN(origin, generator.DefaultGenerator.KNNSearchSize)
+	result, _ := collection.KNNTimed(origin, 1000)
+	assert.Len(t, result, 1000)
 
-	collectionPoints := collection.Points()
-	collectionPoints.
+	points.
 		ToPointExtended().
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin}).
@@ -28,10 +29,10 @@ func TestUnit_RTree_FindRange_Ok(t *testing.T) {
 	collection.FromArray(points)
 
 	origin := points.GetRandomPoint()
-	result := collection.KNN(origin, generator.DefaultGenerator.KNNSearchSize)
+	result, _ := collection.KNNTimed(origin, 1000)
+	assert.Len(t, result, 1000)
 
-	collectionPoints := collection.Points()
-	collectionPoints.
+	points.
 		ToPointExtended().
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin}).

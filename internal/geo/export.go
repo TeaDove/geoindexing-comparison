@@ -36,7 +36,7 @@ func (r PointsColored) MustExport(input *ExportInput) {
 	utils.Check(err)
 
 	csvwriter := csv.NewWriter(csvFile)
-	err = csvwriter.Write([]string{"id", "lat", "lon", "color", "description"})
+	err = csvwriter.Write([]string{"id", "point_latitude", "point_longitude", "color", "description"})
 	utils.Check(err)
 
 	for _, point := range r {

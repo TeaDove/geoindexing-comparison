@@ -1,7 +1,9 @@
 package kdtree
 
 import (
+	"geoindexing_comparison/addapter"
 	"geoindexing_comparison/geo"
+	"time"
 
 	"github.com/kyroy/kdtree"
 	"github.com/kyroy/kdtree/kdrange"
@@ -11,7 +13,7 @@ type CollectionKDTree struct {
 	impl kdtree.KDTree
 }
 
-func New() *CollectionKDTree {
+func New() addapter.Collection {
 	r := CollectionKDTree{}
 	r.impl = *kdtree.New([]kdtree.Point{})
 	return &r
@@ -46,28 +48,27 @@ func toConcrete(pointsInterface []kdtree.Point) geo.Points {
 	return result
 }
 
-func (r *CollectionKDTree) Points() geo.Points {
-	return toConcrete(r.impl.Points())
-}
-
-func (r *CollectionKDTree) Insert(point geo.Point) {
+func (r *CollectionKDTree) InsertTimed(point geo.Point) time.Duration {
+	t0 := time.Now()
 	r.impl.Insert(&point)
+
+	return t0.Sub(time.Now())
 }
 
-func (r *CollectionKDTree) Remove(point geo.Point) {
-	r.impl.Remove(&point)
+func (r *CollectionKDTree) RangeSearchTimed(point geo.Point, radius float64) (geo.Points, time.Duration) {
+	t0 := time.Now()
+	res := r.impl.RangeSearch(kdrange.New(point.Lat-radius, point.Lat+radius, point.Lon-radius, point.Lon+radius))
+	dur := t0.Sub(time.Now())
+
+	return toConcrete(res), dur
 }
 
-func (r *CollectionKDTree) RangeSearch(point geo.Point, radius float64) geo.Points {
-	return toConcrete(
-		r.impl.RangeSearch(
-			kdrange.New(point.Lat-radius, point.Lat+radius, point.Lon-radius, point.Lon+radius),
-		),
-	)
-}
+func (r *CollectionKDTree) KNNTimed(point geo.Point, n int) (geo.Points, time.Duration) {
+	t0 := time.Now()
+	res := r.impl.KNN(&point, n)
+	dur := t0.Sub(time.Now())
 
-func (r *CollectionKDTree) KNN(point geo.Point, n int) geo.Points {
-	return toConcrete(r.impl.KNN(&point, n))
+	return toConcrete(res), dur
 }
 
 func (r *CollectionKDTree) String() string {

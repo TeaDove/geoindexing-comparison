@@ -4,22 +4,19 @@ import (
 	"geoindexing_comparison/addapter"
 	"geoindexing_comparison/addapter/kdtree"
 	"geoindexing_comparison/addapter/rtree"
-	"geoindexing_comparison/geo"
+	"geoindexing_comparison/generator"
 )
 
-type Case struct {
-	Collection addapter.Collection
+type RunCase struct {
+	Collection  func() addapter.Collection
+	Task        Task
+	Repetitions int
+	Generator   generator.Generator
 }
 
-func NewCollections() []addapter.Collection {
-	return []addapter.Collection{
-		rtree.New(),
-		kdtree.New(),
+func AllCollections() []func() addapter.Collection {
+	return []func() addapter.Collection{
+		rtree.New,
+		kdtree.New,
 	}
-}
-
-type KNNInput struct {
-	Amount int
-	Points geo.Points
-	Origin geo.Point
 }

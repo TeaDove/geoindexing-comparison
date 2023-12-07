@@ -2,6 +2,7 @@ package addapter
 
 import (
 	"geoindexing_comparison/geo"
+	"time"
 )
 
 type Collection interface {
@@ -12,19 +13,15 @@ type Collection interface {
 	// FromArray creates Collection from geo.Points
 	// Allowed to be unoptimized
 	FromArray(points geo.Points)
-	// Points returns Collection's geo.Points
-	// Allowed to be unoptimized
-	Points() geo.Points
 
-	// Insert inserts geo.Point to Collection
-	Insert(point geo.Point)
-	// Remove removes point from geo.Point
-	Remove(point geo.Point)
+	// InsertTimed inserts geo.Point to Collection
+	InsertTimed(point geo.Point) time.Duration
 
-	// KNN returns array of closest n geo.Points to given geo.Point
-	KNN(point geo.Point, n int) geo.Points
-	// RangeSearch returns all geo.Points in radius around geo.Point
-	// RangeSearch(point geo.Point, radius float64) geo.Points
+	// KNNTimed returns array of closest n geo.Points to given geo.Point
+	KNNTimed(point geo.Point, n int) (geo.Points, time.Duration)
+
+	// RangeSearchTimed returns all geo.Points in radius around geo.Point
+	RangeSearchTimed(point geo.Point, radius float64) (geo.Points, time.Duration)
 
 	// String returns string representation of Collection
 	// Allowed to be unoptimized

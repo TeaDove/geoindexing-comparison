@@ -2,6 +2,7 @@ package geo
 
 import (
 	"encoding/json"
+	"github.com/mmcloughlin/geohash"
 	"math/rand"
 
 	"geoindexing_comparison/utils"
@@ -34,6 +35,10 @@ const (
 	Yellow Color = "Yellow"
 	Red    Color = "Red"
 )
+
+func (r Point) Geohash() string {
+	return geohash.Encode(r.Lat, r.Lon)
+}
 
 func (r *Points) GetRandomPoint() Point {
 	return (*r)[rand.Intn(len(*r))]

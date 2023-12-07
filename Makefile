@@ -4,8 +4,10 @@ test-integration:
 test-unit:
 	cd internal && go test ./... --run 'TestUnit_*' -cover
 
+
 lint:
-	cd internal && golangci-lint run
+	cd internal && golangci-lint run ./...
+	cd internal && golines --base-formatter=gofmt --max-len=120 --no-reformat-tags -w .
 
 test: test-unit lint test-integration
 
