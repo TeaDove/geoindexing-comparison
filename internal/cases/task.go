@@ -8,5 +8,5 @@ import (
 
 type Task interface {
 	Name() string
-	Run(col addapter.Collection, points geo.Points) time.Duration
+	Run(col addapter.Collection, points geo.Points) []time.Duration
 }

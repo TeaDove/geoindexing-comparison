@@ -19,6 +19,14 @@ type Point struct {
 }
 type Points []Point
 
+func NewPoint(lat float64, lng float64) Point {
+	return Point{
+		ID:  uuid.New(),
+		Lat: lat,
+		Lon: lng,
+	}
+}
+
 type PointColored struct {
 	Point
 	Color       Color  `json:"color"`
