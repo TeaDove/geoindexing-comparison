@@ -1,0 +1,1 @@
+package addapter_all
