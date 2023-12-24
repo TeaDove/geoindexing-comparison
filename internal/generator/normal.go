@@ -43,10 +43,6 @@ func (r *NormalGenerator) Points(input *Input, amount int) geo.Points {
 	return points
 }
 
-//func normInInterval(rng rand.Rand, max float64, min float64) float64 {
-//	return min + (rng.NormFloat64()/(2*math.MaxFloat64)+1)*(max-min)
-//}
-
 func (r *NormalGenerator) cluster(center geo.Point, amount int) geo.Points {
 	rng := rand.New(rand.NewSource(uint64(time.Now().Unix())))
 	points := make(geo.Points, amount)
@@ -58,4 +54,11 @@ func (r *NormalGenerator) cluster(center geo.Point, amount int) geo.Points {
 	}
 
 	return points
+}
+
+func (r *NormalGenerator) Point(input *Input) geo.Point {
+	return geo.NewPoint(
+		randFloat(input.LatLowerBound, input.LatUpperBound),
+		randFloat(input.LonLowerBound, input.LonUpperBound),
+	)
 }

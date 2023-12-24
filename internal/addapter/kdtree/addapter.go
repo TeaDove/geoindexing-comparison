@@ -52,13 +52,13 @@ func (r *CollectionKDTree) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
 	r.impl.Insert(&point)
 
-	return t0.Sub(time.Now())
+	return time.Now().Sub(t0)
 }
 
 func (r *CollectionKDTree) RangeSearchTimed(point geo.Point, radius float64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	res := r.impl.RangeSearch(kdrange.New(point.Lat-radius, point.Lat+radius, point.Lon-radius, point.Lon+radius))
-	dur := t0.Sub(time.Now())
+	dur := time.Now().Sub(t0)
 
 	return toConcrete(res), dur
 }
@@ -66,7 +66,7 @@ func (r *CollectionKDTree) RangeSearchTimed(point geo.Point, radius float64) (ge
 func (r *CollectionKDTree) KNNTimed(point geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	res := r.impl.KNN(&point, n)
-	dur := t0.Sub(time.Now())
+	dur := time.Now().Sub(t0)
 
 	return toConcrete(res), dur
 }

@@ -1,21 +1,27 @@
 package tasks
 
-//
-//type KNN struct {
-//	collection addapter.Collection
-//}
-//
-//func (r *KNN) Name() string {
-//	return "SimpleKNN"
-//}
-//
-//func (r *KNN) Run(col addapter.Collection, points geo.Points) time.Duration {
-//	col := collection()
-//	col.FromArray(generator.DefaultGenerator.GeneratePoints(100_000))
-//	point := generator.DefaultGenerator.GeneratePoint()
-//
-//	t0 := time.Now()
-//	_ = col.KNN(point, 10)
-//
-//	return time.Now().Sub(t0)
-//}
+import (
+	"geoindexing_comparison/addapter/addapter_all"
+	"geoindexing_comparison/generator"
+	"time"
+)
+
+type KNN struct{}
+
+func (r *KNN) Name() string {
+	return "SimpleKNN"
+}
+
+func (r *KNN) Description() string {
+	return ""
+}
+
+func (r *KNN) Run(collection addapter_all.CollectionInit, amount int) time.Duration {
+	col := collection()
+	col.FromArray(generator.DefaultGenerator.Points(&generator.DefaultInput, amount))
+	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
+
+	_, t := col.KNNTimed(point, 10)
+
+	return t
+}

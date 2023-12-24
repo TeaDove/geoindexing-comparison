@@ -1,9 +1,14 @@
 package main
 
 import (
+	"geoindexing_comparison/addapter/addapter_all"
 	"geoindexing_comparison/cases"
 	"geoindexing_comparison/cases/tasks"
 )
+
+func init() {
+	//utils.Init()
+}
 
 func main() {
 	cases.Run(AllCases()...)
@@ -11,12 +16,14 @@ func main() {
 
 func AllCases() []cases.RunCase {
 	runCases := make([]cases.RunCase, 0, 10)
-	for _, collection := range cases.AllCollections() {
-		for _, task := range tasks.AllTasks() {
+	for _, collection := range addapter_all.All() {
+		for _, task := range tasks.All() {
 			runCases = append(runCases, cases.RunCase{
 				Collection:  collection,
 				Task:        task,
-				Repetitions: 100,
+				AmountStart: 100,
+				AmountEnd:   1_000,
+				AmountStep:  100,
 			})
 		}
 	}

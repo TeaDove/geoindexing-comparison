@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"geoindexing_comparison/addapter"
+	"geoindexing_comparison/addapter/addapter_all"
 	"geoindexing_comparison/generator"
 	"time"
 )
@@ -14,13 +15,17 @@ func (r *RadiusSearch) Name() string {
 	return "RadiusSearch"
 }
 
-func (r *RadiusSearch) Run(collection func() addapter.Collection) time.Duration {
+func (r *RadiusSearch) Description() string {
+	return "DefaultGenerator"
+}
+
+func (r *RadiusSearch) Run(collection addapter_all.CollectionInit, amount int) time.Duration {
 	col := collection()
-	col.FromArray(generator.DefaultGenerator.GeneratePoints(100_000))
-	point := generator.DefaultGenerator.GeneratePoint()
 
-	t0 := time.Now()
-	_ = col.RangeSearch(point, 10)
+	col.FromArray(generator.DefaultGenerator.Points(&generator.DefaultInput, amount))
+	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
-	return time.Now().Sub(t0)
+	_, t := col.RangeSearchTimed(point, 1000)
+
+	return t
 }

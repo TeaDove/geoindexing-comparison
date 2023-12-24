@@ -6,22 +6,22 @@ import (
 	"time"
 )
 
-type KNN struct{}
+type Insert struct{}
 
-func (r *KNN) Name() string {
-	return "SimpleKNN"
+func (r *Insert) Name() string {
+	return "SimpleInsert"
 }
 
-func (r *KNN) Description() string {
+func (r *Insert) Description() string {
 	return ""
 }
 
-func (r *KNN) Run(collection addapter_all.CollectionInit, amount int) time.Duration {
+func (r *Insert) Run(collection addapter_all.CollectionInit, amount int) time.Duration {
 	col := collection()
 	col.FromArray(generator.DefaultGenerator.Points(&generator.DefaultInput, amount))
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
-	_, t := col.KNNTimed(point, 10)
+	t := col.InsertTimed(point)
 
 	return t
 }

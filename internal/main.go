@@ -1,12 +1,7 @@
 package geoindexing_comparison
 
-import (
-	"os"
-
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-)
+import "geoindexing_comparison/utils"
 
 func init() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	utils.Init()
 }
