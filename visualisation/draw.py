@@ -16,7 +16,7 @@ from starlette.responses import StreamingResponse
 import matplotlib
 
 matplotlib.use("agg")
-colors = ("RED", 'BLUE', 'GREEN')
+colors = ("RED", "BLUE", "GREEN")
 app = FastAPI()
 
 
@@ -71,4 +71,4 @@ def draw_fig(points: Points) -> StreamingResponse:
 
 if __name__ == "__main__":
     # TODO move settings to settings
-    uvicorn.run("draw:app", host='0.0.0.0', port=8000)
+    uvicorn.run("draw:app", host="0.0.0.0", port=8000)
