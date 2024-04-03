@@ -2,6 +2,7 @@ package addapter_all
 
 import (
 	"geoindexing_comparison/core/addapter"
+	"geoindexing_comparison/core/addapter/bruteforce"
 	"geoindexing_comparison/core/addapter/kdtree"
 	"geoindexing_comparison/core/addapter/quadtree"
 	"geoindexing_comparison/core/addapter/rstartree"
@@ -16,5 +17,6 @@ func All() []CollectionInit {
 		rtree.New,
 		rstartree.New,
 		quadtree.New,
+		bruteforce.New,
 	}
 }

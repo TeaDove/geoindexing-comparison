@@ -12,12 +12,11 @@ const repetitions = 30
 func runAmount(runCase RunCase, amount int) Result {
 	dur := make([]time.Duration, repetitions)
 	for i := 0; i < repetitions; i++ {
+		runtime.GC()
 		dur[i] = runCase.Task.Run(runCase.Collection, amount)
-
+		runtime.GC()
 	}
 	result := stats.NewDurs(dur)
-
-	runtime.GC()
 
 	return Result{
 		RunCase: runCase,
@@ -35,6 +34,7 @@ type Result struct {
 func Run(runCases []RunCase) []Result {
 	results := make([]Result, 0, 100)
 	for _, runCase := range runCases {
+		t0 := time.Now()
 		cur := runCase.AmountStart
 		for {
 			if cur > runCase.AmountEnd {
@@ -50,6 +50,7 @@ func Run(runCases []RunCase) []Result {
 			Str("status", "сase.done").
 			Str("collection", runCase.Collection().Name()).
 			Str("task", runCase.Task.Name()).
+			Dur("elapsed", time.Since(t0)).
 			Send()
 	}
 

@@ -18,9 +18,9 @@ func AllCases() []cases.RunCase {
 			runCases = append(runCases, cases.RunCase{
 				Collection:  collection,
 				Task:        task,
-				AmountStart: 100,
-				AmountEnd:   1000,
-				AmountStep:  10,
+				AmountStart: 1_000,
+				AmountEnd:   10_000,
+				AmountStep:  3_000,
 			})
 		}
 	}

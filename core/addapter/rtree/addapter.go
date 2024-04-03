@@ -28,7 +28,7 @@ func (r *CollectionRTree) FromArray(points geo.Points) {
 func (r *CollectionRTree) KNNTimed(point geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	spatials := r.impl.NearestNeighbors(n, []float64{point.Lat, point.Lon})
-	dur := time.Now().Sub(t0)
+	dur := time.Since(t0)
 
 	result := make(geo.Points, len(spatials))
 	for idx, spatial := range spatials {
@@ -41,8 +41,8 @@ func (r *CollectionRTree) RangeSearchTimed(
 	point geo.Point,
 	radius float64,
 ) (geo.Points, time.Duration) {
-	t0 := time.Now()
 	rect, _ := rtreego.NewRect([]float64{point.Lat, point.Lon}, []float64{radius, radius})
+	t0 := time.Now()
 	points := r.impl.SearchIntersect(rect)
 	dur := time.Now().Sub(t0)
 

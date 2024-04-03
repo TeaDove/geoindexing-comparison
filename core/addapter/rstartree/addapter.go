@@ -41,10 +41,10 @@ func (r *CollectionRTree) RangeSearchTimed(
 	point geo.Point,
 	radius float64,
 ) (geo.Points, time.Duration) {
-	t0 := time.Now()
 	rect, _ := rtreego.NewRect([]float64{point.Lat, point.Lon}, []float64{radius, radius})
+	t0 := time.Now()
 	points := r.impl.SearchIntersect(rect)
-	dur := time.Now().Sub(t0)
+	dur := time.Since(t0)
 
 	geoPoints := make(geo.Points, len(points))
 	for idx, foundPoint := range points {
