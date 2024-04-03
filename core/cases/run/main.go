@@ -20,7 +20,7 @@ func AllCases() []cases.RunCase {
 				Task:        task,
 				AmountStart: 100,
 				AmountEnd:   1000,
-				AmountStep:  100,
+				AmountStep:  10,
 			})
 		}
 	}
