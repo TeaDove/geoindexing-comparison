@@ -4,10 +4,12 @@ go 1.22
 
 require (
 	github.com/KEINOS/go-noise v0.1.0-rc1
+	github.com/TeaDove/go-quad-tree v0.0.0-20240403154819-900ebd5f987c
+	github.com/anayks/go-rstar-tree v1.3.1
 	github.com/deckarep/golang-set/v2 v2.5.0
 	github.com/dghubble/trie v0.0.0-20230729160116-2bc358f28a8b
 	github.com/dhconnelly/rtreego v1.2.0
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.6.0
 	github.com/guregu/null v4.0.0+incompatible
 	github.com/kyroy/kdtree v0.0.0-20200419114247-70830f883f1d
 	github.com/mmcloughlin/geohash v0.10.0

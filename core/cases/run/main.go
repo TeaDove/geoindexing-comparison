@@ -6,12 +6,9 @@ import (
 	"geoindexing_comparison/core/cases/tasks"
 )
 
-func init() {
-	//utils.Init()
-}
-
 func main() {
-	cases.Run(AllCases()...)
+	results := cases.Run(AllCases())
+	drawResults(results)
 }
 
 func AllCases() []cases.RunCase {
@@ -22,7 +19,7 @@ func AllCases() []cases.RunCase {
 				Collection:  collection,
 				Task:        task,
 				AmountStart: 100,
-				AmountEnd:   1_000,
+				AmountEnd:   1000,
 				AmountStep:  100,
 			})
 		}

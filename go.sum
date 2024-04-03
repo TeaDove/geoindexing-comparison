@@ -1,5 +1,9 @@
 github.com/KEINOS/go-noise v0.1.0-rc1 h1:m+RkMef14cREgGekloxuZtHV+WSdT8PJ4b+qUFji6dI=
 github.com/KEINOS/go-noise v0.1.0-rc1/go.mod h1:9zpTu0QHAG0PPhMC9XcL18I9B+3V56rX0CqVmq9G40U=
+github.com/TeaDove/go-quad-tree v0.0.0-20240403154819-900ebd5f987c h1:s10gK/mOMju05cJAg2yAIfeSYyhTbTx+gAYombe+4e8=
+github.com/TeaDove/go-quad-tree v0.0.0-20240403154819-900ebd5f987c/go.mod h1:5huH9/ALHownHiuriVjeLza+uZoek5DBud3fp3cwtyA=
+github.com/anayks/go-rstar-tree v1.3.1 h1:VsRjJhyEkvkAOO3jLSfenWaIv6YmxwQUUpz/fDsTPHc=
+github.com/anayks/go-rstar-tree v1.3.1/go.mod h1:iYYLriJ5isY+qgAwFrpn7cs5ft6Rp7NBe+hHIIlMN4M=
 github.com/aquilax/go-perlin v1.1.0 h1:Gg+3jQ24wT4Y5GI7TCRLmYarzUG0k+n/JATFqOimb7s=
 github.com/aquilax/go-perlin v1.1.0/go.mod h1:z9Rl7EM4BZY0Ikp2fEN1I5mKSOJ26HQpk0O2TBdN2HE=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
@@ -13,8 +17,8 @@ github.com/dghubble/trie v0.0.0-20230729160116-2bc358f28a8b/go.mod h1:sOmnzfBNH7
 github.com/dhconnelly/rtreego v1.2.0 h1:LWhGPhw+iGuhg8hmHA/H8WV60qKtzecOjii0FMevGlk=
 github.com/dhconnelly/rtreego v1.2.0/go.mod h1:SDozu0Fjy17XH1svEXJgdYq8Tah6Zjfa/4Q33Z80+KM=
 github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
-github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
-github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/guregu/null v4.0.0+incompatible h1:4zw0ckM7ECd6FNNddc3Fu4aty9nTlpkkzH7dPn4/4Gw=
 github.com/guregu/null v4.0.0+incompatible/go.mod h1:ePGpQaN9cw0tj45IR5E5ehMvsFlLlQZAkkOXZurJ3NM=
 github.com/jupp0r/go-priority-queue v0.0.0-20160601094913-ab1073853bde h1:+5PMaaQtDUwOcJIUlmX89P0J3iwTvErTmyn5WghzXAQ=

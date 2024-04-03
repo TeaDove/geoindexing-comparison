@@ -1,4 +1,4 @@
-package rtree
+package rstartree
 
 import (
 	"geoindexing_comparison/core/generator"
