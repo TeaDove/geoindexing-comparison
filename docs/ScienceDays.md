@@ -1,10 +1,11 @@
+Преза: https://docs.google.com/presentation/d/1kSzTfOWmmxW3PNvUgm5oYcwbPynePBmc/edit#slide=id.p2
+
 ## актуальность проблематики работы/исследования/проекта;
-- Касандра, Elasticsearch - kdtree
-- Redis, Postgis, 
-- GeoHash + btree: mongo, dynamo
-- R-Tree: postgresql, redis, oracle, tile38
-- R*-Tree: sqlite
-- H3: clickhouse
+- KDtree - Apache Cassandra, Elasticsearch 
+- GeoHash(S2) + btree -  mongo, dynamo
+- R-Tree - Postgresql(Postgis), redis, oracle, tile38
+- R*-Tree - sqlite
+- H3 - clickhouse
 
 ## предметная область;
 

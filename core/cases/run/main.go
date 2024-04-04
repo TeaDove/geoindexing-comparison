@@ -14,12 +14,12 @@ func main() {
 
 var (
 	allCases = cases.RunCase{
-		Name:        "big",
-		Collections: addapter_all.All(),
-		Tasks:       tasks.AllOnePerType,
+		Name:        "big_no_brute",
+		Collections: addapter_all.AllWithoutBruteforce(),
+		Tasks:       tasks.KnnAndRadiusSearch,
 		AmountStart: 100_000,
 		AmountEnd:   1_000_000,
-		AmountStep:  200_000,
+		AmountStep:  30_000,
 	}
 
 	kdVsRtree = cases.RunCase{
@@ -34,10 +34,10 @@ var (
 	allCasesMedium = cases.RunCase{
 		Name:        "medium",
 		Collections: addapter_all.All(),
-		Tasks:       tasks.OnlyRadiusSearch,
+		Tasks:       tasks.KnnAndRadiusSearch,
 		AmountStart: 10_000,
 		AmountEnd:   100_000,
-		AmountStep:  3_000,
+		AmountStep:  1_000,
 	}
 
 	allCasesSmallAmount = cases.RunCase{
