@@ -9,8 +9,10 @@ import (
 type KNNQuater struct{}
 
 func (r *KNNQuater) Name() string {
-	return "КНН Четверти"
+	return "КНН"
 }
+
+func (r *KNNQuater) Filename() string { return "knn_quarters" }
 
 func (r *KNNQuater) Description() string {
 	return "КНН на четверть точек"
@@ -29,6 +31,8 @@ type KNNAmountPoint struct{}
 func (r *KNNAmountPoint) Name() string {
 	return "КНН"
 }
+
+func (r *KNNAmountPoint) Filename() string { return "knn_full" }
 
 func (r *KNNAmountPoint) Description() string {
 	return "КНН на все точки в структуре"

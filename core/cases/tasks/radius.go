@@ -14,6 +14,8 @@ func (r *RadiusSearch) Name() string {
 	return "Поиск в радиусе"
 }
 
+func (r *RadiusSearch) Filename() string { return "radius_search" }
+
 func (r *RadiusSearch) Description() string {
 	return ""
 }

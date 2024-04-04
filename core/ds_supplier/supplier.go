@@ -28,12 +28,6 @@ func New() (*Supplier, error) {
 }
 
 func (r *Supplier) sendRequest(ctx context.Context, path string, input any) ([]byte, error) {
-	log.Debug().
-		Str("status", "ds.request.sending").
-		Interface("input", input).
-		Str("path", path).
-		Send()
-
 	t0 := time.Now()
 
 	reqBody, err := json.Marshal(&input)
@@ -63,7 +57,7 @@ func (r *Supplier) sendRequest(ctx context.Context, path string, input any) ([]b
 
 	utils.CloseOrLog(resp.Body)
 
-	log.Ctx(ctx).Debug().
+	log.Info().
 		Str("status", "ds.request.done").
 		Dur("elapsed", time.Since(t0)).
 		Str("path", path).Send()

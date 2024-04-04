@@ -7,16 +7,31 @@ import (
 )
 
 func main() {
-	allCases := AllCases()
-	cases.Run(&allCases)
+	cases.Run(&allCasesFast)
 }
 
-func AllCases() cases.RunCase {
-	return cases.RunCase{
+var (
+	allCases = cases.RunCase{
 		Collections: addapter_all.All(),
 		Tasks:       tasks.All(),
 		AmountStart: 10_000,
 		AmountEnd:   100_000,
 		AmountStep:  1000,
 	}
-}
+
+	allCasesSmallAmount = cases.RunCase{
+		Collections: addapter_all.All(),
+		Tasks:       tasks.All(),
+		AmountStart: 100,
+		AmountEnd:   1000,
+		AmountStep:  10,
+	}
+
+	allCasesFast = cases.RunCase{
+		Collections: addapter_all.All(),
+		Tasks:       tasks.All(),
+		AmountStart: 100,
+		AmountEnd:   1000,
+		AmountStep:  100,
+	}
+)

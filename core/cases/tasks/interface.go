@@ -7,6 +7,7 @@ import (
 
 type Task interface {
 	Name() string
+	Filename() string
 	Description() string
 	Run(col addapter.Collection, amount int) time.Duration
 }

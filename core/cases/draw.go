@@ -54,7 +54,7 @@ func drawResultsForTask(task tasks.Task, results []Result) {
 	})
 	utils.Check(err)
 
-	saveImageLocally(fmt.Sprintf(".%s.jpeg", task.Name()), lineplotImg)
+	saveImageLocally(fmt.Sprintf("extra/.%s.jpeg", task.Filename()), lineplotImg)
 }
 
 func drawResults(results []Result) {

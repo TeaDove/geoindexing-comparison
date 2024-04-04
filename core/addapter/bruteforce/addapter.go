@@ -3,6 +3,7 @@ package bruteforce
 import (
 	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/geo"
+	"golang.org/x/exp/slices"
 	"time"
 )
 
@@ -52,21 +53,38 @@ func (r *CollectionBruteforce) RangeSearchTimed(
 
 func (r *CollectionBruteforce) KNNTimed(point geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
-
-	knnMatrix := make([]float64, 0, len(r.impl))
-	for _, indexPoint := range r.impl {
-		knnMatrix = append(knnMatrix, indexPoint.DistanceTo(point))
-
+	if n > len(r.impl) {
+		return r.impl, time.Since(t0)
 	}
 
-	result := make(geo.Points, n)
-	// TODO make real knn
+	type dist struct {
+		idx  int
+		dist float64
+	}
 
-	//for idx, indexDistance := range knnMatrix {
-	//
-	//}
-	//
-	//res := r.impl.KNN(&point, n)
+	knnMatrix := make([]dist, 0, len(r.impl))
+	for idx, indexPoint := range r.impl {
+		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceTo(point)})
+	}
+
+	slices.SortFunc(knnMatrix, func(a, b dist) int {
+		if a.dist < b.dist {
+			return -1
+		}
+
+		if a.dist > b.dist {
+			return 1
+		}
+
+		return 0
+	})
+
+	result := make(geo.Points, n)
+
+	for idx := range n {
+		result[idx] = r.impl[knnMatrix[idx].idx]
+	}
+
 	dur := time.Since(t0)
 
 	return result, dur

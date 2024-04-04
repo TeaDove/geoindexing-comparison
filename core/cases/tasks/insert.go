@@ -14,6 +14,8 @@ func (r *Insert) Name() string {
 	return "Вставка"
 }
 
+func (r *Insert) Filename() string { return "insert" }
+
 func (r *Insert) Description() string {
 	return "Вставка 10% точек"
 }
