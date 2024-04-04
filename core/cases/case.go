@@ -6,8 +6,8 @@ import (
 )
 
 type RunCase struct {
-	Collection  addapter_all.CollectionInit
-	Task        tasks.Task
+	Collections []addapter_all.CollectionInit
+	Tasks       []tasks.Task
 	AmountStart int
 	AmountEnd   int
 	AmountStep  int

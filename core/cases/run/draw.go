@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"geoindexing_comparison/core/cases"
+	"geoindexing_comparison/core/cases/tasks"
 	"geoindexing_comparison/core/ds_supplier"
 	"geoindexing_comparison/core/utils"
 	"image"
@@ -35,46 +36,41 @@ func saveImageLocally(imgName string, imgFile []byte) {
 	utils.CloseOrLog(out)
 }
 
-func drawResultsForTask(taskName string, results []cases.Result) {
-	values := make(map[string]map[int]float64, 10)
+func drawResultsForTask(task tasks.Task, results []cases.Result) {
+	values := make([][]any, 0, 10)
 	for _, result := range results {
-		collectionName := result.RunCase.Collection().Name()
-		_, ok := values[collectionName]
-		if !ok {
-			values[collectionName] = make(map[int]float64, 10)
+		for _, dur := range result.Durs {
+			values = append(values, []any{result.CollectionName, result.Amount, dur.Nanoseconds()})
 		}
-
-		values[collectionName][result.Amount] = float64(result.Durs.Avg().Nanoseconds())
 	}
 
 	ctx := context.Background()
 	lineplotImg, err := supplier.DrawLinePlot(ctx, &ds_supplier.DrawLinePlotInput{
 		DrawInput: ds_supplier.DrawInput{
-			Title:  taskName,
-			XLabel: "amount",
-			YLabel: "nanoseconds",
+			Title:  fmt.Sprintf("%s\n%s", task.Name(), task.Description()),
+			XLabel: "Кол-во точек в структуре",
+			YLabel: "Время выполнение задачи в наносекундах",
 		},
 		Values: values,
 	})
 	utils.Check(err)
 
-	saveImageLocally(fmt.Sprintf(".%s.jpeg", taskName), lineplotImg)
+	saveImageLocally(fmt.Sprintf(".%s.jpeg", task.Name()), lineplotImg)
 }
 
 func drawResults(results []cases.Result) {
-	taskToResults := make(map[string][]cases.Result, 5)
+	taskToResults := make(map[tasks.Task][]cases.Result, 5)
 
 	for _, result := range results {
-		taskName := result.RunCase.Task.Name()
-		_, ok := taskToResults[taskName]
+		_, ok := taskToResults[result.Task]
 		if !ok {
-			taskToResults[taskName] = make([]cases.Result, 0, 10)
+			taskToResults[result.Task] = make([]cases.Result, 0, 10)
 		}
 
-		taskToResults[taskName] = append(taskToResults[taskName], result)
+		taskToResults[result.Task] = append(taskToResults[result.Task], result)
 	}
 
-	for taskName, taskResults := range taskToResults {
-		drawResultsForTask(taskName, taskResults)
+	for task, taskResults := range taskToResults {
+		drawResultsForTask(task, taskResults)
 	}
 }

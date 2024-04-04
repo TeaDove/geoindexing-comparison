@@ -1,27 +1,34 @@
 package tasks
 
 import (
-	"geoindexing_comparison/core/addapter/addapter_all"
+	"geoindexing_comparison/core/addapter"
+	"geoindexing_comparison/core/cases/stats"
 	"geoindexing_comparison/core/generator"
+	"runtime"
 	"time"
 )
 
 type Insert struct{}
 
 func (r *Insert) Name() string {
-	return "SimpleInsert"
+	return "Вставка"
 }
 
 func (r *Insert) Description() string {
-	return ""
+	return "Вставка 10% точек"
 }
 
-func (r *Insert) Run(collection addapter_all.CollectionInit, amount int) time.Duration {
-	col := collection()
-	col.FromArray(generator.DefaultGenerator.Points(&generator.DefaultInput, amount))
-	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
+func (r *Insert) Run(col addapter.Collection, amount int) time.Duration {
+	durs := make([]time.Duration, 0, amount/10)
 
-	t := col.InsertTimed(point)
+	for range amount / 10 {
+		runtime.GC()
+		durs = append(
+			durs,
+			col.InsertTimed(generator.DefaultGenerator.Point(&generator.DefaultInput)),
+		)
+		runtime.GC()
+	}
 
-	return t
+	return stats.NewDurs(durs).Avg()
 }

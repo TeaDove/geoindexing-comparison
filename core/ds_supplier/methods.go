@@ -50,7 +50,7 @@ func (r *Supplier) DrawTimeseries(ctx context.Context, input *DrawTimeseriesInpu
 type DrawLinePlotInput struct {
 	DrawInput
 
-	Values map[string]map[int]float64 `json:"values"`
+	Values [][]any `json:"values"`
 }
 
 func (r *Supplier) DrawLinePlot(ctx context.Context, input *DrawLinePlotInput) ([]byte, error) {

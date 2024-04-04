@@ -7,23 +7,17 @@ import (
 )
 
 func main() {
-	results := cases.Run(AllCases())
+	allCases := AllCases()
+	results := cases.Run(&allCases)
 	drawResults(results)
 }
 
-func AllCases() []cases.RunCase {
-	runCases := make([]cases.RunCase, 0, 10)
-	for _, collection := range addapter_all.All() {
-		for _, task := range tasks.All() {
-			runCases = append(runCases, cases.RunCase{
-				Collection:  collection,
-				Task:        task,
-				AmountStart: 1_000,
-				AmountEnd:   10_000,
-				AmountStep:  3_000,
-			})
-		}
+func AllCases() cases.RunCase {
+	return cases.RunCase{
+		Collections: addapter_all.All(),
+		Tasks:       tasks.All()[:1],
+		AmountStart: 100,
+		AmountEnd:   1000,
+		AmountStep:  100,
 	}
-
-	return runCases
 }

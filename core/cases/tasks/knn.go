@@ -1,27 +1,43 @@
 package tasks
 
 import (
-	"geoindexing_comparison/core/addapter/addapter_all"
+	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/generator"
 	"time"
 )
 
-type KNN struct{}
+type KNNQuater struct{}
 
-func (r *KNN) Name() string {
-	return "SimpleKNN"
+func (r *KNNQuater) Name() string {
+	return "КНН Четверти"
 }
 
-func (r *KNN) Description() string {
-	return ""
+func (r *KNNQuater) Description() string {
+	return "КНН на четверть точек"
 }
 
-func (r *KNN) Run(collection addapter_all.CollectionInit, amount int) time.Duration {
-	col := collection()
-	col.FromArray(generator.DefaultGenerator.Points(&generator.DefaultInput, amount))
+func (r *KNNQuater) Run(col addapter.Collection, amount int) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
-	_, t := col.KNNTimed(point, 10)
+	_, t := col.KNNTimed(point, amount/4)
+
+	return t
+}
+
+type KNNAmountPoint struct{}
+
+func (r *KNNAmountPoint) Name() string {
+	return "КНН"
+}
+
+func (r *KNNAmountPoint) Description() string {
+	return "КНН на все точки в структуре"
+}
+
+func (r *KNNAmountPoint) Run(col addapter.Collection, amount int) time.Duration {
+	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
+
+	_, t := col.KNNTimed(point, amount)
 
 	return t
 }

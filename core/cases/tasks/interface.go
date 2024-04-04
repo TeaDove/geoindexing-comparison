@@ -1,19 +1,20 @@
 package tasks
 
 import (
-	"geoindexing_comparison/core/addapter/addapter_all"
+	"geoindexing_comparison/core/addapter"
 	"time"
 )
 
 type Task interface {
 	Name() string
 	Description() string
-	Run(col addapter_all.CollectionInit, amount int) time.Duration
+	Run(col addapter.Collection, amount int) time.Duration
 }
 
 func All() []Task {
 	return []Task{
-		&KNN{},
+		&KNNQuater{},
+		&KNNAmountPoint{},
 		&RadiusSearch{},
 		&Insert{},
 	}
