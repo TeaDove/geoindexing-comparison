@@ -2,22 +2,33 @@ package main
 
 import (
 	"geoindexing_comparison/core/addapter/addapter_all"
+	"geoindexing_comparison/core/addapter/kdtree"
+	"geoindexing_comparison/core/addapter/rtree"
 	"geoindexing_comparison/core/cases"
 	"geoindexing_comparison/core/cases/tasks"
 )
 
 func main() {
-	cases.Run(&allCasesMedium)
+	cases.Run(&allCases)
 }
 
 var (
 	allCases = cases.RunCase{
 		Name:        "big",
 		Collections: addapter_all.All(),
-		Tasks:       tasks.KnnAndRadiusSearch,
-		AmountStart: 10_000,
-		AmountEnd:   100_000,
-		AmountStep:  1000,
+		Tasks:       tasks.AllOnePerType,
+		AmountStart: 100_000,
+		AmountEnd:   1_000_000,
+		AmountStep:  200_000,
+	}
+
+	kdVsRtree = cases.RunCase{
+		Name:        "kd_vs_rtree",
+		Collections: []addapter_all.CollectionInit{rtree.New, kdtree.New},
+		Tasks:       tasks.OnlyKNN1,
+		AmountStart: 100,
+		AmountEnd:   60_000,
+		AmountStep:  300,
 	}
 
 	allCasesMedium = cases.RunCase{

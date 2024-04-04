@@ -12,7 +12,7 @@ type CollectionRTree struct {
 }
 
 func New() addapter.Collection {
-	return &CollectionRTree{impl: *rtreego.NewTree(2, 25, 50)}
+	return &CollectionRTree{impl: *rtreego.NewTree(2, 1000, 100_000)}
 }
 
 func (r *CollectionRTree) Name() string {
@@ -20,6 +20,7 @@ func (r *CollectionRTree) Name() string {
 }
 
 func (r *CollectionRTree) FromArray(points geo.Points) {
+	r.impl = *rtreego.NewTree(2, len(points), len(points)+len(points)/4)
 	for _, point := range points {
 		r.impl.Insert(point.ToPointForRStarTree())
 	}

@@ -34,3 +34,7 @@ var KnnAndRadiusSearch = []Task{
 var OnlyRadiusSearch = []Task{
 	&RadiusSearch{},
 }
+
+var OnlyKNN1 = []Task{
+	&KNN1{},
+}
