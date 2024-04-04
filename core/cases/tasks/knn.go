@@ -26,22 +26,22 @@ func (r *KNNQuater) Run(col addapter.Collection, amount int) time.Duration {
 	return t
 }
 
-type KNNAmountPoint struct{}
+type KNN90 struct{}
 
-func (r *KNNAmountPoint) Name() string {
+func (r *KNN90) Name() string {
 	return "КНН"
 }
 
-func (r *KNNAmountPoint) Filename() string { return "knn_90" }
+func (r *KNN90) Filename() string { return "knn_90" }
 
-func (r *KNNAmountPoint) Description() string {
+func (r *KNN90) Description() string {
 	return "КНН на 90% точек из структуры"
 }
 
-func (r *KNNAmountPoint) Run(col addapter.Collection, amount int) time.Duration {
+func (r *KNN90) Run(col addapter.Collection, amount int) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
-	_, t := col.KNNTimed(point, amount*100/90)
+	_, t := col.KNNTimed(point, amount*90/100)
 
 	return t
 }

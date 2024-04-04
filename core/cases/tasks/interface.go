@@ -15,7 +15,7 @@ type Task interface {
 func All() []Task {
 	return []Task{
 		&KNNQuater{},
-		&KNNAmountPoint{},
+		&KNN90{},
 		&RadiusSearch{},
 		&Insert{},
 		&KNN1{},
