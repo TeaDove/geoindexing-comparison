@@ -58,10 +58,10 @@ func (r *CollectionQuadTree) RangeSearchTimed(
 
 	res := r.impl.QueryRange(
 		qtree.NewBounds[uuid.UUID](
-			point.Lat-radius/2,
-			point.Lon-radius/2,
-			point.Lat+radius/2,
-			point.Lon+radius/2,
+			point.Lat-radius,
+			point.Lon-radius,
+			point.Lat+radius,
+			point.Lon+radius,
 		),
 	)
 	dur := time.Since(t0)

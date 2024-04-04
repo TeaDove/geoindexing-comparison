@@ -6,7 +6,9 @@ import (
 	"geoindexing_comparison/core/cases/tasks"
 	"geoindexing_comparison/core/generator"
 	"geoindexing_comparison/core/geo"
+	"geoindexing_comparison/core/utils"
 	"github.com/rs/zerolog/log"
+	"github.com/schollz/progressbar/v3"
 	"runtime"
 	"time"
 )
@@ -24,7 +26,7 @@ func runCol(
 	amount int,
 	task tasks.Task,
 ) Result {
-	const repetitions = 10
+	const repetitions = 5
 
 	dur := make([]time.Duration, repetitions)
 	for i := 0; i < repetitions; i++ {
@@ -34,6 +36,15 @@ func runCol(
 		runtime.GC()
 		dur[i] = task.Run(col, amount)
 		runtime.GC()
+		if dur[i].Seconds() > 0.5 {
+			log.Warn().
+				Str("status", "run.too.long").
+				Dur("dur", dur[i]).
+				Str("col", col.Name()).
+				Str("task", task.Filename()).
+				Send()
+			break
+		}
 	}
 
 	return Result{
@@ -46,6 +57,8 @@ func runCol(
 
 func runTask(task tasks.Task, runCase *RunCase) []Result {
 	results := make([]Result, 0, 10)
+	iterations := (runCase.AmountEnd - runCase.AmountStart) / runCase.AmountStep
+	bar := progressbar.Default(int64(iterations))
 	for amount := runCase.AmountStart; amount < runCase.AmountEnd; amount += runCase.AmountStep {
 		points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
 
@@ -53,11 +66,10 @@ func runTask(task tasks.Task, runCase *RunCase) []Result {
 			results = append(results, runCol(points, colInit, amount, task))
 		}
 
-		log.Info().
-			Str("status", "task.amount.done").
-			Str("task", task.Name()).
-			Int("amount", amount).
-			Send()
+		err := bar.Add(1)
+		if err != nil {
+			log.Error().Err(err).Str("status", "bar.add.error")
+		}
 	}
 
 	return results
@@ -67,12 +79,17 @@ func Run(runCase *RunCase) {
 	t0 := time.Now()
 	for _, task := range runCase.Tasks {
 		t1 := time.Now()
+		log.Info().
+			Str("status", "task.begin").
+			Str("task", task.Filename()).
+			Send()
+
 		results := runTask(task, runCase)
 
 		log.Info().
 			Str("status", "task.done").
-			Str("task", task.Name()).
-			Dur("elapsed", time.Since(t1)).
+			Str("task", task.Filename()).
+			Float64("elapsed.m", utils.ToFixed(time.Since(t1).Minutes(), 2)).
 			Send()
 
 		drawResultsForTask(task, runCase.Name, results)
@@ -80,6 +97,6 @@ func Run(runCase *RunCase) {
 
 	log.Info().
 		Str("status", "run.done").
-		Dur("elapsed", time.Since(t0)).
+		Float64("elapsed.m", utils.ToFixed(time.Since(t0).Minutes(), 2)).
 		Send()
 }

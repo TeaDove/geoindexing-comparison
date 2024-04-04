@@ -36,3 +36,15 @@ func TestUnit_RTree_FindRange_Ok(t *testing.T) {
 		PaintPartially(geo.Green, result).
 		PaintPartially(geo.Red, []geo.Point{origin})
 }
+
+func TestUnit_RTree_RangeSearch_Ok(t *testing.T) {
+	collection := New()
+	collection.FromArray(points)
+
+	origin := points.GetRandomPoint()
+	result, _ := collection.RangeSearchTimed(
+		origin,
+		(generator.DefaultInput.LatUpperBound-generator.DefaultInput.LatLowerBound)/6,
+	)
+	println(len(result), len(points))
+}
