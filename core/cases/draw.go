@@ -35,7 +35,7 @@ func saveImageLocally(imgName string, imgFile []byte) {
 	utils.CloseOrLog(out)
 }
 
-func drawResultsForTask(task tasks.Task, results []Result) {
+func drawResultsForTask(task tasks.Task, caseName string, results []Result) {
 	values := make([][]any, 0, 10)
 	for _, result := range results {
 		for _, dur := range result.Durs {
@@ -54,22 +54,5 @@ func drawResultsForTask(task tasks.Task, results []Result) {
 	})
 	utils.Check(err)
 
-	saveImageLocally(fmt.Sprintf("extra/.%s.jpeg", task.Filename()), lineplotImg)
-}
-
-func drawResults(results []Result) {
-	taskToResults := make(map[tasks.Task][]Result, 5)
-
-	for _, result := range results {
-		_, ok := taskToResults[result.Task]
-		if !ok {
-			taskToResults[result.Task] = make([]Result, 0, 10)
-		}
-
-		taskToResults[result.Task] = append(taskToResults[result.Task], result)
-	}
-
-	for task, taskResults := range taskToResults {
-		drawResultsForTask(task, taskResults)
-	}
+	saveImageLocally(fmt.Sprintf("extra/%s_%s.jpeg", caseName, task.Filename()), lineplotImg)
 }

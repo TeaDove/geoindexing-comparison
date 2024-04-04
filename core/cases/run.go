@@ -75,7 +75,7 @@ func Run(runCase *RunCase) {
 			Dur("elapsed", time.Since(t1)).
 			Send()
 
-		drawResultsForTask(task, results)
+		drawResultsForTask(task, runCase.Name, results)
 	}
 
 	log.Info().

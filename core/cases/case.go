@@ -6,6 +6,7 @@ import (
 )
 
 type RunCase struct {
+	Name        string
 	Collections []addapter_all.CollectionInit
 	Tasks       []tasks.Task
 	AmountStart int

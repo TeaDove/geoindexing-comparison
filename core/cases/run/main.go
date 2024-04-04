@@ -12,6 +12,7 @@ func main() {
 
 var (
 	allCases = cases.RunCase{
+		Name:        "all_cases",
 		Collections: addapter_all.All(),
 		Tasks:       tasks.All(),
 		AmountStart: 10_000,
@@ -20,6 +21,7 @@ var (
 	}
 
 	allCasesSmallAmount = cases.RunCase{
+		Name:        "small_amount",
 		Collections: addapter_all.All(),
 		Tasks:       tasks.All(),
 		AmountStart: 100,
@@ -28,6 +30,7 @@ var (
 	}
 
 	allCasesFast = cases.RunCase{
+		Name:        "fast",
 		Collections: addapter_all.All(),
 		Tasks:       tasks.All(),
 		AmountStart: 100,

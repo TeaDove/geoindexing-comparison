@@ -18,5 +18,6 @@ func All() []Task {
 		&KNNAmountPoint{},
 		&RadiusSearch{},
 		&Insert{},
+		&KNN1{},
 	}
 }
