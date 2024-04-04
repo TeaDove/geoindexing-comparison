@@ -1,10 +1,9 @@
-package main
+package cases
 
 import (
 	"bytes"
 	"context"
 	"fmt"
-	"geoindexing_comparison/core/cases"
 	"geoindexing_comparison/core/cases/tasks"
 	"geoindexing_comparison/core/ds_supplier"
 	"geoindexing_comparison/core/utils"
@@ -36,7 +35,7 @@ func saveImageLocally(imgName string, imgFile []byte) {
 	utils.CloseOrLog(out)
 }
 
-func drawResultsForTask(task tasks.Task, results []cases.Result) {
+func drawResultsForTask(task tasks.Task, results []Result) {
 	values := make([][]any, 0, 10)
 	for _, result := range results {
 		for _, dur := range result.Durs {
@@ -58,13 +57,13 @@ func drawResultsForTask(task tasks.Task, results []cases.Result) {
 	saveImageLocally(fmt.Sprintf(".%s.jpeg", task.Name()), lineplotImg)
 }
 
-func drawResults(results []cases.Result) {
-	taskToResults := make(map[tasks.Task][]cases.Result, 5)
+func drawResults(results []Result) {
+	taskToResults := make(map[tasks.Task][]Result, 5)
 
 	for _, result := range results {
 		_, ok := taskToResults[result.Task]
 		if !ok {
-			taskToResults[result.Task] = make([]cases.Result, 0, 10)
+			taskToResults[result.Task] = make([]Result, 0, 10)
 		}
 
 		taskToResults[result.Task] = append(taskToResults[result.Task], result)

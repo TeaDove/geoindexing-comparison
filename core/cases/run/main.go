@@ -8,16 +8,15 @@ import (
 
 func main() {
 	allCases := AllCases()
-	results := cases.Run(&allCases)
-	drawResults(results)
+	cases.Run(&allCases)
 }
 
 func AllCases() cases.RunCase {
 	return cases.RunCase{
 		Collections: addapter_all.All(),
-		Tasks:       tasks.All()[:1],
-		AmountStart: 100,
-		AmountEnd:   1000,
-		AmountStep:  100,
+		Tasks:       tasks.All(),
+		AmountStart: 10_000,
+		AmountEnd:   100_000,
+		AmountStep:  1000,
 	}
 }

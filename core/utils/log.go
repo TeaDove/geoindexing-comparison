@@ -37,6 +37,7 @@ func LogMemUsage() {
 		Str("status", "perfstats").
 		Float64("stop.the.world.ms", ToFixed(float64(m.PauseTotalNs)/1024/1024, 2)).
 		Float64("heap.alloc.mb", ToMega(m.HeapAlloc)).
+		Float64("cum.heap.alloc.mb", ToMega(m.TotalAlloc)).
 		Float64("heap.alloc.count.k", ToKilo(m.HeapObjects)).
 		Float64("stack.in.use.mb", ToMega(m.StackInuse)).
 		Float64("total.sys.mb", ToMega(m.Sys)).

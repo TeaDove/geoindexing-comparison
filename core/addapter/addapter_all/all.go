@@ -20,3 +20,12 @@ func All() []CollectionInit {
 		bruteforce.New,
 	}
 }
+
+func AllWithoutBruteforce() []CollectionInit {
+	return []CollectionInit{
+		kdtree.New,
+		rtree.New,
+		rstartree.New,
+		quadtree.New,
+	}
+}
