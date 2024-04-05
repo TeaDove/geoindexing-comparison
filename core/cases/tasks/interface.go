@@ -16,7 +16,7 @@ var All = []Task{
 	&KNNQuater{},
 	&KNN90{},
 	&RadiusSearch{},
-	&Insert{},
+	//&Insert{},
 	&KNN1{},
 }
 

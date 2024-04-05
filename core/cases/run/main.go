@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	cases.Run(&allCases)
+	cases.Run(&allCasesSmallAmount)
 }
 
 var (
@@ -41,7 +41,7 @@ var (
 	}
 
 	allCasesSmallAmount = cases.RunCase{
-		Name:        "small_amount",
+		Name:        "cluster_small_amount",
 		Collections: addapter_all.All(),
 		Tasks:       tasks.All,
 		AmountStart: 100,
