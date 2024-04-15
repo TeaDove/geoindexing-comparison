@@ -1,11 +1,12 @@
 package tasks
 
 import (
+	"runtime"
+	"time"
+
 	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/cases/stats"
 	"geoindexing_comparison/core/generator"
-	"runtime"
-	"time"
 )
 
 type Insert struct{}

@@ -1,10 +1,11 @@
 package rtree
 
 import (
+	"testing"
+
 	"geoindexing_comparison/core/generator"
 	"geoindexing_comparison/core/geo"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var points = generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)

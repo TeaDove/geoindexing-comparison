@@ -1,9 +1,10 @@
 package tasks
 
 import (
+	"time"
+
 	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/generator"
-	"time"
 )
 
 type KNNQuater struct{}

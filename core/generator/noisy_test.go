@@ -2,10 +2,11 @@ package generator
 
 import (
 	"fmt"
-	"github.com/KEINOS/go-noise"
-	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
+
+	"github.com/KEINOS/go-noise"
+	"github.com/stretchr/testify/require"
 )
 
 func TestUnit_NoisyGenerator_Point_Ok(t *testing.T) {

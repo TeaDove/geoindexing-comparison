@@ -1,8 +1,9 @@
 package tasks
 
 import (
-	"geoindexing_comparison/core/addapter"
 	"time"
+
+	"geoindexing_comparison/core/addapter"
 )
 
 type Task interface {
@@ -16,7 +17,7 @@ var All = []Task{
 	&KNNQuater{},
 	&KNN90{},
 	&RadiusSearch{},
-	//&Insert{},
+	// &Insert{},
 	&KNN1{},
 }
 

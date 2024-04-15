@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"geoindexing_comparison/core/cases/tasks"
-	"geoindexing_comparison/core/ds_supplier"
-	"geoindexing_comparison/core/utils"
 	"image"
 	"image/jpeg"
 	"os"
+
+	"geoindexing_comparison/core/cases/tasks"
+	"geoindexing_comparison/core/ds_supplier"
+	"geoindexing_comparison/core/utils"
 )
 
 var supplier *ds_supplier.Supplier

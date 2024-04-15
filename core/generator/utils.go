@@ -1,8 +1,9 @@
 package generator
 
 import (
-	"geoindexing_comparison/core/utils"
 	"math/rand"
+
+	"geoindexing_comparison/core/utils"
 )
 
 func randFloat(min, max float64) float64 {

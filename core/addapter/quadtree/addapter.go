@@ -1,11 +1,12 @@
 package quadtree
 
 import (
+	"time"
+
 	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/geo"
 	qtree "github.com/TeaDove/go-quad-tree"
 	"github.com/google/uuid"
-	"time"
 )
 
 type CollectionQuadTree struct {

@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"golang.org/x/exp/constraints"
 	"math"
+
+	"golang.org/x/exp/constraints"
 )
 
 func round(num float64) int {

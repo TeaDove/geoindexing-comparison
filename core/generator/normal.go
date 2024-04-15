@@ -1,9 +1,10 @@
 package generator
 
 import (
+	"time"
+
 	"geoindexing_comparison/core/geo"
 	rand "golang.org/x/exp/rand"
-	"time"
 )
 
 type NormalGenerator struct {
@@ -29,7 +30,6 @@ func (r *NormalGenerator) Points(input *Input, amount int) geo.Points {
 
 	points := make(geo.Points, 0, amount)
 	for idx := 0; idx < r.ClusterN; idx++ {
-
 		points = append(points, r.cluster(
 			geo.NewPoint(
 				randFloat(input.LatLowerBound, input.LatUpperBound),

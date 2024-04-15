@@ -1,8 +1,9 @@
 package addapter
 
 import (
-	"geoindexing_comparison/core/geo"
 	"time"
+
+	"geoindexing_comparison/core/geo"
 )
 
 type Collection interface {

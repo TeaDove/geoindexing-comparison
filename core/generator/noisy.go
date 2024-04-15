@@ -1,14 +1,14 @@
 package generator
 
 import (
+	"time"
+
 	"geoindexing_comparison/core/geo"
 	"geoindexing_comparison/core/utils"
 	"github.com/KEINOS/go-noise"
-	"time"
 )
 
-type NoisyGenerator struct {
-}
+type NoisyGenerator struct{}
 
 func NewNoisyGenerator() *NoisyGenerator {
 	return &NoisyGenerator{}

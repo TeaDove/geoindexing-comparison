@@ -1,11 +1,3 @@
-issues:
-  exclude-rules:
-    - path: (.+)_test.go
-      linters:
-        - errcheck
-        - forcetypeassert
-        - wsl
-
 linters:
   enable:
     - asciicheck
@@ -22,21 +14,17 @@ linters:
     - errorlint
     - execinquery
     - exportloopref
-    - forbidigo
     - forcetypeassert
     - ginkgolinter
     - gocheckcompilerdirectives
     - gofmt
-    #    - goerr113
     - unparam
     - zerologlint
-    #    - wrapcheck
     - unconvert
     - megacheck
     - staticcheck
     - unused
     - gosimple
-    #    - dupl # TODO remove comment
     - goconst
     - gocyclo
     - nakedret

@@ -1,14 +1,14 @@
 package tasks
 
 import (
-	"geoindexing_comparison/core/addapter"
-	"geoindexing_comparison/core/generator"
 	"runtime"
 	"time"
+
+	"geoindexing_comparison/core/addapter"
+	"geoindexing_comparison/core/generator"
 )
 
-type RadiusSearch struct {
-}
+type RadiusSearch struct{}
 
 func (r *RadiusSearch) Name() string {
 	return "Поиск в радиусе"

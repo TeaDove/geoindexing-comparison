@@ -1,10 +1,11 @@
 package utils
 
 import (
+	"io"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"io"
 )
 
 func SendInterface(values ...any) {

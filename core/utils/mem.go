@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/rs/zerolog/log"
 	"runtime"
+
+	"github.com/rs/zerolog/log"
 )
 
 func LogMemUsage() {

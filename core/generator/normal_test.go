@@ -1,9 +1,10 @@
 package generator
 
 import (
+	"testing"
+
 	"geoindexing_comparison/core/geo"
 	"github.com/guregu/null"
-	"testing"
 )
 
 func TestUnit_NormalGenerator_Cluster_Ok(t *testing.T) {

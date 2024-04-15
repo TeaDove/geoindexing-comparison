@@ -5,11 +5,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"geoindexing_comparison/core/utils"
-	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
 	"time"
+
+	"geoindexing_comparison/core/utils"
+	"github.com/rs/zerolog/log"
 
 	"github.com/pkg/errors"
 )

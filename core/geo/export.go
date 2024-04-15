@@ -5,11 +5,12 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"geoindexing_comparison/core/utils"
 

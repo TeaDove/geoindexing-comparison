@@ -2,8 +2,9 @@ package geo
 
 import (
 	"encoding/json"
-	"github.com/mmcloughlin/geohash"
 	"math/rand"
+
+	"github.com/mmcloughlin/geohash"
 
 	"geoindexing_comparison/core/utils"
 	mapset "github.com/deckarep/golang-set/v2"

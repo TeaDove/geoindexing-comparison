@@ -1,10 +1,11 @@
 package bruteforce
 
 import (
+	"time"
+
 	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/geo"
 	"golang.org/x/exp/slices"
-	"time"
 )
 
 type CollectionBruteforce struct {

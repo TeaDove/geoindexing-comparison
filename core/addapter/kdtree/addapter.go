@@ -1,9 +1,10 @@
 package kdtree
 
 import (
+	"time"
+
 	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/geo"
-	"time"
 
 	"github.com/kyroy/kdtree"
 	"github.com/kyroy/kdtree/kdrange"

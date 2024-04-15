@@ -1,10 +1,11 @@
 package rtree
 
 import (
+	"time"
+
 	"geoindexing_comparison/core/addapter"
 	"geoindexing_comparison/core/geo"
 	"github.com/dhconnelly/rtreego"
-	"time"
 )
 
 type CollectionRTree struct {
@@ -55,7 +56,7 @@ func (r *CollectionRTree) RangeSearchTimed(
 }
 
 func (r *CollectionRTree) String() string {
-	//TODO implement me
+	// TODO implement me
 	return r.impl.String()
 }
 

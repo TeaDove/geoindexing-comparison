@@ -1,6 +1,9 @@
 package cases
 
 import (
+	"runtime"
+	"time"
+
 	"geoindexing_comparison/core/addapter/addapter_all"
 	"geoindexing_comparison/core/cases/stats"
 	"geoindexing_comparison/core/cases/tasks"
@@ -9,8 +12,6 @@ import (
 	"geoindexing_comparison/core/utils"
 	"github.com/rs/zerolog/log"
 	"github.com/schollz/progressbar/v3"
-	"runtime"
-	"time"
 )
 
 type Result struct {
@@ -60,7 +61,7 @@ func runTask(task tasks.Task, runCase *RunCase) []Result {
 	iterations := (runCase.AmountEnd - runCase.AmountStart) / runCase.AmountStep
 	bar := progressbar.Default(int64(iterations))
 	for amount := runCase.AmountStart; amount < runCase.AmountEnd; amount += runCase.AmountStep {
-		//points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
+		// points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
 		points := generator.DefaultNormalGenerator.Points(&generator.DefaultInput, amount)
 
 		for _, colInit := range runCase.Collections {
