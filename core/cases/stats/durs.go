@@ -2,6 +2,7 @@ package stats
 
 import (
 	"fmt"
+	"math"
 	"sort"
 	"time"
 )
@@ -52,4 +53,31 @@ func (r Durs) Min() time.Duration {
 func (r Durs) Quantile(p float64) time.Duration {
 	idx := int(p * float64(len(r)) / 100)
 	return r[idx]
+}
+
+func (r Durs) Variance() float64 {
+	var sum_ time.Duration
+	for _, dur := range r {
+		sum_ += dur
+	}
+
+	mean := float64(sum_) / float64(len(r))
+
+	var sumDif float64
+	for _, dur := range r {
+		sumDif += math.Pow(float64(dur)-mean, 2)
+	}
+
+	return sumDif / float64(len(r))
+}
+
+func (r Durs) SE() float64 {
+	return math.Sqrt(r.Variance())
+}
+
+func (r Durs) AvgWithSE() [3]time.Duration {
+	avg := r.Avg()
+	se := r.SE()
+
+	return [3]time.Duration{avg - time.Duration(se), avg, avg + time.Duration(se)}
 }

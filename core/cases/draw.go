@@ -38,9 +38,10 @@ func saveImageLocally(imgName string, imgFile []byte) {
 func drawResultsForTask(task tasks.Task, caseName string, results []Result) {
 	values := make([][]any, 0, 10)
 	for _, result := range results {
-		for _, dur := range result.Durs {
-			values = append(values, []any{result.CollectionName, result.Amount, dur.Nanoseconds()})
-		}
+		durWithSE := result.Durs.AvgWithSE()
+		values = append(values, []any{result.CollectionName, result.Amount, durWithSE[0]})
+		values = append(values, []any{result.CollectionName, result.Amount, durWithSE[1]})
+		values = append(values, []any{result.CollectionName, result.Amount, durWithSE[2]})
 	}
 
 	ctx := context.Background()
