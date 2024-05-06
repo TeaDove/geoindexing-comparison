@@ -24,7 +24,7 @@ type DrawBarInput struct {
 }
 
 func (r *Supplier) DrawBar(ctx context.Context, input *DrawBarInput) ([]byte, error) {
-	body, err := r.sendRequest(ctx, "histogram", input)
+	body, err := r.sendRequest(ctx, "plot/histogram", input)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to draw")
 	}
@@ -40,7 +40,7 @@ type DrawTimeseriesInput struct {
 }
 
 func (r *Supplier) DrawTimeseries(ctx context.Context, input *DrawTimeseriesInput) ([]byte, error) {
-	body, err := r.sendRequest(ctx, "timeseries", input)
+	body, err := r.sendRequest(ctx, "plot/timeseries", input)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to draw")
 	}
@@ -55,7 +55,7 @@ type DrawLinePlotInput struct {
 }
 
 func (r *Supplier) DrawLinePlot(ctx context.Context, input *DrawLinePlotInput) ([]byte, error) {
-	body, err := r.sendRequest(ctx, "lineplot", input)
+	body, err := r.sendRequest(ctx, "plot/lineplot", input)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to draw")
 	}
@@ -85,7 +85,7 @@ type DrawGraphInput struct {
 }
 
 func (r *Supplier) DrawGraph(ctx context.Context, input *DrawGraphInput) ([]byte, error) {
-	body, err := r.sendRequest(ctx, "graph", input)
+	body, err := r.sendRequest(ctx, "plot/graph", input)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to draw")
 	}
@@ -94,7 +94,7 @@ func (r *Supplier) DrawGraph(ctx context.Context, input *DrawGraphInput) ([]byte
 }
 
 func (r *Supplier) DrawGraphAsHeatpmap(ctx context.Context, input *DrawGraphInput) ([]byte, error) {
-	body, err := r.sendRequest(ctx, "graph-as-heatmap", input)
+	body, err := r.sendRequest(ctx, "plot/graph-as-heatmap", input)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to draw")
 	}

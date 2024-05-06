@@ -33,5 +33,5 @@ func (r *Insert) Run(col addapter.Collection, amount int) time.Duration {
 		runtime.GC()
 	}
 
-	return stats.NewDurs(durs).Avg()
+	return stats.NewArray(durs).Avg()
 }

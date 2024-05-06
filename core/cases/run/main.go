@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	cases.Run(&allCasesFast)
+	cases.Run(&allCasesMedium)
 }
 
 var (

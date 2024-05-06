@@ -17,7 +17,8 @@ import (
 type Result struct {
 	CollectionName string
 	Task           tasks.Task
-	Durs           stats.Durs
+	Durs           stats.Array[time.Duration]
+	Mems           stats.Array[uint64]
 	Amount         int
 }
 
@@ -30,12 +31,20 @@ func runCol(
 	const repetitions = 5
 
 	dur := make([]time.Duration, repetitions)
+	mems := make([]uint64, repetitions)
+
 	for i := 0; i < repetitions; i++ {
 		col := colInit()
 		col.FromArray(points)
 
 		runtime.GC()
+
+		mem := utils.StartMemCatching()
+
 		dur[i] = task.Run(col, amount)
+
+		mems = append(mems, mem.StopMemCatching())
+
 		runtime.GC()
 		if dur[i].Seconds() > 0.5 {
 			log.Warn().
@@ -51,8 +60,9 @@ func runCol(
 	return Result{
 		CollectionName: colInit().Name(),
 		Task:           task,
-		Durs:           stats.NewDurs(dur),
+		Durs:           stats.NewArray(dur),
 		Amount:         amount,
+		Mems:           stats.NewArray(mems),
 	}
 }
 
@@ -62,7 +72,7 @@ func runTask(task tasks.Task, runCase *RunCase) []Result {
 	bar := progressbar.Default(int64(iterations))
 	for amount := runCase.AmountStart; amount < runCase.AmountEnd; amount += runCase.AmountStep {
 		// points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
-		points := generator.DefaultNormalGenerator.Points(&generator.DefaultInput, amount)
+		points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
 
 		for _, colInit := range runCase.Collections {
 			results = append(results, runCol(points, colInit, amount, task))

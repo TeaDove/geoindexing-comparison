@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"math"
 	"sort"
-	"time"
+
+	"golang.org/x/exp/constraints"
 )
 
-type Durs []time.Duration
+type Array[T constraints.Integer] []T
 
-func NewDurs(dur []time.Duration) Durs {
+func NewArray[T constraints.Integer](dur []T) Array[T] {
 	sort.Slice(dur, func(i, j int) bool {
 		return dur[i] < dur[j]
 	})
@@ -17,46 +18,67 @@ func NewDurs(dur []time.Duration) Durs {
 	return dur
 }
 
-func (r Durs) String() string {
-	return fmt.Sprintf("avg: %s, median: %s, min: %s, max: %s, p90: %s, p95: %s, p99: %s",
-		r.Avg().String(),
-		r.Median().String(),
-		r.Min().String(),
-		r.Max().String(),
-		r.Quantile(90).String(),
-		r.Quantile(95).String(),
-		r.Quantile(99).String(),
+func (r Array[T]) String() string {
+	return fmt.Sprintf("avg: %d, median: %d, min: %d, max: %d, p90: %d, p95: %d, p99: %d, len: %d",
+		r.Avg(),
+		r.Median(),
+		r.Min(),
+		r.Max(),
+		r.Quantile(90),
+		r.Quantile(95),
+		r.Quantile(99),
+		len(r),
 	)
 }
 
-func (r Durs) Avg() time.Duration {
-	var avg time.Duration
+func (r Array[T]) Avg() T {
+	if len(r) == 0 {
+		return 0
+	}
+
+	var avg T
 	for _, dur := range r {
 		avg += dur
 	}
 
-	return time.Duration(int(avg) / len(r))
+	return T(int(avg) / len(r))
 }
 
-func (r Durs) Median() time.Duration {
+func (r Array[T]) Median() T {
+	if len(r) == 0 {
+		return 0
+	}
+
 	return r[len(r)/2]
 }
 
-func (r Durs) Max() time.Duration {
+func (r Array[T]) Max() T {
+	if len(r) == 0 {
+		return 0
+	}
+
 	return r[len(r)-1]
 }
 
-func (r Durs) Min() time.Duration {
+func (r Array[T]) Min() T {
+	if len(r) == 0 {
+		return 0
+	}
+
 	return r[0]
 }
 
-func (r Durs) Quantile(p float64) time.Duration {
+func (r Array[T]) Quantile(p float64) T {
+	if len(r) == 0 {
+		return 0
+	}
+
 	idx := int(p * float64(len(r)) / 100)
 	return r[idx]
 }
 
-func (r Durs) Variance() float64 {
-	var sum_ time.Duration
+func (r Array[T]) Variance() float64 {
+	var sum_ T
 	for _, dur := range r {
 		sum_ += dur
 	}
@@ -71,13 +93,16 @@ func (r Durs) Variance() float64 {
 	return sumDif / float64(len(r))
 }
 
-func (r Durs) SE() float64 {
+func (r Array[T]) SE() float64 {
 	return math.Sqrt(r.Variance())
 }
 
-func (r Durs) AvgWithSE() [3]time.Duration {
+func (r Array[T]) AvgWithSE() [3]T {
+	if len(r) == 0 {
+		return [3]T{0, 0, 0}
+	}
 	avg := r.Avg()
 	se := r.SE()
 
-	return [3]time.Duration{avg - time.Duration(se), avg, avg + time.Duration(se)}
+	return [3]T{avg - T(se), avg, avg + T(se)}
 }

@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"runtime"
 	"time"
 
 	"geoindexing_comparison/core/addapter"
@@ -23,12 +22,10 @@ func (r *RadiusSearch) Description() string {
 func (r *RadiusSearch) Run(col addapter.Collection, amount int) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
-	runtime.GC()
 	_, t := col.RangeSearchTimed(
 		point,
 		(generator.DefaultInput.LatUpperBound-generator.DefaultInput.LatLowerBound)/6,
 	)
-	runtime.GC()
 
 	return t
 }
