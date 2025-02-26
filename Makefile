@@ -1,5 +1,8 @@
-test:
-	go test ./...
+lint:
+	gofumpt -w *.go
+	golines --base-formatter=gofumpt --max-len=120 --no-reformat-tags -w .
+	wsl --fix ./...
+	golangci-lint run --fix
 
 run:
-	go run core/cases/run/main.go
+	go run main.go

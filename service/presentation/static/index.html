@@ -1,0 +1,104 @@
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="run-settings">
+        <fieldset>
+            <legend>Индексы</legend>
+            {{ range $index := .Indexes }}
+                <div>
+                    <input type="checkbox" id="index-{{ $index }}" name="index-{{ $index }}" checked />
+                    <label for="index-{{ $index }}">{{ $index.Name }}</label>
+                </div>
+            {{ end }}
+        </fieldset>
+        <fieldset>
+            <legend>Задачи</legend>
+
+            <div>
+                <input type="checkbox" id="scales2" name="scales" checked />
+                <label for="scales2">Scales</label>
+            </div>
+
+            <div>
+                <input type="checkbox" id="horns2" name="horns" />
+                <label for="horns2">Horns</label>
+            </div>
+        </fieldset>
+    </div>
+    <button> ⏯ </button>
+    <button> ⏹ </button>
+
+
+    <div id="speedDiv">
+        <canvas id="speedChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('speedChart');
+
+        const data = {
+            datasets: [{
+                label: 'First Dataset',
+                data: [{
+                    x: 0,
+                    y: 0,
+                }, {
+                    x: 1,
+                    y: 1,
+                }, {
+                    x: 2,
+                    y: 2,
+                }],
+                backgroundColor: 'rgb(255, 99, 132)'
+            },
+                {
+                    label: 'Second Dataset',
+                    data: [{
+                        x: 1,
+                        y: 0,
+                    }, {
+                        x: 2,
+                        y: 1,
+                    }, {
+                        x: 3,
+                        y: 1,
+                    }],
+                    backgroundColor: 'rgb(84,157,81)'
+                }],
+        };
+        new Chart(ctx, {
+            type: 'scatter',
+            data: data,
+            options: {
+                showLine: true,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Chart.js Line Chart'
+                    }
+                }
+            }
+        });
+
+        function setupPlotWS(){
+            const wsSocket = new WebSocket("/plots/ws");
+
+            wsSocket.onopen = (_) => {
+                console.info("plot.ws.socket.open")
+            };
+            wsSocket.onmessage = (event) => {
+                console.debug(`plot.ws.event.received ${JSON.stringify(event)}`)
+            };
+        }
+        setupPlotWS()
+    </script>
+</body>
