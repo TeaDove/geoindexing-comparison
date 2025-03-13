@@ -7,6 +7,8 @@ import (
 	"geoindexing_comparison/service/index/quadtree"
 	"geoindexing_comparison/service/index/rstartree"
 	"geoindexing_comparison/service/index/rtree"
+	"maps"
+	"slices"
 )
 
 var Indexes = []index.NewIndex{
@@ -24,3 +26,5 @@ var NameToNewIndex = func() map[string]index.NewIndex {
 	}
 	return mapping
 }()
+
+var IndexNames = slices.Sorted(maps.Keys(NameToNewIndex))

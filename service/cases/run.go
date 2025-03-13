@@ -6,6 +6,7 @@ import (
 	"geoindexing_comparison/service/generator"
 	"geoindexing_comparison/service/geo"
 	"geoindexing_comparison/service/index"
+	"geoindexing_comparison/service/index/indexes"
 	"runtime"
 	"time"
 
@@ -15,17 +16,17 @@ import (
 
 type Result struct {
 	IndexName string
-	Task      tasks.Task
+	Task      tasks.TaskImpl
 	Durs      stats.Array[time.Duration]
 	Mems      stats.Array[uint64]
-	Amount    int
+	Amount    uint64
 }
 
 func runCol(
 	points geo.Points,
 	colInit index.NewIndex,
-	amount int,
-	task tasks.Task,
+	amount uint64,
+	task tasks.TaskImpl,
 ) Result {
 	const repetitions = 5
 
@@ -65,7 +66,7 @@ func runCol(
 	}
 }
 
-func runTask(task tasks.Task, runCase *RunCase) []Result {
+func runTask(task tasks.TaskImpl, runCase *RunCase) []Result {
 	results := make([]Result, 0, 10)
 	iterations := (runCase.AmountEnd - runCase.AmountStart) / runCase.AmountStep
 	bar := progressbar.Default(int64(iterations))
@@ -75,7 +76,7 @@ func runTask(task tasks.Task, runCase *RunCase) []Result {
 		points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
 
 		for _, colInit := range runCase.Indexes {
-			results = append(results, runCol(points, colInit, amount, task))
+			results = append(results, runCol(points, indexes.NameToNewIndex[colInit], amount, task))
 		}
 
 		err := bar.Add(1)
@@ -95,14 +96,14 @@ func Run(runCase *RunCase) {
 
 		log.Info().
 			Str("status", "task.begin").
-			Str("task", task.Filename()).
+			Str("task", task).
 			Send()
 
-		_ = runTask(task, runCase)
+		_ = runTask(tasks.NameToTask[task], runCase)
 
 		log.Info().
 			Str("status", "task.done").
-			Str("task", task.Filename()).
+			Str("task", task).
 			Str("elapsed", time.Since(t1).String()).
 			Send()
 	}

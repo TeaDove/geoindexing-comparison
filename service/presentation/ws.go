@@ -2,14 +2,18 @@ package presentation
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/rs/zerolog"
 	"time"
 )
 
+type Point struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+}
+
 type DrawDTO struct {
-	PlotName string `json:"plotName"`
+	LegendToPoints map[string][]Point `json:"legendToPoints"`
 }
 
 func (r *Presentation) wsHandle(c *websocket.Conn) {
@@ -24,31 +28,22 @@ func (r *Presentation) wsHandle(c *websocket.Conn) {
 		Msg("new.ws.stream")
 
 	var (
-		msg []byte
+		idx = 0
 		err error
 	)
 	for {
-		drawDTO := DrawDTO{"Test"}
-		msg, err = json.Marshal(drawDTO)
-		if err != nil {
-			zerolog.Ctx(ctx).
-				Error().
-				Stack().Err(err).
-				Interface("drawDTO", drawDTO).
-				Msg("failed.to.marshal")
-			break
-		}
+		drawDTO := DrawDTO{LegendToPoints: map[string][]Point{"First Dataset": {{X: float64(idx), Y: float64(idx)}}}}
 
-		err = c.WriteMessage(websocket.TextMessage, msg)
+		err = c.WriteJSON(drawDTO)
 		if err != nil {
 			zerolog.Ctx(ctx).
 				Error().
 				Stack().Err(err).
-				Str("msg", string(msg)).
 				Msg("failed.to.write")
 			break
 		}
-		time.Sleep(10 * time.Second)
+		time.Sleep(1 * time.Second)
+		idx += 1
 	}
 
 	zerolog.Ctx(ctx).

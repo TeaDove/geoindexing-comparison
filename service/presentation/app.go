@@ -18,6 +18,10 @@ type Presentation struct {
 
 func NewPresentation() *Presentation {
 	httpStaticFS := http.FS(static.FS)
+	sendFile := func(name string) func(c *fiber.Ctx) error {
+		return func(c *fiber.Ctx) error { return filesystem.SendFile(c, httpStaticFS, name) }
+	}
+
 	renderEngine := html.NewFileSystem(httpStaticFS, "")
 	if !settings_utils.BaseSettings.Release {
 		renderEngine.Reload(true)
@@ -31,9 +35,12 @@ func NewPresentation() *Presentation {
 	app.Use(logger.New())
 
 	app.Get("/", r.formIndex)
-	app.Get("/runs", func(c *fiber.Ctx) error { return c.Render("index.html", nil) })
+	app.Get("/index.css", sendFile("index.css"))
+	app.Get("/index.js", sendFile("index.js"))
+	app.Get("/favicon.ico", sendFile("favicon.ico"))
 	app.Get("/plots/ws", websocket.New(r.wsHandle))
-	app.Get("/favicon.ico", func(c *fiber.Ctx) error { return filesystem.SendFile(c, httpStaticFS, "favicon.ico") })
+	app.Post("/runs/resume", r.runResume)
+	app.Post("/runs/reset", r.runReset)
 	app.Get("/*", func(c *fiber.Ctx) error { return c.Redirect("/") })
 
 	return &Presentation{fiberApp: app}

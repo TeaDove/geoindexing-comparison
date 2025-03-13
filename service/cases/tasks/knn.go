@@ -18,7 +18,7 @@ func (r *KNNQuater) Description() string {
 	return "КНН на четверть точек"
 }
 
-func (r *KNNQuater) Run(index index.Index, amount int) time.Duration {
+func (r *KNNQuater) Run(index index.Index, amount uint64) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
 	_, t := index.KNNTimed(point, amount/4)
@@ -38,7 +38,7 @@ func (r *KNN90) Description() string {
 	return "КНН на 90% точек из структуры"
 }
 
-func (r *KNN90) Run(col index.Index, amount int) time.Duration {
+func (r *KNN90) Run(col index.Index, amount uint64) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
 	_, t := col.KNNTimed(point, amount*90/100)
@@ -58,7 +58,7 @@ func (r *KNN1) Description() string {
 	return "КНН на 1% точек из структуры"
 }
 
-func (r *KNN1) Run(col index.Index, amount int) time.Duration {
+func (r *KNN1) Run(col index.Index, amount uint64) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
 	_, t := col.KNNTimed(point, amount/100)

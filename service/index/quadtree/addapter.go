@@ -71,9 +71,9 @@ func (r *CollectionQuadTree) RangeSearchTimed(
 	return toConcrete(res), dur
 }
 
-func (r *CollectionQuadTree) KNNTimed(point geo.Point, n int) (geo.Points, time.Duration) {
+func (r *CollectionQuadTree) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
-	res := r.impl.KNN(qtree.NewPoint[uuid.UUID](point.Lat, point.Lon, uuid.Nil), n)
+	res := r.impl.KNN(qtree.NewPoint[uuid.UUID](point.Lat, point.Lon, uuid.Nil), int(n))
 	dur := time.Since(t0)
 
 	return toConcrete(res), dur

@@ -20,7 +20,7 @@ func (r *Insert) Description() string {
 	return "Вставка 10% точек"
 }
 
-func (r *Insert) Run(index index.Index, amount int) time.Duration {
+func (r *Insert) Run(index index.Index, amount uint64) time.Duration {
 	durs := make([]time.Duration, 0, amount/10)
 
 	for range amount / 10 {

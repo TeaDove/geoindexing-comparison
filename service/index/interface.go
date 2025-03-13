@@ -20,7 +20,7 @@ type Index interface {
 	InsertTimed(point geo.Point) time.Duration
 
 	// KNNTimed returns array of closest n geo.Points to given geo.Point
-	KNNTimed(point geo.Point, n int) (geo.Points, time.Duration)
+	KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration)
 
 	// RangeSearchTimed returns run geo.Points in radius around geo.Point
 	RangeSearchTimed(point geo.Point, radius float64) (geo.Points, time.Duration)

@@ -13,11 +13,11 @@ type NormalGenerator struct {
 
 var DefaultNormalGenerator = NormalGenerator{ClusterN: 6}
 
-func (r *NormalGenerator) Points(input *Input, amount int) geo.Points {
+func (r *NormalGenerator) Points(input *Input, amount uint64) geo.Points {
 	rng := rand.New(rand.NewSource(uint64(time.Now().Unix())))
 
 	amounts := make([]int64, r.ClusterN)
-	mapPerCluster := int64(float64(amount/r.ClusterN) * 0.2)
+	mapPerCluster := int64(float64(int(amount)/r.ClusterN) * 0.2)
 	remain := int64(amount)
 
 	for idx := range amounts {

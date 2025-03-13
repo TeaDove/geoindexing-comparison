@@ -39,7 +39,7 @@ const logCtxKey = "logCtx"
 
 func (r *Presentation) logCtxMiddleware(c *fiber.Ctx) error {
 	ctx := logger_utils.AddLoggerToCtx(c.UserContext())
-	ctx = logger_utils.WithStrContextLog(ctx,
+	ctx = logger_utils.WithValue(ctx,
 		"app_method",
 		fmt.Sprintf(
 			"%s %s",
@@ -48,9 +48,9 @@ func (r *Presentation) logCtxMiddleware(c *fiber.Ctx) error {
 		),
 	)
 
-	ctx = logger_utils.WithStrContextLog(ctx, "ip", c.IP())
-	ctx = logger_utils.WithStrContextLog(ctx, "user_agent", c.Get("User-Agent"))
-	ctx = logger_utils.WithStrContextLog(ctx, "cookie_id", r.mustGetCookieID(c))
+	ctx = logger_utils.WithValue(ctx, "ip", c.IP())
+	ctx = logger_utils.WithValue(ctx, "user_agent", c.Get("User-Agent"))
+	ctx = logger_utils.WithValue(ctx, "cookie_id", r.mustGetCookieID(c))
 
 	c.SetUserContext(ctx)
 	c.Locals(logCtxKey, ctx)

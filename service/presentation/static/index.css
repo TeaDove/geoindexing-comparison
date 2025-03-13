@@ -14,10 +14,15 @@ input {
     margin: 0 auto;
 }
 .run-settings > fieldset {
-    width: 100px;
-    display: inline-block
+    /*width: 100px;*/
+    display: inline-block;
+    font-size: medium;
 }
-#speedDiv{
-    width: 70%;
-    height: 70%;
+.run-settings > fieldset > label {
+    font-size: small;
 }
+
+/*.speedDiv{*/
+/*    width: 70%;*/
+/*    height: 30%;*/
+/*}*/

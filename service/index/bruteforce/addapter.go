@@ -53,9 +53,9 @@ func (r *CollectionBruteforce) RangeSearchTimed(
 	return points, dur
 }
 
-func (r *CollectionBruteforce) KNNTimed(point geo.Point, n int) (geo.Points, time.Duration) {
+func (r *CollectionBruteforce) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
-	if n > len(r.impl) {
+	if int(n) > len(r.impl) {
 		return r.impl, time.Since(t0)
 	}
 

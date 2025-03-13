@@ -15,9 +15,9 @@ func (r *SimpleGenerator) Point(input *Input) geo.Point {
 	)
 }
 
-func (r *SimpleGenerator) Points(input *Input, amount int) geo.Points {
+func (r *SimpleGenerator) Points(input *Input, amount uint64) geo.Points {
 	points := make([]geo.Point, amount)
-	for i := 0; i < amount; i++ {
+	for i := range amount {
 		points[i] = r.Point(input)
 	}
 
