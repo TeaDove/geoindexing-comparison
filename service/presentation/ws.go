@@ -42,7 +42,7 @@ func (r *Presentation) wsHandle(c *websocket.Conn) {
 				Msg("failed.to.write")
 			break
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(10 * time.Second)
 		idx += 1
 	}
 

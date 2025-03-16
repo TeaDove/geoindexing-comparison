@@ -1,9 +1,9 @@
 package cases
 
-type RunCase struct {
-	Indexes     []string
-	Tasks       []string
-	AmountStart uint64
-	AmountEnd   uint64
-	AmountStep  uint64
+type RunConfig struct {
+	Indexes     []string `json:"indexes"`
+	Tasks       []string `json:"tasks"`
+	AmountStart uint64   `json:"amount_start"`
+	AmountEnd   uint64   `json:"amount_end"`
+	AmountStep  uint64   `json:"amount_step"`
 }

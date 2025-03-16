@@ -7,14 +7,15 @@
 <body>
     <button onclick="resumeClick(this)"> ⏯ </button>
     <button onclick="resetClick(this)"> ⏹ </button>
+    
 
     <div class="run-settings">
         <fieldset>
             <legend>Индексы</legend>
             {{ range $k, $v := .Indexes }}
                 <div>
-                    <input type="checkbox" id="index-{{ $v }}" name="index-{{ $v }}" {{ if eq $k 0 1 }} checked {{ end }} />
-                    <label for="index-{{ $v }}">{{ $v }}</label>
+                    <input type="checkbox" id="index-{{ $v.Info.ShortName }}" name="{{ $v.Info.ShortName }}" {{ if eq $k 0 1 }} checked {{ end }} />
+                    <label for="index-{{ $v.Info.ShortName }}">{{ $v.Info.LongName }}</label>
                 </div>
             {{ end }}
         </fieldset>
@@ -22,8 +23,8 @@
             <legend>Задачи</legend>
             {{ range $k, $v := .Tasks }}
             <div>
-                <input type="checkbox" id="task-{{ $v }}" name="task-{{ $v }}" {{ if eq $k 0 1 }} checked {{ end }} />
-                <label for="task-{{ $v }}">{{ $v }}</label>
+                <input type="checkbox" id="task-{{ $v.Info.ShortName }}" name="{{ $v.Info.LongName }}" {{ if eq $k 0 1 }} checked {{ end }} />
+                <label for="task-{{ $v.Info.ShortName }}">{{ $v.Info.LongName }}</label>
             </div>
             {{ end }}
         </fieldset>

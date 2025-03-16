@@ -5,18 +5,14 @@ import (
 	"time"
 )
 
-type NewIndex func() Index
+type NewIndex func() IndexImpl
 
-type Index interface {
-	// Name returns name of struct
-	// Allowed to be unoptimized
-	Name() string
-
-	// FromArray creates Index from geo.Points
+type IndexImpl interface {
+	// FromArray creates IndexImpl from geo.Points
 	// Allowed to be unoptimized
 	FromArray(points geo.Points)
 
-	// InsertTimed inserts geo.Point to Index
+	// InsertTimed inserts geo.Point to IndexImpl
 	InsertTimed(point geo.Point) time.Duration
 
 	// KNNTimed returns array of closest n geo.Points to given geo.Point
@@ -25,7 +21,18 @@ type Index interface {
 	// RangeSearchTimed returns run geo.Points in radius around geo.Point
 	RangeSearchTimed(point geo.Point, radius float64) (geo.Points, time.Duration)
 
-	// String returns string representation of Index
+	// String returns string representation of IndexImpl
 	// Allowed to be unoptimized
 	String() string
+}
+
+type IndexInfo struct {
+	ShortName   string `json:"shortName"`
+	LongName    string `json:"longName"`
+	Description string `json:"description"`
+}
+
+type Index struct {
+	Builder NewIndex
+	Info    IndexInfo
 }

@@ -2,8 +2,6 @@ package tasks
 
 import (
 	"geoindexing_comparison/service/index"
-	"maps"
-	"slices"
 	"time"
 )
 
@@ -11,7 +9,7 @@ type TaskImpl interface {
 	Name() string
 	Filename() string
 	Description() string
-	Run(index index.Index, amount uint64) time.Duration
+	Run(index index.IndexImpl, amount uint64) time.Duration
 }
 
 type TaskInfo struct {
@@ -21,43 +19,47 @@ type TaskInfo struct {
 }
 
 type Task struct {
-	TaskInfo
+	Info    TaskInfo
 	Builder func() TaskImpl
 }
 
 func AllTasks() []Task {
 	return []Task{
 		{
-			TaskInfo: TaskInfo{
+			Info: TaskInfo{
 				ShortName:   "knn_quarters",
-				LongName:    "КНН",
+				LongName:    "КНН 25%",
 				Description: "КНН на четверть точек",
 			},
 			Builder: func() TaskImpl { return &KNNQuater{} },
 		},
 		{
-			TaskInfo: TaskInfo{ShortName: "knn_90",
-				LongName:    "КНН",
+			Info: TaskInfo{
+				ShortName:   "knn_90",
+				LongName:    "КНН 90%",
 				Description: "КНН на 90% точек из структуры",
 			},
 			Builder: func() TaskImpl { return &KNN90{} },
 		},
 		{
-			TaskInfo: TaskInfo{ShortName: "knn_1",
+			Info: TaskInfo{
+				ShortName:   "knn_1",
 				LongName:    "КНН",
 				Description: "КНН на 1% точек из структуры",
 			},
 			Builder: func() TaskImpl { return &KNN1{} },
 		},
 		{
-			TaskInfo: TaskInfo{ShortName: "radius_search",
+			Info: TaskInfo{
+				ShortName:   "radius_search",
 				LongName:    "Поиск в радиусе",
 				Description: "TDB",
 			},
 			Builder: func() TaskImpl { return &RadiusSearch{} },
 		},
 		{
-			TaskInfo: TaskInfo{ShortName: "insert",
+			Info: TaskInfo{
+				ShortName:   "insert",
 				LongName:    "Вставка",
 				Description: "Вставка 10% точек",
 			},
@@ -65,21 +67,3 @@ func AllTasks() []Task {
 		},
 	}
 }
-
-var Tasks = []TaskImpl{
-	&KNNQuater{},
-	&KNN90{},
-	&KNN1{},
-	&RadiusSearch{},
-	&Insert{},
-}
-
-var NameToTask = func() map[string]TaskImpl {
-	mapping := make(map[string]TaskImpl)
-	for _, task := range Tasks {
-		mapping[task.Name()] = task
-	}
-	return mapping
-}()
-
-var TaskNames = slices.Sorted(maps.Keys(NameToTask))

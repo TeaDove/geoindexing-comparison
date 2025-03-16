@@ -2,46 +2,36 @@ package presentation
 
 import (
 	"context"
-	"geoindexing_comparison/service/presentation/static"
+	"geoindexing_comparison/service/cases"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/template/html/v2"
-	"github.com/teadove/teasutils/utils/settings_utils"
 	"net/http"
 )
 
 type Presentation struct {
-	fiberApp *fiber.App
+	fiberApp      *fiber.App
+	runner        *cases.Runner
+	resultChannel <-chan cases.Result
 }
 
-func NewPresentation() *Presentation {
-	httpStaticFS := http.FS(static.FS)
-	sendFile := func(name string) func(c *fiber.Ctx) error {
-		return func(c *fiber.Ctx) error { return filesystem.SendFile(c, httpStaticFS, name) }
-	}
-
-	renderEngine := html.NewFileSystem(httpStaticFS, "")
-	if !settings_utils.BaseSettings.Release {
-		renderEngine.Reload(true)
-	}
-
-	app := fiber.New(fiber.Config{Views: renderEngine, ErrorHandler: errHandler})
-	r := Presentation{fiberApp: app}
+func NewPresentation(runner *cases.Runner) *Presentation {
+	app := fiber.New(fiber.Config{ErrorHandler: errHandler})
+	r := Presentation{fiberApp: app, runner: runner}
 
 	app.Use(r.withCookieID)
 	app.Use(r.logCtxMiddleware)
 	app.Use(logger.New())
 
-	app.Get("/", r.formIndex)
-	app.Get("/index.css", sendFile("index.css"))
-	app.Get("/index.js", sendFile("index.js"))
-	app.Get("/favicon.ico", sendFile("favicon.ico"))
 	app.Get("/plots/ws", websocket.New(r.wsHandle))
+	app.Post("/tasks", r.getTasks)
+	app.Post("/indexes", r.getIndexes)
 	app.Post("/runs/resume", r.runResume)
 	app.Post("/runs/reset", r.runReset)
-	app.Get("/*", func(c *fiber.Ctx) error { return c.Redirect("/") })
+	app.Use("/*", filesystem.New(filesystem.Config{
+		Root: http.Dir("./frontend"),
+	}))
 
 	return &Presentation{fiberApp: app}
 }
