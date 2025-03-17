@@ -1,3 +1,9 @@
+function initFieldset(){
+    fetch("/tasks", {method: "GET"})
+        .then((response) => response.json())
+        .then((json) => console.log(`runs-resume ${json}`));
+}
+
 function resumeClick(el) {
     fetch("/runs/resume", {
         method: "POST",
@@ -117,6 +123,7 @@ function setupChart() {
 }
 
 function main(){
+    initFieldset();
     const chart = setupChart();
     setupPlotWS(chart);
 }

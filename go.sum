@@ -102,6 +102,8 @@ github.com/teadove/teasutils v0.1.46 h1:QVm9YZF6pTxEWcI8cfHxiuGvuJMc5QJ0so3kX77Y
 github.com/teadove/teasutils v0.1.46/go.mod h1:KPxVEBRDLeB8izQjRG7GS2Z4wcM0dUT7za9jm0FOKhM=
 github.com/teadove/teasutils v0.1.52 h1:GV4RfWVp8TDP3sy7MqQ+/E+IlLJCGOsL9DrjjG6hgFw=
 github.com/teadove/teasutils v0.1.52/go.mod h1:kIY/jN2jlcsQoDrgzqf9Ua40U3DprcGrLoYEFKqXe8Q=
+github.com/teadove/teasutils v0.1.53 h1:Vzc0yr6kcZn4h/m0rl5Nv4XNiw2daykeIhB78GjXn7M=
+github.com/teadove/teasutils v0.1.53/go.mod h1:YI37SN0oBRfkx/AnGyTKRmWMWxudyQDQ0BnGjGj/a34=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.18.0 h1:FIDeeyB800efLX89e5a8Y0BNH+LOngJyGrIWxG2FKQY=
 github.com/tidwall/gjson v1.18.0/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=

@@ -16,7 +16,7 @@ type Presentation struct {
 	resultChannel <-chan cases.Result
 }
 
-func NewPresentation(runner *cases.Runner) *Presentation {
+func NewPresentation(runner *cases.Runner, frontend http.FileSystem) *Presentation {
 	app := fiber.New(fiber.Config{ErrorHandler: errHandler})
 	r := Presentation{fiberApp: app, runner: runner}
 
@@ -29,9 +29,7 @@ func NewPresentation(runner *cases.Runner) *Presentation {
 	app.Post("/indexes", r.getIndexes)
 	app.Post("/runs/resume", r.runResume)
 	app.Post("/runs/reset", r.runReset)
-	app.Use("/*", filesystem.New(filesystem.Config{
-		Root: http.Dir("./frontend"),
-	}))
+	app.Use("/*", filesystem.New(filesystem.Config{Browse: true, Root: frontend}))
 
 	return &Presentation{fiberApp: app}
 }

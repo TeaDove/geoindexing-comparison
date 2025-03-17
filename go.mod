@@ -23,7 +23,7 @@ require (
 	github.com/rs/zerolog v1.33.0
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/stretchr/testify v1.10.0
-	github.com/teadove/teasutils v0.1.52
+	github.com/teadove/teasutils v0.1.53
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
 )
 
