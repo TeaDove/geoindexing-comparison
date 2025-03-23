@@ -1,7 +1,31 @@
 function initFieldset(){
     fetch("/tasks", {method: "GET"})
         .then((response) => response.json())
-        .then((json) => console.log(`runs-resume ${json}`));
+        .then(tasks => {
+            const legend = document.querySelector("fieldset#tasks");
+            tasks.forEach(task => {
+                const el = document.createElement("div");
+                el.innerHTML =  `
+                    <input type="checkbox" id="index-${task.info.shortName}" name="${task.info.shortName}" />
+                    <label for="index-${task.info.shortName}">${task.info.longName}</label>
+            `;
+                legend.appendChild(el);
+            })
+        });
+
+    fetch("/indexes", {method: "GET"})
+        .then((response) => response.json())
+        .then(indexes => {
+            const legend = document.querySelector("fieldset#indexes");
+            indexes.forEach(index => {
+                const el = document.createElement("div");
+                el.innerHTML =  `
+                    <input type="checkbox" id="index-${index.info.shortName}" name="${index.info.shortName}" />
+                    <label for="index-${index.info.shortName}">${index.info.longName}</label>
+            `;
+                legend.appendChild(el);
+            })
+        });
 }
 
 function resumeClick(el) {

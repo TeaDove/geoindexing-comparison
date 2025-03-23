@@ -14,7 +14,7 @@ import (
 var frontend embed.FS
 
 func getFrontend() http.FileSystem {
-	if settings_utils.BaseSettings.Release {
+	if settings_utils.ServiceSettings.Release {
 		return http.FS(frontend)
 	}
 

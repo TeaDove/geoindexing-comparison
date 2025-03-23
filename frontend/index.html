@@ -10,23 +10,21 @@
     
 
     <div class="run-settings">
-        <fieldset>
-            <legend id="indexes">Индексы</legend>
-            {{ range $k, $v := .Indexes }}
-                <div>
-                    <input type="checkbox" id="index-{{ $v.Info.ShortName }}" name="{{ $v.Info.ShortName }}" {{ if eq $k 0 1 }} checked {{ end }} />
-                    <label for="index-{{ $v.Info.ShortName }}">{{ $v.Info.LongName }}</label>
-                </div>
-            {{ end }}
+        <fieldset id="indexes">
+            <legend>Индексы</legend>
+<!--                <div>-->
+<!--                    <input type="checkbox" id="index-{{ $v.Info.ShortName }}" name="{{ $v.Info.ShortName }}" {{ if eq $k 0 1 }} checked {{ end }} />-->
+<!--                    <label for="index-{{ $v.Info.ShortName }}">{{ $v.Info.LongName }}</label>-->
+<!--                </div>-->
         </fieldset>
-        <fieldset>
-            <legend id="tasks">Задачи</legend>]
-            {{ range $k, $v := .Tasks }}
-            <div>
-                <input type="checkbox" id="task-{{ $v.Info.ShortName }}" name="{{ $v.Info.LongName }}" {{ if eq $k 0 1 }} checked {{ end }} />
-                <label for="task-{{ $v.Info.ShortName }}">{{ $v.Info.LongName }}</label>
-            </div>
-            {{ end }}
+        <fieldset id="tasks">
+            <legend>Задачи</legend>
+<!--            {{ range $k, $v := .Tasks }}-->
+<!--            <div>-->
+<!--                <input type="checkbox" id="task-{{ $v.Info.ShortName }}" name="{{ $v.Info.LongName }}" {{ if eq $k 0 1 }} checked {{ end }} />-->
+<!--                <label for="task-{{ $v.Info.ShortName }}">{{ $v.Info.LongName }}</label>-->
+<!--            </div>-->
+<!--            {{ end }}-->
         </fieldset>
     </div>
 

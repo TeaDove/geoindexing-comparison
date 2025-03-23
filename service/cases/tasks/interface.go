@@ -19,8 +19,8 @@ type TaskInfo struct {
 }
 
 type Task struct {
-	Info    TaskInfo
-	Builder func() TaskImpl
+	Info    TaskInfo        `json:"info"`
+	Builder func() TaskImpl `json:"-"`
 }
 
 func AllTasks() []Task {

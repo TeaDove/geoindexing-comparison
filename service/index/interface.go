@@ -33,6 +33,6 @@ type IndexInfo struct {
 }
 
 type Index struct {
-	Builder NewIndex
-	Info    IndexInfo
+	Builder NewIndex  `json:"-"`
+	Info    IndexInfo `json:"info"`
 }

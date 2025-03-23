@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/teadove/teasutils/fiber_utils"
 	"net/http"
 )
 
@@ -17,16 +17,14 @@ type Presentation struct {
 }
 
 func NewPresentation(runner *cases.Runner, frontend http.FileSystem) *Presentation {
-	app := fiber.New(fiber.Config{ErrorHandler: errHandler})
+	app := fiber.New(fiber.Config{ErrorHandler: fiber_utils.ErrHandler()})
 	r := Presentation{fiberApp: app, runner: runner}
 
-	app.Use(r.withCookieID)
-	app.Use(r.logCtxMiddleware)
-	app.Use(logger.New())
+	app.Use(fiber_utils.MiddlewareLogger(&fiber_utils.LogCtxConfig{}))
 
 	app.Get("/plots/ws", websocket.New(r.wsHandle))
-	app.Post("/tasks", r.getTasks)
-	app.Post("/indexes", r.getIndexes)
+	app.Get("/tasks", r.getTasks)
+	app.Get("/indexes", r.getIndexes)
 	app.Post("/runs/resume", r.runResume)
 	app.Post("/runs/reset", r.runReset)
 	app.Use("/*", filesystem.New(filesystem.Config{Browse: true, Root: frontend}))

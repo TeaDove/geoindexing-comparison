@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/rs/zerolog"
+	"github.com/teadove/teasutils/fiber_utils"
 	"time"
 )
 
@@ -17,7 +18,7 @@ type DrawDTO struct {
 }
 
 func (r *Presentation) wsHandle(c *websocket.Conn) {
-	ctx := r.mustGetLogContext(c)
+	ctx := fiber_utils.GetLogCtx(c)
 
 	// TODO move to settings
 	ctx, cancel := context.WithTimeout(ctx, time.Hour)

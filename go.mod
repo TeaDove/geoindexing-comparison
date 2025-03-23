@@ -23,7 +23,6 @@ require (
 	github.com/rs/zerolog v1.33.0
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/stretchr/testify v1.10.0
-	github.com/teadove/teasutils v0.1.53
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
 )
 
@@ -50,6 +49,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/savsgio/gotils v0.0.0-20240704082632-aef3928b8a38 // indirect
+	github.com/teadove/teasutils/fiber_utils v0.2.2 // indirect
+	github.com/teadove/teasutils/utils v0.2.0 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
