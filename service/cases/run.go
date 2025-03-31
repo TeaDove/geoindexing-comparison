@@ -107,6 +107,7 @@ func (r *Runner) Run(ctx context.Context, runCase *RunConfig) <-chan Result {
 		zerolog.Ctx(ctx).Info().
 			Str("elapsed", time.Since(t0).String()).
 			Msg("run.done")
+		close(channel)
 	}()
 
 	r.stop = cancel
@@ -117,6 +118,7 @@ func (r *Runner) Run(ctx context.Context, runCase *RunConfig) <-chan Result {
 func (r *Runner) Stop(ctx context.Context) {
 	if r.stop == nil {
 		zerolog.Ctx(ctx).Warn().Msg("runner.is.already.stopped")
+		return
 	}
 	r.stop()
 }
