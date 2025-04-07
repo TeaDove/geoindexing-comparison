@@ -8,6 +8,7 @@ import (
 	"geoindexing_comparison/service/geo"
 	"geoindexing_comparison/service/index"
 	"github.com/rs/zerolog"
+	"github.com/teadove/teasutils/utils/time_utils"
 	"runtime"
 	"time"
 )
@@ -65,7 +66,7 @@ func runCol(ctx context.Context,
 }
 
 func (r *Runner) runTask(ctx context.Context, task tasks.Task, runCase *RunConfig, channel chan<- Result) {
-	for amount := runCase.AmountStart; amount < runCase.AmountEnd; amount += runCase.AmountStep {
+	for amount := runCase.Start; amount < runCase.Stop; amount += runCase.Step {
 		if ctx.Err() != nil {
 			return
 		}
@@ -80,6 +81,7 @@ func (r *Runner) runTask(ctx context.Context, task tasks.Task, runCase *RunConfi
 
 func (r *Runner) Run(ctx context.Context, runCase *RunConfig) <-chan Result {
 	ctx, cancel := context.WithCancel(ctx)
+	zerolog.Ctx(ctx).Info().Interface("run", runCase).Msg("run.started")
 
 	t0 := time.Now()
 	channel := make(chan Result, 1000)
@@ -92,20 +94,20 @@ func (r *Runner) Run(ctx context.Context, runCase *RunConfig) <-chan Result {
 
 			t1 := time.Now()
 
-			zerolog.Ctx(ctx).Info().
+			zerolog.Ctx(ctx).Debug().
 				Str("task", task).
 				Msg("task.begin")
 
 			r.runTask(ctx, r.NameToTask[task], runCase, channel)
 
-			zerolog.Ctx(ctx).Info().
+			zerolog.Ctx(ctx).Debug().
 				Str("task", task).
-				Str("elapsed", time.Since(t1).String()).
+				Str("elapsed", time_utils.RoundDuration(time.Since(t1))).
 				Msg("task.done")
 		}
 
 		zerolog.Ctx(ctx).Info().
-			Str("elapsed", time.Since(t0).String()).
+			Str("elapsed", time_utils.RoundDuration(time.Since(t0))).
 			Msg("run.done")
 		close(channel)
 	}()

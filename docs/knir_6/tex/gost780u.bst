@@ -1425,4 +1425,4 @@ FUNCTION {end.bib}
 EXECUTE {end.bib}
 
 %%
-%% End of file `utf8gost780u.bst'.
+%% Stop of file `utf8gost780u.bst'.

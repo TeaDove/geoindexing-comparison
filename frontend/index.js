@@ -35,11 +35,18 @@ function resumeClick(el) {
     const selectedIndexes = Array.from(document.querySelectorAll('fieldset#indexes input:checked'))
         .map(checkbox => checkbox.name);
 
+    const pointsStart = parseInt(document.getElementById('pointsStart').value);
+    const pointsEnd = parseInt(document.getElementById('pointsEnd').value);
+    const pointsStep = parseInt(document.getElementById('pointsStep').value);
+
     fetch("/runs/resume", {
         method: "POST",
         body: JSON.stringify({
             "tasks": selectedTasks,
-            "indexes": selectedIndexes
+            "indexes": selectedIndexes,
+            "start": pointsStart,
+            "end": pointsEnd,
+            "step": pointsStep
         }),
         headers: {
             "Content-type": "application/json; charset=UTF-8"

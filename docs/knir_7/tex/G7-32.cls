@@ -45,4 +45,4 @@
 \RequirePackage{G7-32}
 
 \endinput
-% End of file `G7-32.cls'.
+% Stop of file `G7-32.cls'.

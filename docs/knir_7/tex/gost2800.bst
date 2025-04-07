@@ -1989,4 +1989,4 @@ FUNCTION {end.bib}
 EXECUTE {end.bib}
 
 %%
-%% End of file `ugost2008.bst'.
+%% Stop of file `ugost2008.bst'.

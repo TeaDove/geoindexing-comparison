@@ -1,28 +1,13 @@
 <!doctype html>
-
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="index.css">
-</head>
-
-<body>
-    <button onclick="resumeClick(this)"> ⏯ </button>
-    <button onclick="resetClick(this)"> ⏹ </button>
-
-
-    <div class="run-settings">
-        <fieldset id="indexes">
-            <legend>Индексы</legend>
-        </fieldset>
-        <fieldset id="tasks">
-            <legend>Задачи</legend>
-        </fieldset>
-    </div>
-
-    <div id="chartsDiv">
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="index.js"> </script>
-    <script src="chart.js"> </script>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
