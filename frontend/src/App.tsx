@@ -1,20 +1,28 @@
 import { useState, useEffect } from 'react'
-import { Task, Index, RunSettingsType } from './types'
+import { Task, Index, RunSettingsType, Run } from './types'
 import RunSettings from './components/RunSettings'
 import Charts from './components/Charts'
+import RunsList from './components/RunsList'
 import Notification, { NotificationMessage } from './components/Notification'
 import { API_URL } from './config'
 import './App.css'
 
+const headers = {
+  'User-Agent': 'Macintosh; Intel Mac OS X 10.15;',
+  'Content-Type': 'application/json'
+};
+
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [indexes, setIndexes] = useState<Index[]>([])
+  const [runs, setRuns] = useState<Run[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState<NotificationMessage | null>(null)
 
   useEffect(() => {
     fetchTasks()
     fetchIndexes()
+    fetchRuns()
   }, [])
 
   const showNotification = (status: number, endpoint: string, method: string, error?: string) => {
@@ -29,7 +37,7 @@ function App() {
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch(`${API_URL}/tasks`)
+      const response = await fetch(`${API_URL}/tasks`, { headers })
       showNotification(response.status, '/tasks', 'GET')
       if (!response.ok) {
         const error = await response.text()
@@ -46,7 +54,7 @@ function App() {
 
   const fetchIndexes = async () => {
     try {
-      const response = await fetch(`${API_URL}/indexes`)
+      const response = await fetch(`${API_URL}/indexes`, { headers })
       showNotification(response.status, '/indexes', 'GET')
       if (!response.ok) {
         const error = await response.text()
@@ -61,14 +69,29 @@ function App() {
     }
   }
 
+  const fetchRuns = async () => {
+    try {
+      const response = await fetch(`${API_URL}/runs`, { headers })
+      showNotification(response.status, '/runs', 'GET')
+      if (!response.ok) {
+        const error = await response.text()
+        showNotification(response.status, '/runs', 'GET', error)
+        return
+      }
+      const data = await response.json()
+      setRuns(data)
+    } catch (error) {
+      console.error('Error fetching runs:', error)
+      showNotification(500, '/runs', 'GET', error instanceof Error ? error.message : 'Unknown error')
+    }
+  }
+
   const handleResume = async (settings: RunSettingsType) => {
     setIsLoading(true)
     try {
       const response = await fetch(`${API_URL}/runs/resume`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(settings),
       })
       showNotification(response.status, '/runs/resume', 'POST')
@@ -92,9 +115,7 @@ function App() {
     try {
       const response = await fetch(`${API_URL}/runs/reset`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       })
       showNotification(response.status, '/runs/reset', 'POST')
       if (!response.ok) {
@@ -114,17 +135,14 @@ function App() {
 
   return (
     <div className="app">
-      <div className="controls">
-        <button onClick={() => handleReset()} disabled={isLoading}>
-          ⏹
-        </button>
-      </div>
       <RunSettings
         tasks={tasks}
         indexes={indexes}
         onResume={handleResume}
+        onReset={handleReset}
         isLoading={isLoading}
       />
+      <RunsList runs={runs} />
       <Charts />
       <Notification message={notification} />
     </div>

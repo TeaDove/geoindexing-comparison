@@ -20,7 +20,7 @@ export interface RunSettingsType {
     tasks: string[];
     indexes: string[];
     start: number;
-    end: number;
+    stop: number;
     step: number;
 }
 

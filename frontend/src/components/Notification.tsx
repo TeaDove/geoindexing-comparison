@@ -17,16 +17,18 @@ const Notification: React.FC<NotificationProps> = ({ message }) => {
 
     useEffect(() => {
         if (message) {
+            // Add new notification
             setNotifications(prev => [...prev, message]);
+
+            // Set timeout to remove this specific notification
             const duration = message.status >= 400 ? 10000 : 2000;
-            const timer = setTimeout(() => {
-                setNotifications(prev => prev.filter(n => n.timestamp !== message.timestamp));
+            setTimeout(() => {
+                setNotifications(prev =>
+                    prev.filter(n => n.timestamp !== message.timestamp)
+                );
             }, duration);
-            return () => clearTimeout(timer);
         }
     }, [message]);
-
-    if (notifications.length === 0) return null;
 
     return (
         <div className="notification-container">

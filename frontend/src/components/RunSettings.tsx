@@ -5,14 +5,15 @@ interface RunSettingsProps {
     tasks: Task[];
     indexes: Index[];
     onResume: (settings: RunSettingsType) => void;
+    onReset: () => void;
     isLoading: boolean;
 }
 
-const RunSettings = ({ tasks, indexes, onResume, isLoading }: RunSettingsProps) => {
+const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading }: RunSettingsProps) => {
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
     const [selectedIndexes, setSelectedIndexes] = useState<string[]>([]);
     const [pointsStart, setPointsStart] = useState(1000);
-    const [pointsEnd, setPointsEnd] = useState(10000);
+    const [pointsStop, setPointsStop] = useState(10000);
     const [pointsStep, setPointsStep] = useState(100);
 
     const handleTaskChange = (taskName: string) => {
@@ -36,7 +37,7 @@ const RunSettings = ({ tasks, indexes, onResume, isLoading }: RunSettingsProps) 
             tasks: selectedTasks,
             indexes: selectedIndexes,
             start: pointsStart,
-            end: pointsEnd,
+            stop: pointsStop,
             step: pointsStep
         });
     };
@@ -45,7 +46,7 @@ const RunSettings = ({ tasks, indexes, onResume, isLoading }: RunSettingsProps) 
         <div className="run-settings">
             <div className="points-input">
                 <div>
-                    <label htmlFor="pointsStart">Начальное кол-во точек:</label>
+                    <label htmlFor="pointsStart">Начальное кол-во точек</label>
                     <input
                         type="number"
                         id="pointsStart"
@@ -56,18 +57,18 @@ const RunSettings = ({ tasks, indexes, onResume, isLoading }: RunSettingsProps) 
                     />
                 </div>
                 <div>
-                    <label htmlFor="pointsEnd">Конечное кол-во точек:</label>
+                    <label htmlFor="pointsStop">Конечное кол-во точек</label>
                     <input
                         type="number"
-                        id="pointsEnd"
-                        value={pointsEnd}
-                        onChange={(e) => setPointsEnd(Number(e.target.value))}
+                        id="pointsStop"
+                        value={pointsStop}
+                        onChange={(e) => setPointsStop(Number(e.target.value))}
                         min="100"
                         max="1000000"
                     />
                 </div>
                 <div>
-                    <label htmlFor="pointsStep">Шаг:</label>
+                    <label htmlFor="pointsStep">Шаг</label>
                     <input
                         type="number"
                         id="pointsStep"
@@ -113,9 +114,22 @@ const RunSettings = ({ tasks, indexes, onResume, isLoading }: RunSettingsProps) 
                 ))}
             </fieldset>
 
-            <button onClick={handleResume} disabled={isLoading}>
-                ⏯
-            </button>
+            <div className="button-group">
+                <button
+                    onClick={handleResume}
+                    disabled={isLoading}
+                    className="resume-button"
+                >
+                    ▶
+                </button>
+                <button
+                    onClick={onReset}
+                    disabled={isLoading}
+                    className="reset-button"
+                >
+                    ⏹
+                </button>
+            </div>
         </div>
     );
 };

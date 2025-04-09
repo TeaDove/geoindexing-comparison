@@ -1,3 +1,4 @@
+import React from 'react';
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -20,12 +21,8 @@ ChartJS.register(
     Legend
 );
 
-const Charts = () => {
-    return (
-        <div id="chartsDiv">
-            {/* Chart content will be added later */}
-        </div>
-    );
+const Charts: React.FC = () => {
+    return null; // Don't render anything until charts are implemented
 };
 
 export default Charts; 
