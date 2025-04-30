@@ -1,8 +1,9 @@
 package generator
 
 import (
-	"github.com/teadove/teasutils/utils/conv_utils"
 	"math/rand"
+
+	"github.com/teadove/teasutils/utils/conv_utils"
 )
 
 func randFloat(bottom, top float64) float64 {

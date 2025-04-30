@@ -2,8 +2,9 @@ package geo
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
 	"math/rand"
+
+	"github.com/pkg/errors"
 
 	"github.com/mmcloughlin/geohash"
 
@@ -28,48 +29,12 @@ func NewPoint(lat float64, lng float64) Point {
 	}
 }
 
-type PointColored struct {
-	Point
-	Color       Color  `json:"color"`
-	Description string `json:"description"`
-}
-
-type PointsColored []PointColored
-
-type Color string
-
-const (
-	Blue   Color = "Blue"
-	Green  Color = "Green"
-	Yellow Color = "Yellow"
-	Red    Color = "Red"
-)
-
 func (r Point) Geohash() string {
 	return geohash.Encode(r.Lat, r.Lon)
 }
 
 func (r *Points) GetRandomPoint() Point {
 	return (*r)[rand.Intn(len(*r))]
-}
-
-func (r PointsColored) Paint(category Color) PointsColored {
-	for idx := range r {
-		r[idx].Color = category
-	}
-
-	return r
-}
-
-func (r PointsColored) PaintPartially(category Color, points Points) PointsColored {
-	set := points.ToSet()
-	for idx := range r {
-		if set.Contains(r[idx].ID) {
-			r[idx].Color = category
-		}
-	}
-
-	return r
 }
 
 func (r *Points) String() string {
@@ -94,18 +59,6 @@ func (r *Points) ToSet() mapset.Set[uuid.UUID] {
 	result := mapset.NewSet[uuid.UUID]()
 	for _, point := range *r {
 		result.Add(point.ID)
-	}
-
-	return result
-}
-
-func (r *Points) ToPointExtended() PointsColored {
-	result := make(PointsColored, len(*r))
-	for idx := range *r {
-		result[idx] = PointColored{
-			Point: (*r)[idx],
-			Color: Blue,
-		}
 	}
 
 	return result

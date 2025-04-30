@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"geoindexing_comparison/backend/repository"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"time"
 )
 
 type RunRequest struct {

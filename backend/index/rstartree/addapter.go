@@ -26,7 +26,7 @@ func (r *CollectionRTree) FromArray(points geo.Points) {
 func (r *CollectionRTree) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	spatials := r.impl.NearestNeighbors(int(n), []float64{point.Lat, point.Lon})
-	dur := time.Now().Sub(t0)
+	dur := time.Since(t0)
 
 	result := make(geo.Points, len(spatials))
 	for idx, spatial := range spatials {

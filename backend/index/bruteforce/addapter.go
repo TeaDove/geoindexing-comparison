@@ -25,7 +25,7 @@ func (r *CollectionBruteforce) InsertTimed(point geo.Point) time.Duration {
 
 	r.impl = append(r.impl, point)
 
-	return time.Now().Sub(t0)
+	return time.Since(t0)
 }
 
 func (r *CollectionBruteforce) RangeSearchTimed(

@@ -3,6 +3,7 @@ package presentation
 import (
 	"fmt"
 	"geoindexing_comparison/backend/service"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 )

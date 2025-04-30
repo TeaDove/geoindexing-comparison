@@ -1,7 +1,7 @@
 package bruteforce
 
 import (
-	"geoindexing_comparison/core/generator"
+	"geoindexing_comparison/backend/generator"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

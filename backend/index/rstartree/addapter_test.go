@@ -2,7 +2,6 @@ package rstartree
 
 import (
 	"geoindexing_comparison/backend/generator"
-	"geoindexing_comparison/backend/geo"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,11 +16,6 @@ func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
 	origin := points.GetRandomPoint()
 	result, _ := collection.KNNTimed(origin, 1000)
 	assert.Len(t, result, 1000)
-
-	points.
-		ToPointExtended().
-		PaintPartially(geo.Green, result).
-		PaintPartially(geo.Red, []geo.Point{origin})
 }
 
 func TestUnit_RTree_FindRange_Ok(t *testing.T) {
@@ -33,9 +27,4 @@ func TestUnit_RTree_FindRange_Ok(t *testing.T) {
 	origin := points.GetRandomPoint()
 	result, _ := collection.KNNTimed(origin, 1000)
 	assert.Len(t, result, 1000)
-
-	points.
-		ToPointExtended().
-		PaintPartially(geo.Green, result).
-		PaintPartially(geo.Red, []geo.Point{origin})
 }

@@ -1,10 +1,7 @@
 package generator
 
 import (
-	"geoindexing_comparison/core/geo"
 	"testing"
-
-	"github.com/guregu/null"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -31,8 +28,5 @@ func TestUnit_PointGenerator_GeneratePoints_Ok(t *testing.T) {
 func TestUnit_PointGenerator_MustExport_Ok(t *testing.T) {
 	t.Parallel()
 
-	points := DefaultGenerator.Points(&DefaultInput, 10_000)
-	points.
-		ToPointExtended().
-		MustExport(&geo.ExportInput{Filename: null.StringFrom("../../data/test-points.csv")})
+	DefaultGenerator.Points(&DefaultInput, 10_000)
 }

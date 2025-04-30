@@ -12,7 +12,9 @@ type CollectionGeohash struct {
 
 func New() CollectionGeohash {
 	panic("Not yet implemented")
+
 	collection := CollectionGeohash{trie: *trie.NewRuneTrie()}
+
 	return collection
 }
 

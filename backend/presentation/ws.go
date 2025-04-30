@@ -1,6 +1,6 @@
 package presentation
 
-//func (r *Presentation) wsHandle(c *websocket.Conn) {
+// func (r *Presentation) wsHandle(c *websocket.Conn) {
 //	ctx := fiber_utils.GetLogCtx(c)
 //
 //	// TODO move to settings

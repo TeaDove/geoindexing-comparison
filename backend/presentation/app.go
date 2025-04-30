@@ -2,8 +2,8 @@ package presentation
 
 import (
 	"context"
-	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/service"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	recover2 "github.com/gofiber/fiber/v2/middleware/recover"
@@ -13,8 +13,7 @@ import (
 type Presentation struct {
 	fiberApp *fiber.App
 
-	repository *repository.Repository
-	service    *service.Service
+	service *service.Service
 }
 
 func NewPresentation(service *service.Service) *Presentation {

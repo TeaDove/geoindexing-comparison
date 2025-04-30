@@ -2,13 +2,14 @@ package repository
 
 import (
 	"context"
+	"time"
+
 	"github.com/guregu/null/v6"
 	"github.com/pkg/errors"
-	"time"
 )
 
 type Run struct {
-	ID          uint64    `gorm:"primaryKey" json:"id"`
+	ID          uint64    `gorm:"primaryKey"  json:"id"`
 	CreatedAt   time.Time `json:"createdAt"`
 	CreatedBy   string    `json:"createdBy"`
 	CompletedAt null.Time `json:"completedAt"`
@@ -54,13 +55,13 @@ func (r *Repository) StopRuns(ctx context.Context) error {
 
 func (r *Repository) GetPending(ctx context.Context) ([]Run, error) {
 	var runs []Run
+
 	err := r.db.
 		WithContext(ctx).
 		Where("status = ?", RunStatusPending).
 		Order("created_at asc").
 		Find(&runs).
 		Error
-
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get the pending runs")
 	}
@@ -70,12 +71,12 @@ func (r *Repository) GetPending(ctx context.Context) ([]Run, error) {
 
 func (r *Repository) GetRun(ctx context.Context, id int) (*Run, error) {
 	var run Run
+
 	err := r.db.
 		WithContext(ctx).
 		Find(&run).
 		Where("id = ?", id).
 		Error
-
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get run")
 	}
@@ -85,6 +86,7 @@ func (r *Repository) GetRun(ctx context.Context, id int) (*Run, error) {
 
 func (r *Repository) GetRuns(ctx context.Context) ([]Run, error) {
 	var runs []Run
+
 	err := r.db.WithContext(ctx).
 		Order("created_at desc").
 		Find(&runs).

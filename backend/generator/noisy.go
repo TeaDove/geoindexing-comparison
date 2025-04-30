@@ -2,7 +2,6 @@ package generator
 
 import (
 	"geoindexing_comparison/backend/geo"
-
 	"time"
 
 	"github.com/KEINOS/go-noise"

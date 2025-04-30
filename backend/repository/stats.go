@@ -3,9 +3,10 @@ package repository
 import (
 	"context"
 	"geoindexing_comparison/backend/service/stats"
+	"time"
+
 	"github.com/pkg/errors"
 	"gorm.io/gorm/clause"
-	"time"
 )
 
 type Stats struct {
@@ -28,7 +29,6 @@ func (r *Repository) GetStats(ctx context.Context, runID uint64, idx uint64, lim
 		Limit(limit).
 		Find(&v).
 		Error
-
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get stats")
 	}

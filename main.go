@@ -4,12 +4,13 @@ import (
 	"geoindexing_comparison/backend/presentation"
 	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/service"
+	"os"
+	"runtime/pprof"
+
 	"github.com/pkg/errors"
 	"github.com/teadove/teasutils/utils/logger_utils"
 	"github.com/teadove/teasutils/utils/notify_utils"
 	"github.com/teadove/teasutils/utils/settings_utils"
-	"os"
-	"runtime/pprof"
 )
 
 func withProfiler() error {
@@ -32,6 +33,7 @@ func withProfiler() error {
 
 func main() {
 	ctx := logger_utils.NewLoggedCtx()
+
 	err := withProfiler()
 	if err != nil {
 		panic(errors.Wrap(err, "could not start profiler"))

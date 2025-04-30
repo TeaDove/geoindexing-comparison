@@ -16,19 +16,11 @@ func (r Point) Bounds() rtreego.Rect {
 }
 
 func (r Point) ToPointForRStarTree() PointForRStarTree {
-	return PointForRStarTree{
-		ID:  r.ID,
-		Lat: r.Lat,
-		Lon: r.Lon,
-	}
+	return PointForRStarTree(r)
 }
 
 func (r PointForRStarTree) ToPoint() Point {
-	return Point{
-		ID:  r.ID,
-		Lat: r.Lat,
-		Lon: r.Lon,
-	}
+	return Point(r)
 }
 
 type PointForRStarTree struct {

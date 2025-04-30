@@ -8,14 +8,15 @@ import (
 	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/service/stats"
 	"geoindexing_comparison/backend/tasks"
+	"runtime"
+	"strconv"
+	"time"
+
 	"github.com/guregu/null/v6"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/teadove/teasutils/utils/logger_utils"
 	"github.com/teadove/teasutils/utils/time_utils"
-	"runtime"
-	"strconv"
-	"time"
 )
 
 type Result struct {
@@ -48,6 +49,7 @@ func runCol(ctx context.Context,
 		dur := task.Builder().Run(idxImpl, amount)
 
 		runtime.GC()
+
 		durs = append(durs, dur)
 
 		if dur > 1*time.Second {
@@ -73,6 +75,7 @@ func runCol(ctx context.Context,
 
 func (r *Service) run(ctx context.Context, run *repository.Run) error {
 	var idx uint64
+
 	for _, task := range run.Tasks {
 		t1 := time.Now()
 
@@ -86,6 +89,7 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 
 			for _, runIndex := range run.Indexes {
 				result := runCol(ctx, points, r.NameToIndex[runIndex], r.NameToTask[task], amount)
+
 				err := r.repository.SaveStats(ctx, &repository.Stats{
 					Idx:    idx,
 					RunID:  run.ID,
@@ -97,12 +101,14 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 				if err != nil {
 					return errors.Wrap(err, "failed to save")
 				}
+
 				if idx%10 == 0 {
 					zerolog.Ctx(ctx).Debug().
 						Uint64("idx", idx).
 						Str("task", task).
 						Msg("iteration.done")
 				}
+
 				idx++
 			}
 		}
@@ -112,6 +118,7 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 			Str("elapsed", time_utils.RoundDuration(time.Since(t1))).
 			Msg("task.done")
 	}
+
 	return nil
 }
 
@@ -125,11 +132,12 @@ func (r *Service) initRunner() {
 		if err != nil {
 			zerolog.Ctx(ctx).Error().Stack().Err(err).Msg("failed.to.get.pending.runs")
 			time.Sleep(sleepOnErr)
+
 			continue
 		}
 
 		for _, run := range pendingRuns {
-			ctx = logger_utils.WithValue(ctx, "run_id", strconv.FormatUint(run.ID, 10))
+			ctx := logger_utils.WithValue(ctx, "run_id", strconv.FormatUint(run.ID, 10))
 			zerolog.Ctx(ctx).Info().Interface("run", run).Msg("run.started")
 
 			t0 := time.Now()
@@ -138,6 +146,7 @@ func (r *Service) initRunner() {
 			if err != nil {
 				zerolog.Ctx(ctx).Error().Stack().Err(err).Msg("failed.to.run")
 				time.Sleep(sleepOnErr)
+
 				continue
 			}
 
@@ -148,6 +157,7 @@ func (r *Service) initRunner() {
 			if err != nil {
 				zerolog.Ctx(ctx).Error().Stack().Err(err).Msg("failed.to.save.run")
 				time.Sleep(sleepOnErr)
+
 				continue
 			}
 

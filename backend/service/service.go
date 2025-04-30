@@ -6,9 +6,10 @@ import (
 	"geoindexing_comparison/backend/index/indexes"
 	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/tasks"
-	"github.com/rs/zerolog"
 	"maps"
 	"slices"
+
+	"github.com/rs/zerolog"
 )
 
 type Service struct {
@@ -47,5 +48,6 @@ func NewRunner(ctx context.Context, repository *repository.Repository) *Service 
 		Strs("indexes", slices.Collect(maps.Keys(r.NameToIndex))).
 		Strs("tasks", slices.Collect(maps.Keys(r.NameToTask))).
 		Msg("runner.initialized")
+
 	return &r
 }
