@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Task, Index, RunSettings as RunSettingsType } from '../types';
+import { formatNumber } from '../utils';
 
 interface RunSettingsProps {
     tasks: Task[];
@@ -13,8 +14,24 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading }: RunSettin
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
     const [selectedIndexes, setSelectedIndexes] = useState<string[]>([]);
     const [pointsStart, setPointsStart] = useState(1000);
-    const [pointsStop, setPointsStop] = useState(10000);
+    const [pointsEnd, setPointsEnd] = useState(10000);
     const [pointsStep, setPointsStep] = useState(100);
+    const [displayStart, setDisplayStart] = useState(formatNumber(1000));
+    const [displayEnd, setDisplayEnd] = useState(formatNumber(10000));
+    const [displayStep, setDisplayStep] = useState(formatNumber(100));
+
+    // Set default selections when tasks or indexes change
+    useEffect(() => {
+        if (tasks.length > 0 && selectedTasks.length === 0) {
+            setSelectedTasks(tasks.slice(0, 2).map(task => task.info.shortName));
+        }
+    }, [tasks]);
+
+    useEffect(() => {
+        if (indexes.length > 0 && selectedIndexes.length === 0) {
+            setSelectedIndexes(indexes.slice(0, 2).map(index => index.info.shortName));
+        }
+    }, [indexes]);
 
     const handleTaskChange = (taskName: string) => {
         setSelectedTasks(prev =>
@@ -32,12 +49,20 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading }: RunSettin
         );
     };
 
+    const handleNumberInput = (value: string, setter: (n: number) => void, displaySetter: (s: string) => void) => {
+        const numericValue = parseInt(value.replace(/\s/g, ''), 10);
+        if (!isNaN(numericValue)) {
+            setter(numericValue);
+            displaySetter(formatNumber(numericValue));
+        }
+    };
+
     const handleResume = () => {
         onResume({
             tasks: selectedTasks,
             indexes: selectedIndexes,
             start: pointsStart,
-            stop: pointsStop,
+            stop: pointsEnd,
             step: pointsStep
         });
     };
@@ -48,21 +73,21 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading }: RunSettin
                 <div>
                     <label htmlFor="pointsStart">Начальное кол-во точек</label>
                     <input
-                        type="number"
+                        type="text"
                         id="pointsStart"
-                        value={pointsStart}
-                        onChange={(e) => setPointsStart(Number(e.target.value))}
+                        value={displayStart}
+                        onChange={(e) => handleNumberInput(e.target.value, setPointsStart, setDisplayStart)}
                         min="100"
                         max="1000000"
                     />
                 </div>
                 <div>
-                    <label htmlFor="pointsStop">Конечное кол-во точек</label>
+                    <label htmlFor="pointsEnd">Конечное кол-во точек</label>
                     <input
-                        type="number"
-                        id="pointsStop"
-                        value={pointsStop}
-                        onChange={(e) => setPointsStop(Number(e.target.value))}
+                        type="text"
+                        id="pointsEnd"
+                        value={displayEnd}
+                        onChange={(e) => handleNumberInput(e.target.value, setPointsEnd, setDisplayEnd)}
                         min="100"
                         max="1000000"
                     />
@@ -70,10 +95,10 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading }: RunSettin
                 <div>
                     <label htmlFor="pointsStep">Шаг</label>
                     <input
-                        type="number"
+                        type="text"
                         id="pointsStep"
-                        value={pointsStep}
-                        onChange={(e) => setPointsStep(Number(e.target.value))}
+                        value={displayStep}
+                        onChange={(e) => handleNumberInput(e.target.value, setPointsStep, setDisplayStep)}
                         min="1"
                         max="1000"
                     />

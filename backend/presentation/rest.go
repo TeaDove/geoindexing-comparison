@@ -43,16 +43,7 @@ func (r *Presentation) runResume(c *fiber.Ctx) error {
 }
 
 func (r *Presentation) runReset(c *fiber.Ctx) error {
-	var req struct {
-		RunId int `json:"runId"`
-	}
-
-	err := c.BodyParser(&req)
-	if err != nil {
-		return errors.Wrap(err, "failed to parse request")
-	}
-
-	_, err = r.service.StopRun(c.UserContext(), req.RunId)
+	err := r.service.StopRuns(c.UserContext())
 	if err != nil {
 		return errors.Wrap(err, "failed to stop run")
 	}
@@ -60,24 +51,26 @@ func (r *Presentation) runReset(c *fiber.Ctx) error {
 	return c.JSON(success)
 }
 
-type Point struct {
-	Chart   string  `json:"chart"`
-	Dataset string  `json:"dataset"`
-	X       float64 `json:"x"`
-	Y       float64 `json:"y"`
-}
+func (r *Presentation) getStats(c *fiber.Ctx) error {
+	var req struct {
+		RunId uint64 `json:"runId"`
+		Idx   uint64 `json:"idx"`
+		Limit int    `json:"limit"`
+	}
 
-func (r *Presentation) getPoints(c *fiber.Ctx) error {
-	//offset := c.QueryInt("offset")
-	//resultsLen := len(r.results)
-	//if offset >= resultsLen {
-	//	return c.JSON(fiber.Map{})
-	//}
-	//
-	//points := make([]Point, 0, resultsLen)
-	//for _, res := range r.results[offset:resultsLen] {
-	//	points = append(points, Point{Chart: fmt.Sprintf("%s %s", "", res.Task), Dataset: res.Index, X: float64(res.Amount), Y: float64(res.Durs.Avg())})
-	//}
+	err := c.BodyParser(&req)
+	if err != nil {
+		return errors.Wrap(err, "failed to parse request")
+	}
 
-	return c.JSON(nil)
+	points, err := r.service.GetPoints(c.UserContext(), req.RunId, req.Idx, req.Limit)
+	if err != nil {
+		return errors.Wrap(err, "failed to get stats")
+	}
+
+	if points == nil {
+		points = make([]service.Point, 0)
+	}
+
+	return c.JSON(points)
 }

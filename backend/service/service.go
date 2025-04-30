@@ -40,7 +40,7 @@ func NewRunner(ctx context.Context, repository *repository.Repository) *Service 
 		r.Indexes = append(r.Indexes, v)
 	}
 
-	go r.initRunner(ctx)
+	go r.initRunner()
 
 	zerolog.Ctx(ctx).
 		Info().

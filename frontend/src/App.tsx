@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Task, Index, RunSettingsType, Run } from './types'
 import RunSettings from './components/RunSettings'
-import Charts from './components/Charts'
 import RunsList from './components/RunsList'
 import Notification, { NotificationMessage } from './components/Notification'
 import { API_URL } from './config'
 import './App.css'
 
 const headers = {
-  'User-Agent': 'Macintosh; Intel Mac OS X 10.15;',
   'Content-Type': 'application/json'
 };
 
@@ -16,6 +14,7 @@ function App() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [indexes, setIndexes] = useState<Index[]>([])
   const [runs, setRuns] = useState<Run[]>([])
+  const [selectedRunId, setSelectedRunId] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [notification, setNotification] = useState<NotificationMessage | null>(null)
 
@@ -102,6 +101,7 @@ function App() {
       }
       const data = await response.json()
       console.log('Resume response:', data)
+      await fetchRuns()
     } catch (error) {
       console.error('Error resuming run:', error)
       showNotification(500, '/runs/resume', 'POST', error instanceof Error ? error.message : 'Unknown error')
@@ -125,6 +125,7 @@ function App() {
       }
       const data = await response.json()
       console.log('Reset response:', data)
+      await fetchRuns()
     } catch (error) {
       console.error('Error resetting run:', error)
       showNotification(500, '/runs/reset', 'POST', error instanceof Error ? error.message : 'Unknown error')
@@ -142,8 +143,11 @@ function App() {
         onReset={handleReset}
         isLoading={isLoading}
       />
-      <RunsList runs={runs} />
-      <Charts />
+      <RunsList
+        runs={runs}
+        onRunSelect={setSelectedRunId}
+        selectedRunId={selectedRunId}
+      />
       <Notification message={notification} />
     </div>
   )

@@ -38,24 +38,48 @@ func (r *Service) AddRun(ctx context.Context, req *RunRequest, createdBy string)
 	return run, nil
 }
 
-func (r *Service) StopRun(ctx context.Context, id int) (*repository.Run, error) {
-	run, err := r.repository.GetRun(ctx, id)
+func (r *Service) StopRuns(ctx context.Context) error {
+	err := r.repository.StopRuns(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not get run")
+		return errors.Wrap(err, "could not save run")
 	}
 
-	run.Status = repository.RunStatusCancelled
+	zerolog.Ctx(ctx).Info().Msg("runs.stopped")
 
-	err = r.repository.SaveRun(ctx, run)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not save run")
-	}
-
-	zerolog.Ctx(ctx).Info().Interface("run", run).Msg("run.stopped")
-
-	return run, nil
+	return nil
 }
 
 func (r *Service) GetRuns(ctx context.Context) ([]repository.Run, error) {
 	return r.repository.GetRuns(ctx)
+}
+
+type Point struct {
+	RunID uint64 `json:"runId"`
+	Idx   uint64 `json:"idx"`
+
+	Index string  `json:"index"`
+	Task  string  `json:"task"`
+	X     float64 `json:"x"`
+	Y     float64 `json:"y"`
+}
+
+func (r *Service) GetPoints(ctx context.Context, runID uint64, idx uint64, limit int) ([]Point, error) {
+	stats, err := r.repository.GetStats(ctx, runID, idx, limit)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get stats")
+	}
+
+	var points []Point
+	for _, stat := range stats {
+		points = append(points, Point{
+			RunID: stat.RunID,
+			Idx:   stat.Idx,
+			Index: stat.Index,
+			Task:  stat.Task,
+			X:     float64(stat.Amount),
+			Y:     float64(stat.Durs.Median().Microseconds()),
+		})
+	}
+
+	return points, nil
 }

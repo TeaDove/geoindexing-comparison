@@ -4,5 +4,8 @@ lint:
 	wsl --fix ./...
 	golangci-lint run --fix
 
-run:
+run-backend:
 	go run main.go
+
+show-pprof:
+	go tool pprof -web cpu.prof

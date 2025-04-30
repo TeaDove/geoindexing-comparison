@@ -16,10 +16,6 @@ func New() index.IndexImpl {
 	return &CollectionRTree{impl: *rtreego.NewTree(2, 1000, 100_000)}
 }
 
-func (r *CollectionRTree) Name() string {
-	return "RTree"
-}
-
 func (r *CollectionRTree) FromArray(points geo.Points) {
 	r.impl = *rtreego.NewTree(2, len(points), len(points)+len(points)/4)
 	for _, point := range points {

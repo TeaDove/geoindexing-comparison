@@ -16,10 +16,6 @@ func New() CollectionGeohash {
 	return collection
 }
 
-func (c *CollectionGeohash) Name() string {
-	return "Geohash"
-}
-
 func (c *CollectionGeohash) FromArray(points geo.Points) {
 	for _, point := range points {
 		c.trie.Put(point.Geohash(), point)

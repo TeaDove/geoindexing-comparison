@@ -17,18 +17,18 @@ type Presentation struct {
 	service    *service.Service
 }
 
-func NewPresentation(service *service.Service, repository *repository.Repository) *Presentation {
+func NewPresentation(service *service.Service) *Presentation {
 	app := fiber.New(fiber.Config{ErrorHandler: fiber_utils.ErrHandler()})
-	r := Presentation{fiberApp: app, service: service, repository: repository}
+	r := Presentation{fiberApp: app, service: service}
 
 	app.Use(recover2.New())
 	app.Use(fiber_utils.MiddlewareLogger())
 	app.Use(cors.New(cors.ConfigDefault))
 
-	app.Get("/points", r.getPoints)
 	app.Get("/tasks", r.getTasks)
 	app.Get("/indexes", r.getIndexes)
 	app.Get("/runs", r.runs)
+	app.Post("/runs/stats", r.getStats)
 	app.Post("/runs/resume", r.runResume)
 	app.Post("/runs/reset", r.runReset)
 

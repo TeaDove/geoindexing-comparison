@@ -20,10 +20,6 @@ func New() index.IndexImpl {
 	return &r
 }
 
-func (r *CollectionKDTree) Name() string {
-	return "KDTree"
-}
-
 func (r *CollectionKDTree) FromArray(points geo.Points) {
 	kdPoints := make([]kdtree.Point, len(points))
 	for idx, point := range points {

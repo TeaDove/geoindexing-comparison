@@ -21,10 +21,6 @@ func New() index.IndexImpl {
 	return &r
 }
 
-func (r *CollectionQuadTree) Name() string {
-	return "QuadTree"
-}
-
 func (r *CollectionQuadTree) FromArray(points geo.Points) {
 	for _, point := range points {
 		r.impl.Insert(qtree.NewPoint(point.Lat, point.Lon, point.ID))

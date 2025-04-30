@@ -39,6 +39,19 @@ func (r *Repository) SaveRun(ctx context.Context, v *Run) error {
 	return nil
 }
 
+func (r *Repository) StopRuns(ctx context.Context) error {
+	err := r.db.WithContext(ctx).
+		Model(Run{}).
+		Where("status = ?", RunStatusPending).
+		Update("status", RunStatusCancelled).
+		Error
+	if err != nil {
+		return errors.Wrap(err, "failed to save run")
+	}
+
+	return nil
+}
+
 func (r *Repository) GetPending(ctx context.Context) ([]Run, error) {
 	var runs []Run
 	err := r.db.

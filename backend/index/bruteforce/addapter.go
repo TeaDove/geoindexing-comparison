@@ -16,10 +16,6 @@ func New() index.IndexImpl {
 	return &CollectionBruteforce{}
 }
 
-func (r *CollectionBruteforce) Name() string {
-	return "Bruteforce"
-}
-
 func (r *CollectionBruteforce) FromArray(points geo.Points) {
 	r.impl = points
 }

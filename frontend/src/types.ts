@@ -9,4 +9,13 @@ export interface Run {
     start: number;
     stop: number;
     step: number;
+}
+
+export interface Point {
+    runId: number;
+    idx: number;
+    index: string;
+    task: string;
+    x: number;
+    y: number;
 } 

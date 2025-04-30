@@ -34,10 +34,10 @@ func runCol(ctx context.Context,
 ) Result {
 	const repetitions = 5
 
-	dur := make([]time.Duration, repetitions)
-	mems := make([]uint64, repetitions)
+	durs := make([]time.Duration, 0)
+	mems := make([]uint64, 0)
 
-	for i := 0; i < repetitions; i++ {
+	for range repetitions {
 		idxImpl := idx.Builder()
 		idxImpl.FromArray(points)
 
@@ -45,14 +45,15 @@ func runCol(ctx context.Context,
 
 		// TODO add mem checker
 
-		dur[i] = task.Builder().Run(idxImpl, amount)
+		dur := task.Builder().Run(idxImpl, amount)
 
 		runtime.GC()
+		durs = append(durs, dur)
 
-		if dur[i].Seconds() > 0.5 {
+		if dur > 1*time.Second {
 			zerolog.Ctx(ctx).
 				Warn().
-				Dur("dur", dur[i]).
+				Str("dur", dur.String()).
 				Str("col", idx.Info.ShortName).
 				Str("task", task.Info.ShortName).
 				Msg("run.is.too.long")
@@ -64,13 +65,14 @@ func runCol(ctx context.Context,
 	return Result{
 		Index:  idx.Info.ShortName,
 		Task:   task.Info.ShortName,
-		Durs:   stats.NewArray(dur),
+		Durs:   stats.NewArray(durs),
 		Amount: amount,
 		Mems:   stats.NewArray(mems),
 	}
 }
 
 func (r *Service) run(ctx context.Context, run *repository.Run) error {
+	var idx uint64
 	for _, task := range run.Tasks {
 		t1 := time.Now()
 
@@ -82,9 +84,10 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 			// points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
 			points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
 
-			for _, colInit := range run.Indexes {
-				result := runCol(ctx, points, r.NameToIndex[colInit], r.NameToTask[task], amount)
+			for _, runIndex := range run.Indexes {
+				result := runCol(ctx, points, r.NameToIndex[runIndex], r.NameToTask[task], amount)
 				err := r.repository.SaveStats(ctx, &repository.Stats{
+					Idx:    idx,
 					RunID:  run.ID,
 					Index:  result.Index,
 					Task:   result.Task,
@@ -94,6 +97,13 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 				if err != nil {
 					return errors.Wrap(err, "failed to save")
 				}
+				if idx%10 == 0 {
+					zerolog.Ctx(ctx).Debug().
+						Uint64("idx", idx).
+						Str("task", task).
+						Msg("iteration.done")
+				}
+				idx++
 			}
 		}
 
@@ -107,8 +117,10 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 
 const sleepOnErr = time.Second * 5
 
-func (r *Service) initRunner(ctx context.Context) {
+func (r *Service) initRunner() {
 	for {
+		ctx := logger_utils.NewLoggedCtx()
+
 		pendingRuns, err := r.repository.GetPending(ctx)
 		if err != nil {
 			zerolog.Ctx(ctx).Error().Stack().Err(err).Msg("failed.to.get.pending.runs")
