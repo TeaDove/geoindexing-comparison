@@ -7,11 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var points = generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
-
 func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
 	t.Parallel()
 
+	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
 	collection := New()
 	collection.FromArray(points)
 
@@ -23,6 +22,7 @@ func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
 func TestUnit_RTree_FindRange_Ok(t *testing.T) {
 	t.Parallel()
 
+	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
 	collection := New()
 	collection.FromArray(points)
 
@@ -34,13 +34,13 @@ func TestUnit_RTree_FindRange_Ok(t *testing.T) {
 func TestUnit_RTree_RangeSearch_Ok(t *testing.T) {
 	t.Parallel()
 
+	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
 	collection := New()
 	collection.FromArray(points)
 
 	origin := points.GetRandomPoint()
-	result, _ := collection.RangeSearchTimed(
+	collection.RangeSearchTimed(
 		origin,
 		(generator.DefaultInput.LatUpperBound-generator.DefaultInput.LatLowerBound)/6,
 	)
-	println(len(result), len(points))
 }

@@ -13,7 +13,7 @@ type CollectionQuadTree struct {
 	impl qtree.Qtree[uuid.UUID]
 }
 
-func New() index.IndexImpl {
+func New() index.Impl {
 	r := CollectionQuadTree{}
 
 	r.impl = *qtree.NewQtree[uuid.UUID](0, 0, 180, 180, 10)

@@ -13,7 +13,7 @@ type CollectionKDTree struct {
 	impl kdtree.KDTree
 }
 
-func New() index.IndexImpl {
+func New() index.Impl {
 	r := CollectionKDTree{}
 	r.impl = *kdtree.New([]kdtree.Point{})
 

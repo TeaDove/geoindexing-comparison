@@ -1,8 +1,8 @@
-package tasks
+package task
 
-//type Insert struct{}
+// type Insert struct{}
 //
-//func (r *Insert) Run(index index.IndexImpl, amount uint64) time.Duration {
+// func (r *Insert) Run(index index.IndexImpl, amount uint64) time.Duration {
 //	durs := make([]time.Duration, 0, amount/10)
 //
 //	for range amount / 10 {

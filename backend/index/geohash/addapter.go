@@ -39,7 +39,7 @@ func (c *CollectionGeohash) Remove(point geo.Point) {
 	panic("implement me")
 }
 
-func (c *CollectionGeohash) KNN(point geo.Point, n int) geo.Points {
+func (c *CollectionGeohash) KNN(_ geo.Point, _ int) geo.Points {
 	// TODO implement me
 	panic("implement me")
 }

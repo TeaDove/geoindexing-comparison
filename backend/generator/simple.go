@@ -6,7 +6,7 @@ import (
 
 type SimpleGenerator struct{}
 
-var DefaultGenerator = SimpleGenerator{}
+var DefaultGenerator = SimpleGenerator{} //nolint: gochecknoglobals // Allowed here
 
 func (r *SimpleGenerator) Point(input *Input) geo.Point {
 	return geo.NewPoint(

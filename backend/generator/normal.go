@@ -9,10 +9,10 @@ type NormalGenerator struct {
 	ClusterN int
 }
 
-var DefaultNormalGenerator = NormalGenerator{ClusterN: 6}
+var DefaultNormalGenerator = NormalGenerator{ClusterN: 6} //nolint: gochecknoglobals // Allowed here
 
 func (r *NormalGenerator) Points(input *Input, amount uint64) geo.Points {
-	rng := rand.New(rand.NewPCG(0, 0))
+	rng := rand.New(rand.NewPCG(0, 0)) //nolint: gosec // Allowed here
 
 	amounts := make([]int64, r.ClusterN)
 	mapPerCluster := int64(float64(int(amount)/r.ClusterN) * 0.2)
@@ -43,7 +43,7 @@ func (r *NormalGenerator) Points(input *Input, amount uint64) geo.Points {
 }
 
 func (r *NormalGenerator) cluster(center geo.Point, amount int) geo.Points {
-	rng := rand.New(rand.NewPCG(0, 0))
+	rng := rand.New(rand.NewPCG(0, 0)) //nolint: gosec // Allowed here
 	points := make(geo.Points, amount)
 
 	for i := range amount {

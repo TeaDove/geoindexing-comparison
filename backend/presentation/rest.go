@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var success = fiber.Map{"success": true}
+var success = fiber.Map{"success": true} //nolint: gochecknoglobals // Allowed here
 
 func (r *Presentation) getIndexes(c *fiber.Ctx) error {
 	return c.JSON(r.service.Indexes)

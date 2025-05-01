@@ -7,7 +7,7 @@ type Input struct {
 	LonUpperBound float64
 }
 
-var DefaultInput = Input{
+var DefaultInput = Input{ //nolint: gochecknoglobals // Allowed
 	LatLowerBound: 55.466488,
 	LatUpperBound: 55.945060,
 

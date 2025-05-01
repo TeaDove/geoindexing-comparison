@@ -7,5 +7,5 @@ import (
 )
 
 func randFloat(bottom, top float64) float64 {
-	return conv_utils.ToFixed(bottom+rand.Float64()*(top-bottom), 6)
+	return conv_utils.ToFixed(bottom+rand.Float64()*(top-bottom), 6) //nolint: gosec // Allowed here
 }

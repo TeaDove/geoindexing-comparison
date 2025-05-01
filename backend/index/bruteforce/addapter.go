@@ -12,7 +12,7 @@ type CollectionBruteforce struct {
 	impl geo.Points
 }
 
-func New() index.IndexImpl {
+func New() index.Impl {
 	return &CollectionBruteforce{}
 }
 

@@ -7,11 +7,12 @@ import (
 	"geoindexing_comparison/backend/index"
 	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/service/stats"
-	"geoindexing_comparison/backend/tasks"
-	"gorm.io/gorm"
+	"geoindexing_comparison/backend/task"
 	"runtime"
 	"strconv"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/guregu/null/v6"
 	"github.com/pkg/errors"
@@ -31,7 +32,7 @@ type Result struct {
 func runCol(ctx context.Context,
 	points geo.Points,
 	idx index.Index,
-	task tasks.Task,
+	task task.Task,
 	amount uint64,
 ) Result {
 	const repetitions = 5
@@ -75,7 +76,7 @@ func runCol(ctx context.Context,
 }
 
 type RunInput struct {
-	Task   tasks.Task
+	Task   task.Task
 	Index  index.Index
 	Amount uint64
 	Points geo.Points
@@ -83,12 +84,13 @@ type RunInput struct {
 
 func (r *Service) run(ctx context.Context, run *repository.Run) error {
 	var inputs []RunInput
+
 	for amount := run.Start; amount < run.Stop; amount += run.Step {
 		for _, runIndex := range run.Indexes {
 			points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
-			for _, task := range run.Tasks {
+			for _, runTask := range run.Tasks {
 				inputs = append(inputs, RunInput{
-					Task:   r.NameToTask[task],
+					Task:   r.NameToTask[runTask],
 					Index:  r.NameToIndex[runIndex],
 					Amount: amount,
 					Points: points,

@@ -12,7 +12,7 @@ type CollectionRTree struct {
 	impl rtreego.Rtree
 }
 
-func New() index.IndexImpl {
+func New() index.Impl {
 	return &CollectionRTree{impl: *rtreego.NewTree(2, 1000, 100_000)}
 }
 

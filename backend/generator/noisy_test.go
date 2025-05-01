@@ -1,9 +1,10 @@
 package generator
 
 import (
-	"fmt"
 	"testing"
 	"time"
+
+	"github.com/teadove/teasutils/utils/test_utils"
 
 	"github.com/KEINOS/go-noise"
 	"github.com/stretchr/testify/require"
@@ -19,7 +20,7 @@ func TestUnit_NoisyGenerator_Point_Ok(t *testing.T) {
 		for j := -1.0; j < 1; j += 0.1 {
 			v := n.Eval64(i, j)
 
-			fmt.Printf("(%f, %f): %f\n", i, j, v)
+			test_utils.Pprint("(%f, %f): %f\n", i, j, v)
 		}
 	}
 }

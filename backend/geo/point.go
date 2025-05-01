@@ -34,7 +34,7 @@ func (r Point) Geohash() string {
 }
 
 func (r *Points) GetRandomPoint() Point {
-	return (*r)[rand.Intn(len(*r))]
+	return (*r)[rand.Intn(len(*r))] //nolint: gosec // Allowed here
 }
 
 func (r *Points) String() string {
