@@ -79,12 +79,12 @@ func (r Array[T]) Quantile(p float64) T {
 }
 
 func (r Array[T]) Variance() float64 {
-	var sum_ T
+	var sum T
 	for _, dur := range r {
-		sum_ += dur
+		sum += dur
 	}
 
-	mean := float64(sum_) / float64(len(r))
+	mean := float64(sum) / float64(len(r))
 
 	var sumDif float64
 	for _, dur := range r {

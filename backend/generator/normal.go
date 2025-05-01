@@ -2,7 +2,7 @@ package generator
 
 import (
 	"geoindexing_comparison/backend/geo"
-	rand "math/rand/v2"
+	"math/rand/v2"
 )
 
 type NormalGenerator struct {

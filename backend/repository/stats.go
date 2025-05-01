@@ -20,13 +20,12 @@ type Stats struct {
 	Durs stats.Array[time.Duration] `gorm:"serializer:json"`
 }
 
-func (r *Repository) GetStats(ctx context.Context, runID uint64, idx uint64, limit int) ([]Stats, error) {
+func (r *Repository) GetStats(ctx context.Context, runID uint64) ([]Stats, error) {
 	var v []Stats
 
 	err := r.db.WithContext(ctx).
-		Where("run_id = ? and idx >= ?", runID, idx).
+		Where("run_id = ?", runID).
 		Order("idx asc").
-		Limit(limit).
 		Find(&v).
 		Error
 	if err != nil {
@@ -34,6 +33,22 @@ func (r *Repository) GetStats(ctx context.Context, runID uint64, idx uint64, lim
 	}
 
 	return v, nil
+}
+
+func (r *Repository) GetLastStat(ctx context.Context, runID uint64) (uint64, error) {
+	var v Stats
+
+	err := r.db.WithContext(ctx).
+		Where("run_id = ?", runID).
+		Order("idx desc").
+		Limit(1).
+		First(&v).
+		Error
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to get stats")
+	}
+
+	return v.Idx, nil
 }
 
 func (r *Repository) SaveStats(ctx context.Context, v *Stats) error {

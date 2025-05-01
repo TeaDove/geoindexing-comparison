@@ -6,9 +6,6 @@ import (
 )
 
 type TaskImpl interface {
-	Name() string
-	Filename() string
-	Description() string
 	Run(index index.IndexImpl, amount uint64) time.Duration
 }
 
@@ -27,27 +24,35 @@ func AllTasks() []Task {
 	return []Task{
 		{
 			Info: TaskInfo{
-				ShortName:   "knn_quarters",
+				ShortName:   "knn_25_p",
 				LongName:    "КНН 25%",
-				Description: "КНН на четверть точек",
+				Description: "КНН на 25% точек",
 			},
-			Builder: func() TaskImpl { return &KNNQuater{} },
+			Builder: func() TaskImpl { return &KNN25P{} },
 		},
 		{
 			Info: TaskInfo{
-				ShortName:   "knn_90",
+				ShortName:   "knn_90_p",
 				LongName:    "КНН 90%",
 				Description: "КНН на 90% точек из структуры",
 			},
-			Builder: func() TaskImpl { return &KNN90{} },
+			Builder: func() TaskImpl { return &KNN90P{} },
 		},
 		{
 			Info: TaskInfo{
-				ShortName:   "knn_1",
-				LongName:    "КНН",
+				ShortName:   "knn_1_p",
+				LongName:    "КНН 1%",
 				Description: "КНН на 1% точек из структуры",
 			},
-			Builder: func() TaskImpl { return &KNN1{} },
+			Builder: func() TaskImpl { return &KNN1P{} },
+		},
+		{
+			Info: TaskInfo{
+				ShortName:   "knn_10",
+				LongName:    "КНН 10",
+				Description: "КНН на 10 точек из структуры",
+			},
+			Builder: func() TaskImpl { return &KNN1P{} },
 		},
 		{
 			Info: TaskInfo{
@@ -57,13 +62,13 @@ func AllTasks() []Task {
 			},
 			Builder: func() TaskImpl { return &RadiusSearch{} },
 		},
-		{
-			Info: TaskInfo{
-				ShortName:   "insert",
-				LongName:    "Вставка",
-				Description: "Вставка 10% точек",
-			},
-			Builder: func() TaskImpl { return &Insert{} },
-		},
+		//{
+		//	Info: TaskInfo{
+		//		ShortName:   "insert",
+		//		LongName:    "Вставка",
+		//		Description: "Вставка 10% точек",
+		//	},
+		//	Builder: func() TaskImpl { return &Insert{} },
+		//},
 	}
 }

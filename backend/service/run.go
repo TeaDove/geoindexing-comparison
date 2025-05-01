@@ -8,6 +8,7 @@ import (
 	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/service/stats"
 	"geoindexing_comparison/backend/tasks"
+	"gorm.io/gorm"
 	"runtime"
 	"strconv"
 	"time"
@@ -73,58 +74,70 @@ func runCol(ctx context.Context,
 	}
 }
 
+type RunInput struct {
+	Task   tasks.Task
+	Index  index.Index
+	Amount uint64
+	Points geo.Points
+}
+
 func (r *Service) run(ctx context.Context, run *repository.Run) error {
-	var idx uint64
-
-	for _, task := range run.Tasks {
-		t1 := time.Now()
-
-		zerolog.Ctx(ctx).Debug().
-			Str("task", task).
-			Msg("task.begin")
-
-		for amount := run.Start; amount < run.Stop; amount += run.Step {
-			// points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
+	var inputs []RunInput
+	for amount := run.Start; amount < run.Stop; amount += run.Step {
+		for _, runIndex := range run.Indexes {
 			points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
-
-			for _, runIndex := range run.Indexes {
-				result := runCol(ctx, points, r.NameToIndex[runIndex], r.NameToTask[task], amount)
-
-				err := r.repository.SaveStats(ctx, &repository.Stats{
-					Idx:    idx,
-					RunID:  run.ID,
-					Index:  result.Index,
-					Task:   result.Task,
-					Amount: result.Amount,
-					Durs:   result.Durs,
+			for _, task := range run.Tasks {
+				inputs = append(inputs, RunInput{
+					Task:   r.NameToTask[task],
+					Index:  r.NameToIndex[runIndex],
+					Amount: amount,
+					Points: points,
 				})
-				if err != nil {
-					return errors.Wrap(err, "failed to save")
-				}
-
-				if idx%10 == 0 {
-					zerolog.Ctx(ctx).Debug().
-						Uint64("idx", idx).
-						Str("task", task).
-						Msg("iteration.done")
-				}
-
-				idx++
 			}
 		}
+	}
 
-		zerolog.Ctx(ctx).Debug().
-			Str("task", task).
-			Str("elapsed", time_utils.RoundDuration(time.Since(t1))).
-			Msg("task.done")
+	idx, err := r.repository.GetLastStat(ctx, run.ID)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return errors.Wrap(err, "failed to get last stat")
+	}
+
+	zerolog.Ctx(ctx).
+		Info().
+		Int("len", len(inputs)).
+		Uint64("skipped", idx).
+		Msg("inputs.compiled")
+
+	for int(idx) < len(inputs) {
+		result := runCol(ctx, inputs[idx].Points, inputs[idx].Index, inputs[idx].Task, inputs[idx].Amount)
+
+		err := r.repository.SaveStats(ctx, &repository.Stats{
+			Idx:    idx,
+			RunID:  run.ID,
+			Index:  result.Index,
+			Task:   result.Task,
+			Amount: result.Amount,
+			Durs:   result.Durs,
+		})
+		if err != nil {
+			return errors.Wrap(err, "failed to save")
+		}
+
+		if idx%10 == 0 {
+			zerolog.Ctx(ctx).Debug().
+				Uint64("idx", idx).
+				Msg("iteration.done")
+		}
+
+		idx++
 	}
 
 	return nil
 }
 
-const sleepOnErr = time.Second * 5
-
 func (r *Service) initRunner() {
+	const sleepOnErr = time.Second * 5
+
 	for {
 		ctx := logger_utils.NewLoggedCtx()
 

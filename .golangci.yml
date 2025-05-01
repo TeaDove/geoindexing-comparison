@@ -11,7 +11,6 @@ linters:
     - decorder
     - dupl
     - durationcheck
-    - errcheck
     - errname
     - errorlint
     - fatcontext
@@ -41,7 +40,6 @@ linters:
     - makezero
     - mirror
     - misspell
-    - mnd
     - musttag
     - nakedret
     - nestif

@@ -64,8 +64,8 @@ type Point struct {
 	Y     float64 `json:"y"`
 }
 
-func (r *Service) GetPoints(ctx context.Context, runID uint64, idx uint64, limit int) ([]Point, error) {
-	stats, err := r.repository.GetStats(ctx, runID, idx, limit)
+func (r *Service) GetPoints(ctx context.Context, runID uint64) ([]Point, error) {
+	stats, err := r.repository.GetStats(ctx, runID)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get stats")
 	}
@@ -75,8 +75,8 @@ func (r *Service) GetPoints(ctx context.Context, runID uint64, idx uint64, limit
 		points = append(points, Point{
 			RunID: stat.RunID,
 			Idx:   stat.Idx,
-			Index: stat.Index,
-			Task:  stat.Task,
+			Index: r.NameToIndex[stat.Index].Info.LongName,
+			Task:  r.NameToTask[stat.Task].Info.LongName,
 			X:     float64(stat.Amount),
 			Y:     float64(stat.Durs.Median().Microseconds()),
 		})

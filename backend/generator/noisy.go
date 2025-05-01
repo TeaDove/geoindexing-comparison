@@ -13,7 +13,7 @@ func NewNoisyGenerator() *NoisyGenerator {
 	return &NoisyGenerator{}
 }
 
-func (r *NoisyGenerator) Points(amount int) geo.Points {
+func (r *NoisyGenerator) Points(_ int) geo.Points {
 	_, err := noise.New(noise.Perlin, time.Now().Unix())
 	if err != nil {
 		panic(err)

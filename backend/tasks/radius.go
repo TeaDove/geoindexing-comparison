@@ -18,7 +18,7 @@ func (r *RadiusSearch) Description() string {
 	return ""
 }
 
-func (r *RadiusSearch) Run(index index.IndexImpl, amount uint64) time.Duration {
+func (r *RadiusSearch) Run(index index.IndexImpl, _ uint64) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
 	_, t := index.RangeSearchTimed(

@@ -69,11 +69,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        runId: selectedRunId,
-                        idx: 0,
-                        limit: 1000
-                    }),
+                    body: JSON.stringify({ runId: selectedRunId }),
                 });
 
                 if (!response.ok) {
@@ -208,7 +204,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Time (ms)'
+                                    text: 'Time (μs)'
                                 }
                             }
                         }

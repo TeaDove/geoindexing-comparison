@@ -10,6 +10,8 @@ import (
 var points = generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
 
 func TestUnit_RTree_GeneratePoint_Ok(t *testing.T) {
+	t.Parallel()
+
 	collection := New()
 	collection.FromArray(points)
 

@@ -54,9 +54,7 @@ func (r *Presentation) runReset(c *fiber.Ctx) error {
 
 func (r *Presentation) getStats(c *fiber.Ctx) error {
 	var req struct {
-		RunId uint64 `json:"runId"`
-		Idx   uint64 `json:"idx"`
-		Limit int    `json:"limit"`
+		RunID uint64 `json:"runId"`
 	}
 
 	err := c.BodyParser(&req)
@@ -64,7 +62,7 @@ func (r *Presentation) getStats(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
-	points, err := r.service.GetPoints(c.UserContext(), req.RunId, req.Idx, req.Limit)
+	points, err := r.service.GetPoints(c.UserContext(), req.RunID)
 	if err != nil {
 		return errors.Wrap(err, "failed to get stats")
 	}
