@@ -64,7 +64,7 @@ type Point struct {
 	Y     float64 `json:"y"`
 }
 
-func (r *Service) GetPoints(ctx context.Context, runID uint64) ([]Point, error) {
+func (r *Service) GetChartPoints(ctx context.Context, runID uint64) ([]Point, error) {
 	stats, err := r.repository.GetStats(ctx, runID)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get stats")

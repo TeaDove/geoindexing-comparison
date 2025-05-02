@@ -62,7 +62,7 @@ func (r *Presentation) getStats(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
-	points, err := r.service.GetPoints(c.UserContext(), req.RunID)
+	points, err := r.service.GetChartPoints(c.UserContext(), req.RunID)
 	if err != nil {
 		return errors.Wrap(err, "failed to get stats")
 	}

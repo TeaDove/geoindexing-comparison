@@ -31,6 +31,11 @@ func NewPresentation(service *service.Service) *Presentation {
 	app.Post("/runs/resume", r.runResume)
 	app.Post("/runs/reset", r.runReset)
 
+	app.Post("/visualizer", r.NewVisualizer)
+	app.Get("/visualizer/points", r.GetPoints)
+	app.Post("/visualizer/knn", r.KNN)
+	app.Post("/visualizer/range-search", r.RangeSearch)
+
 	return &r
 }
 

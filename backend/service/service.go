@@ -6,6 +6,7 @@ import (
 	"geoindexing_comparison/backend/index/indexes"
 	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/task"
+	"github.com/teadove/teasutils/utils/must_utils"
 	"maps"
 	"slices"
 
@@ -20,6 +21,7 @@ type Service struct {
 	Tasks      []task.Task
 
 	repository *repository.Repository
+	Visualizer Visualizer
 }
 
 func NewRunner(ctx context.Context, repository *repository.Repository) *Service {
@@ -40,6 +42,7 @@ func NewRunner(ctx context.Context, repository *repository.Repository) *Service 
 		r.NameToIndex[v.Info.ShortName] = v
 		r.Indexes = append(r.Indexes, v)
 	}
+	must_utils.Must(r.SetVisualizer(&NewVisualizerInput{Amount: 10, IndexName: r.Indexes[0].Info.ShortName}))
 
 	go r.initRunner()
 

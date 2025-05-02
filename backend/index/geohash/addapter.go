@@ -2,41 +2,36 @@ package geohash
 
 import (
 	"geoindexing_comparison/backend/geo"
-
-	"github.com/dghubble/trie"
+	"github.com/tidwall/btree"
 )
 
 type CollectionGeohash struct {
-	trie trie.RuneTrie
+	btree            btree.Map[uint64, geo.Point]
+	geohashPrecision uint
 }
 
 func New() CollectionGeohash {
-	panic("Not yet implemented")
-
-	collection := CollectionGeohash{trie: *trie.NewRuneTrie()}
+	collection := CollectionGeohash{btree: *btree.NewMap[uint64, geo.Point](1), geohashPrecision: 7}
 
 	return collection
 }
 
 func (c *CollectionGeohash) FromArray(points geo.Points) {
 	for _, point := range points {
-		c.trie.Put(point.Geohash(), point)
+		c.Insert(point)
 	}
 }
 
 func (c *CollectionGeohash) Points() geo.Points {
-	// TODO implement me
-	panic("implement me")
+	return c.btree.Values()
 }
 
 func (c *CollectionGeohash) Insert(point geo.Point) {
-	c.trie.Put(point.Geohash(), point)
+	c.btree.Set(point.Geohash(c.geohashPrecision), point)
 }
 
 func (c *CollectionGeohash) Remove(point geo.Point) {
-	c.trie.Delete(point.Geohash())
-	// TODO implement me
-	panic("implement me")
+	c.btree.Delete(point.Geohash(c.geohashPrecision))
 }
 
 func (c *CollectionGeohash) KNN(_ geo.Point, _ int) geo.Points {

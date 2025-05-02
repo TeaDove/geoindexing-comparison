@@ -33,8 +33,8 @@ func NewPoint(lat float64, lng float64) Point {
 	}
 }
 
-func (r Point) Geohash() string {
-	return geohash.Encode(r.Lat, r.Lon)
+func (r Point) Geohash(bits uint) uint64 {
+	return geohash.EncodeIntWithPrecision(r.Lat, r.Lon, bits)
 }
 
 func (r *Points) GetRandomPoint() Point {
