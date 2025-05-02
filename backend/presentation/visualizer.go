@@ -1,10 +1,16 @@
 package presentation
 
 import (
+	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 )
+
+func sendPoints(c *fiber.Ctx, points geo.Points) error {
+	c.Set(fiber.HeaderContentType, "text/csv")
+	return c.SendString(points.CSV())
+}
 
 func (r *Presentation) NewVisualizer(c *fiber.Ctx) error {
 	var req service.NewVisualizerInput
@@ -23,7 +29,7 @@ func (r *Presentation) NewVisualizer(c *fiber.Ctx) error {
 }
 
 func (r *Presentation) GetPoints(c *fiber.Ctx) error {
-	return c.JSON(r.service.Visualizer.GetPoints())
+	return sendPoints(c, r.service.Visualizer.GetPoints())
 }
 
 func (r *Presentation) KNN(c *fiber.Ctx) error {
@@ -35,7 +41,7 @@ func (r *Presentation) KNN(c *fiber.Ctx) error {
 	}
 
 	points, _ := r.service.Visualizer.KNN(&req)
-	return c.JSON(points)
+	return sendPoints(c, points)
 }
 
 func (r *Presentation) RangeSearch(c *fiber.Ctx) error {
@@ -47,5 +53,5 @@ func (r *Presentation) RangeSearch(c *fiber.Ctx) error {
 	}
 
 	points, _ := r.service.Visualizer.RangeSearch(&req)
-	return c.JSON(points)
+	return sendPoints(c, points)
 }

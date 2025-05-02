@@ -1,8 +1,11 @@
 package geo
 
 import (
+	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"math/rand"
+	"strconv"
 	"strings"
 
 	"github.com/teadove/teasutils/utils/must_utils"
@@ -37,6 +40,10 @@ func (r Point) Geohash(bits uint) uint64 {
 	return geohash.EncodeIntWithPrecision(r.Lat, r.Lon, bits)
 }
 
+func (r Point) CSVRow() []string {
+	return []string{r.ID, strconv.FormatFloat(r.Lat, 'f', -1, 64), strconv.FormatFloat(r.Lon, 'f', -1, 64)}
+}
+
 func (r *Points) GetRandomPoint() Point {
 	return (*r)[rand.Intn(len(*r))] //nolint: gosec // Allowed here
 }
@@ -66,6 +73,21 @@ func (r *Points) ToSet() mapset.Set[string] {
 	}
 
 	return result
+}
+
+func (r *Points) CSV() string {
+	var buf bytes.Buffer
+	csvWriter := csv.NewWriter(&buf)
+
+	headers := []string{"id", "lat", "lon"}
+	must_utils.MustNoReturn(csvWriter.Write(headers))
+
+	for _, point := range *r {
+		must_utils.MustNoReturn(csvWriter.Write(point.CSVRow()))
+	}
+
+	csvWriter.Flush()
+	return buf.String()
 }
 
 func (r *Points) SortByID() {
