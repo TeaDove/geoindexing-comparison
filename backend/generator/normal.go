@@ -27,7 +27,7 @@ func (r *NormalGenerator) Points(input *Input, amount uint64) geo.Points {
 		}
 	}
 
-	points := make(geo.Points, 0, amount)
+	points := make(geo.Points, 0)
 	for idx := range r.ClusterN {
 		points = append(points, r.cluster(
 			geo.NewPoint(

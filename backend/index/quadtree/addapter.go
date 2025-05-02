@@ -6,17 +6,16 @@ import (
 	"time"
 
 	qtree "github.com/TeaDove/go-quad-tree"
-	"github.com/google/uuid"
 )
 
 type CollectionQuadTree struct {
-	impl qtree.Qtree[uuid.UUID]
+	impl qtree.Qtree[string]
 }
 
 func New() index.Impl {
 	r := CollectionQuadTree{}
 
-	r.impl = *qtree.NewQtree[uuid.UUID](0, 0, 180, 180, 10)
+	r.impl = *qtree.NewQtree[string](0, 0, 180, 180, 10)
 
 	return &r
 }
@@ -27,6 +26,14 @@ func (r *CollectionQuadTree) FromArray(points geo.Points) {
 	}
 }
 
+func (r *CollectionQuadTree) ToArray() geo.Points {
+	var res geo.Points
+	for _, point := range r.impl.Points() {
+		res = append(res, geo.Point{Lat: point.X, Lon: point.Y, ID: point.Val})
+	}
+	return res
+}
+
 func (r *CollectionQuadTree) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
 
@@ -35,7 +42,7 @@ func (r *CollectionQuadTree) InsertTimed(point geo.Point) time.Duration {
 	return time.Since(t0)
 }
 
-func toConcrete(qtreePoints []qtree.Point[uuid.UUID]) geo.Points {
+func toConcrete(qtreePoints []qtree.Point[string]) geo.Points {
 	geoPoints := make(geo.Points, 0, len(qtreePoints))
 	for _, point := range qtreePoints {
 		geoPoints = append(geoPoints, geo.Point{
@@ -55,7 +62,7 @@ func (r *CollectionQuadTree) RangeSearchTimed(
 	t0 := time.Now()
 
 	res := r.impl.QueryRange(
-		qtree.NewBounds[uuid.UUID](
+		qtree.NewBounds[string](
 			point.Lat-radius,
 			point.Lon-radius,
 			point.Lat+radius,
@@ -68,8 +75,11 @@ func (r *CollectionQuadTree) RangeSearchTimed(
 }
 
 func (r *CollectionQuadTree) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
+	if n == 0 {
+		return geo.Points{}, 0
+	}
 	t0 := time.Now()
-	res := r.impl.KNN(qtree.NewPoint[uuid.UUID](point.Lat, point.Lon, uuid.Nil), int(n))
+	res := r.impl.KNN(qtree.NewPoint[string](point.Lat, point.Lon, ""), int(n))
 	dur := time.Since(t0)
 
 	return toConcrete(res), dur

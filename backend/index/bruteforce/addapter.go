@@ -20,6 +20,10 @@ func (r *CollectionBruteforce) FromArray(points geo.Points) {
 	r.impl = points
 }
 
+func (r *CollectionBruteforce) ToArray() geo.Points {
+	return r.impl
+}
+
 func (r *CollectionBruteforce) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
 

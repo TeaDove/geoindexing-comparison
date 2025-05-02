@@ -23,6 +23,15 @@ func (r *CollectionRTree) FromArray(points geo.Points) {
 	}
 }
 
+func (r *CollectionRTree) ToArray() geo.Points {
+	var res geo.Points
+	for _, point := range r.impl.NearestNeighbors(r.impl.Size(), []float64{0, 0}) {
+		res = append(res, point.(geo.PointForRStarTree).ToPoint())
+	}
+
+	return res
+}
+
 func (r *CollectionRTree) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	spatials := r.impl.NearestNeighbors(int(n), []float64{point.Lat, point.Lon})

@@ -29,6 +29,15 @@ func (r *CollectionKDTree) FromArray(points geo.Points) {
 	r.impl = *kdtree.New(kdPoints)
 }
 
+func (r *CollectionKDTree) ToArray() geo.Points {
+	var res geo.Points
+	for _, point := range r.impl.Points() {
+		res = append(res, *point.(*geo.Point))
+	}
+
+	return res
+}
+
 func toConcrete(pointsInterface []kdtree.Point) geo.Points {
 	result := make([]geo.Point, len(pointsInterface))
 

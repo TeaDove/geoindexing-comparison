@@ -3,7 +3,6 @@ package geo
 import (
 	rstartreego "github.com/anayks/go-rstar-tree"
 	"github.com/dhconnelly/rtreego"
-	"github.com/google/uuid"
 )
 
 func (r Point) Bounds() rtreego.Rect {
@@ -24,7 +23,7 @@ func (r PointForRStarTree) ToPoint() Point {
 }
 
 type PointForRStarTree struct {
-	ID uuid.UUID `json:"id"`
+	ID string `json:"id"`
 
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`

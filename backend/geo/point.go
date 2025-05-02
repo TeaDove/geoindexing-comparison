@@ -2,19 +2,22 @@ package geo
 
 import (
 	"encoding/json"
+	"github.com/teadove/teasutils/utils/must_utils"
+	"github.com/teris-io/shortid"
+	"golang.org/x/exp/slices"
 	"math/rand"
+	"strings"
 
 	"github.com/pkg/errors"
 
 	"github.com/mmcloughlin/geohash"
 
 	mapset "github.com/deckarep/golang-set/v2"
-	"github.com/google/uuid"
 )
 
 // Point represents a geographic coordinate.
 type Point struct {
-	ID uuid.UUID `json:"id"`
+	ID string `json:"id"`
 
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
@@ -23,7 +26,7 @@ type Points []Point
 
 func NewPoint(lat float64, lng float64) Point {
 	return Point{
-		ID:  uuid.New(),
+		ID:  sid.MustGenerate(),
 		Lat: lat,
 		Lon: lng,
 	}
@@ -46,7 +49,7 @@ func (r *Points) String() string {
 	return string(byteArray)
 }
 
-func (r *Points) Delete(pointID uuid.UUID) {
+func (r *Points) Delete(pointID string) {
 	for idx, point := range *r {
 		if pointID == point.ID {
 			*r = append((*r)[:idx], (*r)[idx+1:]...)
@@ -55,11 +58,33 @@ func (r *Points) Delete(pointID uuid.UUID) {
 	}
 }
 
-func (r *Points) ToSet() mapset.Set[uuid.UUID] {
-	result := mapset.NewSet[uuid.UUID]()
+func (r *Points) ToSet() mapset.Set[string] {
+	result := mapset.NewSet[string]()
 	for _, point := range *r {
 		result.Add(point.ID)
 	}
 
 	return result
 }
+
+func (r *Points) SortByID() {
+	slices.SortFunc(*r, func(a, b Point) int {
+		return strings.Compare(a.ID, b.ID)
+	})
+}
+
+func (r *Points) Equal(other Points) bool {
+	return r.ToSet().Equal(other.ToSet())
+}
+
+func (r *Points) EqualMany(other []Points) bool {
+	for _, otherPoint := range other {
+		if !r.Equal(otherPoint) {
+			return false
+		}
+	}
+
+	return true
+}
+
+var sid = must_utils.Must(shortid.New(1, shortid.DefaultABC, 1234))

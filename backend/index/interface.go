@@ -12,6 +12,12 @@ type Impl interface {
 	// Allowed to be unoptimized
 	FromArray(points geo.Points)
 
+	ToArray() geo.Points
+
+	// String returns string representation of Impl
+	// Allowed to be unoptimized
+	String() string
+
 	// InsertTimed inserts geo.Point to Impl
 	InsertTimed(point geo.Point) time.Duration
 
@@ -20,10 +26,6 @@ type Impl interface {
 
 	// RangeSearchTimed returns run geo.Points in radius around geo.Point
 	RangeSearchTimed(point geo.Point, radius float64) (geo.Points, time.Duration)
-
-	// String returns string representation of Impl
-	// Allowed to be unoptimized
-	String() string
 }
 
 type Info struct {
