@@ -5,9 +5,10 @@ import (
 	"geoindexing_comparison/backend/generator"
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
-	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type TestInput struct {
@@ -22,8 +23,10 @@ type TestInput struct {
 
 func makeTestInputs() TestInputs {
 	var inputs []TestInput
+
 	for idx := range 4 {
 		amount := 100 * uint64(math.Pow(10, float64(idx)))
+
 		for _, gen := range generator.AllGenerators() {
 			genObj := gen.Builder()
 			points := genObj.Points(&generator.DefaultInput, amount)
@@ -32,7 +35,12 @@ func makeTestInputs() TestInputs {
 			for _, indexObj := range AllIndexes() {
 				inputs = append(inputs, TestInput{
 					InputName: fmt.Sprintf("gen:%s-points:%d", gen.Info.ShortName, amount),
-					Name:      fmt.Sprintf("gen:%s-points:%d-index:%s", gen.Info.ShortName, amount, indexObj.Info.ShortName),
+					Name: fmt.Sprintf(
+						"gen:%s-points:%d-index:%s",
+						gen.Info.ShortName,
+						amount,
+						indexObj.Info.ShortName,
+					),
 					Amount:    amount,
 					Points:    points,
 					Point:     point,
@@ -57,7 +65,7 @@ func (r TestInputs) PerIndex() map[string][]TestInput {
 	return perIndex
 }
 
-var testInputs = makeTestInputs()
+var testInputs = makeTestInputs() //nolint: gochecknoglobals // Allowed for tests
 
 func TestFromArrayOk(t *testing.T) {
 	t.Parallel()
@@ -94,8 +102,9 @@ func TestStringOk(t *testing.T) {
 func TestKNNOk(t *testing.T) {
 	t.Parallel()
 
-	for _, inputs := range testInputs.PerIndex() {
+	for _, inputs := range testInputs.PerIndex() { //nolint: paralleltest // Fails otherwise
 		var results []geo.Points
+
 		for _, tt := range inputs {
 			t.Run(tt.Name, func(t *testing.T) {
 				indexObj := tt.Index.Builder()
@@ -115,8 +124,9 @@ func TestKNNOk(t *testing.T) {
 func TestRangeSearchOk(t *testing.T) {
 	t.Parallel()
 
-	for _, inputs := range testInputs.PerIndex() {
+	for _, inputs := range testInputs.PerIndex() { //nolint: paralleltest // Fails otherwise
 		var results []geo.Points
+
 		for _, tt := range inputs {
 			t.Run(tt.Name, func(t *testing.T) {
 				indexObj := tt.Index.Builder()

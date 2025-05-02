@@ -31,6 +31,7 @@ func (r *CollectionQuadTree) ToArray() geo.Points {
 	for _, point := range r.impl.Points() {
 		res = append(res, geo.Point{Lat: point.X, Lon: point.Y, ID: point.Val})
 	}
+
 	return res
 }
 
@@ -78,6 +79,7 @@ func (r *CollectionQuadTree) KNNTimed(point geo.Point, n uint64) (geo.Points, ti
 	if n == 0 {
 		return geo.Points{}, 0
 	}
+
 	t0 := time.Now()
 	res := r.impl.KNN(qtree.NewPoint[string](point.Lat, point.Lon, ""), int(n))
 	dur := time.Since(t0)

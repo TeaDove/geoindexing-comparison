@@ -2,11 +2,12 @@ package geo
 
 import (
 	"encoding/json"
+	"math/rand"
+	"strings"
+
 	"github.com/teadove/teasutils/utils/must_utils"
 	"github.com/teris-io/shortid"
 	"golang.org/x/exp/slices"
-	"math/rand"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -87,4 +88,6 @@ func (r *Points) EqualMany(other []Points) bool {
 	return true
 }
 
-var sid = must_utils.Must(shortid.New(1, shortid.DefaultABC, 1234))
+var sid = must_utils.Must( //nolint: gochecknoglobals // Allowed for id generator
+	shortid.New(1, shortid.DefaultABC, 1234),
+)

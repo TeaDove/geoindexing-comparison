@@ -37,6 +37,6 @@ func AllGenerators() []Generator {
 		//		Description: "Генерирует точки нормально",
 		//	},
 		//	Builder: func() Impl { return &NormalGenerator{ClusterN: 6} },
-		//},
+		// },
 	}
 }
