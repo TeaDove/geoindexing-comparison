@@ -418,3 +418,26 @@ fieldset input[type="checkbox"] {
 .retry-button:hover {
   background-color: #357abd;
 }
+
+.page-container {
+  padding: 2rem;
+}
+
+.visualizer-page nav {
+  margin-bottom: 1rem;
+}
+
+.kepler-gl-container {
+  width: 100%;
+  margin-top: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  /* Ensure iframe respects border-radius */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.kepler-gl-container iframe {
+  display: block;
+  /* Remove potential extra space below iframe */
+}

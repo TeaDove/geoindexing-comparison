@@ -2,16 +2,14 @@ package geo
 
 import "math"
 
-const (
-	earthRaidusKm = 6371 // radius of the earth in kilometers.
-)
-
 // degreesToRadians converts from degrees to radians.
 func degreesToRadians(d float64) float64 {
 	return d * math.Pi / 180
 }
 
 func Distance(p, q Point) float64 {
+	const earthRadiusKm = 6371 // radius of the earth in kilometers.
+
 	lat1 := degreesToRadians(p.Lat)
 	lon1 := degreesToRadians(p.Lon)
 	lat2 := degreesToRadians(q.Lat)
@@ -25,7 +23,7 @@ func Distance(p, q Point) float64 {
 
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
 
-	return c * earthRaidusKm
+	return c * earthRadiusKm
 }
 
 func (r Point) DistanceTo(other Point) float64 {
