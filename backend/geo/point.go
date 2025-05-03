@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
-	"math/rand"
+	"geoindexing_comparison/backend/helpers"
 	"strconv"
 	"strings"
 
 	"github.com/teadove/teasutils/utils/must_utils"
-	"github.com/teris-io/shortid"
 	"golang.org/x/exp/slices"
 
 	"github.com/pkg/errors"
@@ -30,7 +29,7 @@ type Points []Point
 
 func NewPoint(lat float64, lng float64) Point {
 	return Point{
-		ID:  sid.MustGenerate(),
+		ID:  helpers.ID(),
 		Lat: lat,
 		Lon: lng,
 	}
@@ -45,7 +44,7 @@ func (r Point) CSVRow() []string {
 }
 
 func (r *Points) GetRandomPoint() Point {
-	return (*r)[rand.Intn(len(*r))] //nolint: gosec // Allowed here
+	return (*r)[helpers.RNG.IntN(len(*r))] //nolint: gosec // Allowed here
 }
 
 func (r *Points) String() string {
@@ -109,7 +108,3 @@ func (r *Points) EqualMany(other []Points) bool {
 
 	return true
 }
-
-var sid = must_utils.Must( //nolint: gochecknoglobals // Allowed for id generator
-	shortid.New(1, shortid.DefaultABC, 1234),
-)

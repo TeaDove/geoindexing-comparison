@@ -5,39 +5,58 @@ import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
 	"github.com/pkg/errors"
+	"sync"
 	"time"
 )
 
 type Visualizer struct {
+	mu sync.RWMutex
+
 	Generator     generator.Impl `json:"-"`
 	GeneratorInfo generator.Info `json:"generatorInfo"`
 	Index         index.Impl     `json:"-"`
 	IndexInfo     index.Info     `json:"indexInfo"`
+
+	Points geo.Points `json:"-"`
 }
 
 type NewVisualizerInput struct {
-	Amount    uint64 `json:"amount"`
-	IndexName string `json:"indexName"`
+	Amount uint64 `json:"amount"`
+	Index  string `json:"index"`
 }
 
 func (r *Service) SetVisualizer(input *NewVisualizerInput) (*Visualizer, error) {
-	gen := generator.AllGenerators()[0]
-	idx, ok := r.NameToIndex[input.IndexName]
-	if !ok {
-		return nil, errors.Errorf("index not found: %s", input.IndexName)
+	r.Visualizer.mu.Lock()
+	defer r.Visualizer.mu.Unlock()
+
+	if input.Index != "" {
+		idx, ok := r.NameToIndex[input.Index]
+		if !ok {
+			return nil, errors.Errorf("index not found: %s", input.Index)
+		}
+
+		r.Visualizer.IndexInfo = idx.Info
+		r.Visualizer.Index = idx.Builder()
+		r.Visualizer.Index.FromArray(r.Visualizer.Points)
 	}
 
-	visualizer := Visualizer{GeneratorInfo: gen.Info, Generator: gen.Builder(), Index: idx.Builder(), IndexInfo: idx.Info}
+	if input.Amount != 0 {
+		gen := generator.AllGenerators()[0]
 
-	points := visualizer.Generator.Points(&generator.DefaultInput, input.Amount)
+		r.Visualizer.GeneratorInfo = gen.Info
+		r.Visualizer.Generator = gen.Builder()
+		r.Visualizer.Points = r.Visualizer.Generator.Points(&generator.DefaultInput, input.Amount)
+		r.Visualizer.Index.FromArray(r.Visualizer.Points)
+	}
 
-	visualizer.Index.FromArray(points)
-	r.Visualizer = visualizer
-	return &visualizer, nil
+	return &r.Visualizer, nil
 }
 
 func (r *Visualizer) GetPoints() geo.Points {
-	return r.Index.ToArray()
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	return r.Points
 }
 
 type KNNInput struct {
@@ -46,6 +65,9 @@ type KNNInput struct {
 }
 
 func (r *Visualizer) KNN(input *KNNInput) (geo.Points, time.Duration) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
 	return r.Index.KNNTimed(input.Point, input.N)
 }
 
@@ -55,5 +77,8 @@ type RangeSearchInput struct {
 }
 
 func (r *Visualizer) RangeSearch(input *RangeSearchInput) (geo.Points, time.Duration) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
 	return r.Index.RangeSearchTimed(input.Point, input.Radius)
 }

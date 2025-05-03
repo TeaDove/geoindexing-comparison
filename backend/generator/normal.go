@@ -2,7 +2,7 @@ package generator
 
 import (
 	"geoindexing_comparison/backend/geo"
-	"math/rand/v2"
+	"geoindexing_comparison/backend/helpers"
 )
 
 type NormalGenerator struct {
@@ -12,14 +12,12 @@ type NormalGenerator struct {
 var DefaultNormalGenerator = NormalGenerator{ClusterN: 6} //nolint: gochecknoglobals // Allowed here
 
 func (r *NormalGenerator) Points(input *Input, amount uint64) geo.Points {
-	rng := rand.New(rand.NewPCG(0, 0)) //nolint: gosec // Allowed here
-
 	amounts := make([]int64, r.ClusterN)
 	mapPerCluster := int64(float64(int(amount)/r.ClusterN) * 0.2)
 	remain := int64(amount)
 
 	for idx := range amounts {
-		amounts[idx] = rng.Int64N(mapPerCluster)
+		amounts[idx] = helpers.RNG.Int64N(mapPerCluster)
 
 		remain -= amounts[idx]
 		if remain <= 0 {
@@ -43,13 +41,12 @@ func (r *NormalGenerator) Points(input *Input, amount uint64) geo.Points {
 }
 
 func (r *NormalGenerator) cluster(center geo.Point, amount int) geo.Points {
-	rng := rand.New(rand.NewPCG(0, 0)) //nolint: gosec // Allowed here
 	points := make(geo.Points, amount)
 
 	for i := range amount {
 		points[i] = geo.NewPoint(
-			rng.NormFloat64()*0.05/2+center.Lat,
-			rng.NormFloat64()*0.05+center.Lon)
+			helpers.RNG.NormFloat64()*0.05/2+center.Lat,
+			helpers.RNG.NormFloat64()*0.05+center.Lon)
 	}
 
 	return points

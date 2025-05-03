@@ -42,7 +42,7 @@ func NewRunner(ctx context.Context, repository *repository.Repository) *Service 
 		r.NameToIndex[v.Info.ShortName] = v
 		r.Indexes = append(r.Indexes, v)
 	}
-	must_utils.Must(r.SetVisualizer(&NewVisualizerInput{Amount: 10, IndexName: r.Indexes[0].Info.ShortName}))
+	must_utils.Must(r.SetVisualizer(&NewVisualizerInput{Amount: 10, Index: r.Indexes[0].Info.ShortName}))
 
 	go r.initRunner()
 
