@@ -1,10 +1,12 @@
 package service
 
 import (
+	"context"
 	"geoindexing_comparison/backend/generator"
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"sync"
 	"time"
 )
@@ -25,7 +27,7 @@ type NewVisualizerInput struct {
 	Index  string `json:"index"`
 }
 
-func (r *Service) SetVisualizer(input *NewVisualizerInput) (*Visualizer, error) {
+func (r *Service) SetVisualizer(ctx context.Context, input *NewVisualizerInput) (*Visualizer, error) {
 	r.Visualizer.mu.Lock()
 	defer r.Visualizer.mu.Unlock()
 
@@ -48,6 +50,11 @@ func (r *Service) SetVisualizer(input *NewVisualizerInput) (*Visualizer, error) 
 		r.Visualizer.Points = r.Visualizer.Generator.Points(&generator.DefaultInput, input.Amount)
 		r.Visualizer.Index.FromArray(r.Visualizer.Points)
 	}
+
+	zerolog.Ctx(ctx).
+		Info().
+		Interface("v", r.Visualizer).
+		Msg("visualizer.set")
 
 	return &r.Visualizer, nil
 }

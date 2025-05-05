@@ -1,14 +1,12 @@
 package geo
 
 import (
-	"bytes"
-	"encoding/csv"
 	"encoding/json"
 	"geoindexing_comparison/backend/helpers"
-	"strconv"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"
 	"strings"
 
-	"github.com/teadove/teasutils/utils/must_utils"
 	"golang.org/x/exp/slices"
 
 	"github.com/pkg/errors"
@@ -39,8 +37,11 @@ func (r Point) Geohash(bits uint) uint64 {
 	return geohash.EncodeIntWithPrecision(r.Lat, r.Lon, bits)
 }
 
-func (r Point) CSVRow() []string {
-	return []string{r.ID, strconv.FormatFloat(r.Lat, 'f', -1, 64), strconv.FormatFloat(r.Lon, 'f', -1, 64)}
+func (r Point) GeoJSON() *geojson.Feature {
+	feature := geojson.NewFeature(orb.Point{r.Lon, r.Lat})
+	feature.Properties["ID"] = r.ID
+
+	return feature
 }
 
 func (r *Points) GetRandomPoint() Point {
@@ -74,19 +75,13 @@ func (r *Points) ToSet() mapset.Set[string] {
 	return result
 }
 
-func (r *Points) CSV() string {
-	var buf bytes.Buffer
-	csvWriter := csv.NewWriter(&buf)
-
-	headers := []string{"id", "lat", "lon"}
-	must_utils.MustNoReturn(csvWriter.Write(headers))
-
+func (r *Points) GeoJSON() *geojson.FeatureCollection {
+	featureCollection := geojson.NewFeatureCollection()
 	for _, point := range *r {
-		must_utils.MustNoReturn(csvWriter.Write(point.CSVRow()))
+		featureCollection.Append(point.GeoJSON())
 	}
 
-	csvWriter.Flush()
-	return buf.String()
+	return featureCollection
 }
 
 func (r *Points) SortByID() {

@@ -3,6 +3,7 @@ package indexes
 import (
 	"geoindexing_comparison/backend/index"
 	"geoindexing_comparison/backend/index/bruteforce"
+	"geoindexing_comparison/backend/index/geohash_btree"
 	"geoindexing_comparison/backend/index/kdtree"
 	"geoindexing_comparison/backend/index/quadtree"
 	"geoindexing_comparison/backend/index/rstartree"
@@ -53,6 +54,16 @@ func AllIndexes() []index.Index {
 				LongName:  "Перебор",
 				Description: "Представляет собой обычный динамический массив, " +
 					"для которого все операции проводятся простым перебором",
+			},
+		},
+		{
+			Builder: geohash_btree.New,
+			Info: index.Info{
+				ShortName: "geohash_btree",
+				LongName:  "Геохэш + Б-дерево",
+				Description: "Смесь geohash, btree и перебора. Geohash кластеризирует точки, " +
+					"которые кладутся в btree и через него производится поиск кластеров. " +
+					"Далее в кластера перебором производится поиск указанных точек",
 			},
 		},
 	}

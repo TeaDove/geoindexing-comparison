@@ -1,0 +1,62 @@
+.notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 0.9em;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    max-width: 90%;
+    overflow-wrap: break-word;
+}
+
+.notification.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.notification.success {
+    background-color: #28a745;
+    /* Green */
+}
+
+.notification.error {
+    background-color: #dc3545;
+    /* Red */
+}
+
+.notification span {
+    margin-right: 8px;
+}
+
+.notification .timestamp {
+    font-weight: bold;
+    color: #eee;
+}
+
+.notification .method {
+    font-style: italic;
+}
+
+.notification .status {
+    font-weight: bold;
+}
+
+.notification .duration {
+    font-size: 0.9em;
+    color: #ddd;
+}
+
+.notification .error-message {
+    font-style: italic;
+    color: #f8d7da;
+    /* Lighter red for error text */
+    margin-left: 5px;
+}

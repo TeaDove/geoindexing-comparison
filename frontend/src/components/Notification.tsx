@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Notification.css';
 
 export interface NotificationMessage {
     status: number;
@@ -6,6 +7,7 @@ export interface NotificationMessage {
     method: string;
     error?: string;
     timestamp: number;
+    durationMs?: number;
 }
 
 interface NotificationProps {
@@ -13,53 +15,36 @@ interface NotificationProps {
 }
 
 const Notification: React.FC<NotificationProps> = ({ message }) => {
-    const [notifications, setNotifications] = useState<NotificationMessage[]>([]);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         if (message) {
-            // Add new notification
-            setNotifications(prev => [...prev, message]);
-
-            // Set timeout to remove this specific notification
-            const duration = message.status >= 400 ? 10000 : 2000;
-            setTimeout(() => {
-                setNotifications(prev =>
-                    prev.filter(n => n.timestamp !== message.timestamp)
-                );
-            }, duration);
+            setIsVisible(true);
+            const timer = setTimeout(() => {
+                setIsVisible(false);
+            }, 5000); // Hide after 5 seconds
+            return () => clearTimeout(timer);
         }
     }, [message]);
 
+    if (!message || !isVisible) {
+        return null;
+    }
+
+    const isError = message.status >= 400;
+    const formattedTime = new Date(message.timestamp).toLocaleTimeString();
+    const durationText = message.durationMs ? ` (${message.durationMs.toFixed(1)} ms)` : ''; // Format duration
+
     return (
-        <div className="notification-container">
-            {notifications.map((notification) => (
-                <div
-                    key={notification.timestamp}
-                    className="notification"
-                    style={{
-                        borderColor: notification.status >= 500 ? '#dc3545' :
-                            notification.status >= 400 ? '#ffc107' :
-                                notification.status >= 200 ? '#28a745' : '#007bff'
-                    }}
-                >
-                    <div className="notification-content">
-                        <div className="notification-header">
-                            <span className="status-dot" style={{
-                                backgroundColor: notification.status >= 500 ? '#dc3545' :
-                                    notification.status >= 400 ? '#ffc107' :
-                                        notification.status >= 200 ? '#28a745' : '#007bff'
-                            }} />
-                            <span className="endpoint">{notification.method} {notification.endpoint}</span>
-                            <span className="status">{notification.status}</span>
-                        </div>
-                        {notification.error && (
-                            <div className="error-message">{notification.error}</div>
-                        )}
-                    </div>
-                </div>
-            ))}
+        <div className={`notification ${isError ? 'error' : 'success'} ${isVisible ? 'visible' : ''}`}>
+            <span className="timestamp">[{formattedTime}]</span>
+            <span className="method">{message.method}</span>
+            <span className="endpoint">{message.endpoint}</span>
+            <span className="status"> -&gt; {message.status}</span>
+            <span className="duration">{durationText}</span>
+            {message.error && <span className="error-message">: {message.error}</span>}
         </div>
     );
 };
 
-export default Notification; 
+export default Notification;

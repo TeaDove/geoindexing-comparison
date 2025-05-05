@@ -5,11 +5,13 @@ import (
 	"geoindexing_comparison/backend/service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
+	"strconv"
+	"time"
 )
 
-func sendPoints(c *fiber.Ctx, points geo.Points) error {
-	c.Set(fiber.HeaderContentType, "text/csv")
-	return c.SendString(points.CSV())
+func sendPoints(c *fiber.Ctx, points geo.Points, dur time.Duration) error {
+	c.Set("X-Duration-Microseconds", strconv.Itoa(int(dur.Microseconds())))
+	return c.JSON(points.GeoJSON())
 }
 
 func (r *Presentation) NewVisualizer(c *fiber.Ctx) error {
@@ -20,7 +22,7 @@ func (r *Presentation) NewVisualizer(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
-	visualizer, err := r.service.SetVisualizer(&req)
+	visualizer, err := r.service.SetVisualizer(c.UserContext(), &req)
 	if err != nil {
 		return errors.Wrap(err, "failed to set visualizer")
 	}
@@ -29,7 +31,8 @@ func (r *Presentation) NewVisualizer(c *fiber.Ctx) error {
 }
 
 func (r *Presentation) GetPoints(c *fiber.Ctx) error {
-	return sendPoints(c, r.service.Visualizer.GetPoints())
+	points := r.service.Visualizer.GetPoints()
+	return c.JSON(points.GeoJSON())
 }
 
 func (r *Presentation) KNN(c *fiber.Ctx) error {
@@ -40,8 +43,8 @@ func (r *Presentation) KNN(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
-	points, _ := r.service.Visualizer.KNN(&req)
-	return sendPoints(c, points)
+	points, dur := r.service.Visualizer.KNN(&req)
+	return sendPoints(c, points, dur)
 }
 
 func (r *Presentation) RangeSearch(c *fiber.Ctx) error {
@@ -52,6 +55,6 @@ func (r *Presentation) RangeSearch(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
-	points, _ := r.service.Visualizer.RangeSearch(&req)
-	return sendPoints(c, points)
+	points, dur := r.service.Visualizer.RangeSearch(&req)
+	return sendPoints(c, points, dur)
 }
