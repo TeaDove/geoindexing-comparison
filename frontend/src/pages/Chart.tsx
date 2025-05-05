@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import { Task, Index, RunSettingsType, Run } from '../types'
-import RunSettings from '../components/RunSettings'
+import type { Task, Index, RunSettings as RunSettingsType, Run } from '../types/index'
+import RunSettingsComponent from '../components/RunSettings'
 import RunsList from '../components/RunsList'
 import Notification, { NotificationMessage } from '../components/Notification'
 import { API_URL } from '../config'
@@ -139,7 +139,7 @@ const Chart: React.FC = () => {
             <nav>
                 <Link to="/visualizer">Go to Visualizer</Link>
             </nav>
-            <RunSettings
+            <RunSettingsComponent
                 tasks={tasks}
                 indexes={indexes}
                 onResume={handleResume}

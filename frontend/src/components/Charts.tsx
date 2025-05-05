@@ -10,7 +10,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
-import { Point, Run } from '../types';
+import type { Point, Run } from '../types/index';
 import { API_URL } from '../config';
 
 ChartJS.register(

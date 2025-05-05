@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Task, Index, RunSettings as RunSettingsType } from '../types';
+import type { Task, Index, RunSettings } from '../types/index';
 import { formatNumber } from '../utils';
 
 interface RunSettingsProps {
     tasks: Task[];
     indexes: Index[];
-    onResume: (settings: RunSettingsType) => void;
+    onResume: (settings: RunSettings) => void;
     onReset: () => void;
     isLoading: boolean;
 }

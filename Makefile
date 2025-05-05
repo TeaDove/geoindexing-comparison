@@ -9,6 +9,9 @@ show-pprof:
 test:
 	$(GO) test ./...
 
+build:
+	$(GO) build -o bootstrap main.go
+
 lint:
 	gofumpt -w .
 	golines --base-formatter=gofumpt --max-len=120 --no-reformat-tags -w .

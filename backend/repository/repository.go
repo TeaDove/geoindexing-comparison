@@ -13,7 +13,7 @@ type Repository struct {
 }
 
 func NewRepository(ctx context.Context) (*Repository, error) {
-	db, err := gorm.Open(sqlite.Open("./data/db.sqlite"), &gorm.Config{}) // TODO move to settings
+	db, err := gorm.Open(sqlite.Open("./.data/db.sqlite"), &gorm.Config{}) // TODO move to settings
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open gorm.db")
 	}

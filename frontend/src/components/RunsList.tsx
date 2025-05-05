@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Run } from '../types';
+import type { Run } from '../types/index';
 import Charts from './Charts';
 
 interface RunsListProps {

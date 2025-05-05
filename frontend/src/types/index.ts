@@ -16,7 +16,7 @@ export interface Index {
     info: IndexInfo;
 }
 
-export interface RunSettingsType {
+export interface RunSettings {
     tasks: string[];
     indexes: string[];
     start: number;
@@ -32,4 +32,25 @@ export interface ChartData {
         borderColor: string;
         backgroundColor: string;
     }[];
+}
+
+export interface Run {
+    id: number;
+    Status: string;
+    indexes: string[];
+    tasks: string[];
+    createdAt: string;
+    completedAt?: string;
+    createdBy: string;
+    start: number;
+    stop: number;
+    step: number;
+}
+
+// Added Point type based on Charts.tsx usage
+export interface Point {
+    task: string;
+    index: string;
+    x: number;
+    y: number;
 } 

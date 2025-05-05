@@ -1,0 +1,19 @@
+services:
+  backend:
+    restart: always
+    build:
+      context: .
+      dockerfile: DockerfileBackend
+    volumes:
+      - ".data:/.data"
+      - ".env:/.env"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: DockerfileFrontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Prevent host node_modules from overwriting container

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { API_URL, MAPBOX_TOKEN } from '../config';
 import Notification, { NotificationMessage } from '../components/Notification';
 import '../App.css';
-import mapboxgl, { Map, LngLatLike, Marker } from 'mapbox-gl';
+import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const headers = {
@@ -15,7 +15,7 @@ const Visualizer: React.FC = () => {
     const [selectedIndex, setSelectedIndex] = useState<string>('');
     const [amount, setAmount] = useState<number>(10000);
     const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
-    const [isLoadingPoints, setIsLoadingPoints] = useState(false);
+    // const [isLoadingPoints, setIsLoadingPoints] = useState(false); // Commented out
     const [notification, setNotification] = useState<NotificationMessage | null>(null);
 
     // --- KNN State ---
@@ -120,6 +120,11 @@ const Visualizer: React.FC = () => {
                 source: 'radius-search-results',
                 paint: { 'circle-radius': 5, 'circle-color': '#ff7f0e' } // Orange color
             });
+
+            map.addSource('radius-circle', {
+                type: 'geojson',
+                data: { type: 'FeatureCollection', features: [] },
+            });
         });
 
         // --- Map Click Handler ---
@@ -160,56 +165,6 @@ const Visualizer: React.FC = () => {
             durationMs,
             timestamp: Date.now(),
         });
-    };
-
-    const fetchAndLoadPoints = async (mapInstance: Map | null) => {
-        if (!mapInstance) {
-            console.error("Map instance not available for fetchAndLoadPoints");
-            showNotification(500, 'Map Operation', 'Source Update', 'Map not ready');
-            return false;
-        }
-
-        const startTime = performance.now();
-        let status = 500;
-        let errorMsg: string | undefined;
-        let success = false;
-
-        try {
-            const response = await fetch(`${API_URL}/visualizer/points`);
-            status = response.status;
-            if (!response.ok) {
-                errorMsg = await response.text() || 'Failed to fetch points';
-                throw new Error(errorMsg);
-            }
-            const geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
-            console.log("Fetched GeoJSON data for points layer:", geoJsonData);
-
-            // Update map source
-            const source = mapInstance.getSource('points') as mapboxgl.GeoJSONSource;
-            if (source) {
-                source.setData(geoJsonData);
-                console.log('Updated Mapbox source "points".');
-                success = true;
-            } else {
-                console.error('Mapbox source "points" not found during update.');
-                errorMsg = 'Source "points" not found'; // Set error message for notification
-                status = 500; // Ensure status reflects the source update error
-            }
-
-        } catch (error) {
-            console.error('Error loading points:', error);
-            if (error instanceof Error && !error.message.includes('Failed to fetch points')) {
-                errorMsg = error.message;
-            }
-            if (status < 400) status = 500; // Ensure error status if catch block is hit
-            if (!errorMsg) errorMsg = 'Caught an unknown error fetching points';
-        } finally {
-            const endTime = performance.now();
-            const durationMs = endTime - startTime;
-            // Notify about the point fetch/load attempt
-            showNotification(status, '/visualizer/points', 'GET', errorMsg, durationMs);
-        }
-        return success;
     };
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -427,9 +382,9 @@ const Visualizer: React.FC = () => {
                     if (pointsSource) pointsSource.setData({ type: 'FeatureCollection', features: [] });
                     const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
                     if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
-                    const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
+                    // const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource; // Commented out declaration
                     // Need to add this source/layer first, will do later
-                    // if (radiusSource) radiusSource.setData({ type: 'FeatureCollection', features: [] }); 
+                    // if (radiusSource) radiusSource.setData({ type: 'FeatureCollection', features: [] }); // Commented out radiusSource usage
                 }
 
             } catch (error) {
