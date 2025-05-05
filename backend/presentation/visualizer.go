@@ -27,7 +27,8 @@ func (r *Presentation) NewVisualizer(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to set visualizer")
 	}
 
-	return c.JSON(visualizer)
+	points := visualizer.GetPoints()
+	return c.JSON(points.GeoJSON())
 }
 
 func (r *Presentation) GetPoints(c *fiber.Ctx) error {

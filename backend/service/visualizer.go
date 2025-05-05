@@ -14,12 +14,12 @@ import (
 type Visualizer struct {
 	mu sync.RWMutex
 
-	Generator     generator.Impl `json:"-"`
-	GeneratorInfo generator.Info `json:"generatorInfo"`
-	Index         index.Impl     `json:"-"`
-	IndexInfo     index.Info     `json:"indexInfo"`
+	generator     generator.Impl
+	generatorInfo generator.Info
+	index         index.Impl
+	indexInfo     index.Info
 
-	Points geo.Points `json:"-"`
+	points geo.Points
 }
 
 type NewVisualizerInput struct {
@@ -37,18 +37,18 @@ func (r *Service) SetVisualizer(ctx context.Context, input *NewVisualizerInput) 
 			return nil, errors.Errorf("index not found: %s", input.Index)
 		}
 
-		r.Visualizer.IndexInfo = idx.Info
-		r.Visualizer.Index = idx.Builder()
-		r.Visualizer.Index.FromArray(r.Visualizer.Points)
+		r.Visualizer.indexInfo = idx.Info
+		r.Visualizer.index = idx.Builder()
+		r.Visualizer.index.FromArray(r.Visualizer.points)
 	}
 
 	if input.Amount != 0 {
 		gen := generator.AllGenerators()[0]
 
-		r.Visualizer.GeneratorInfo = gen.Info
-		r.Visualizer.Generator = gen.Builder()
-		r.Visualizer.Points = r.Visualizer.Generator.Points(&generator.DefaultInput, input.Amount)
-		r.Visualizer.Index.FromArray(r.Visualizer.Points)
+		r.Visualizer.generatorInfo = gen.Info
+		r.Visualizer.generator = gen.Builder()
+		r.Visualizer.points = r.Visualizer.generator.Points(&generator.DefaultInput, input.Amount)
+		r.Visualizer.index.FromArray(r.Visualizer.points)
 	}
 
 	zerolog.Ctx(ctx).
@@ -63,7 +63,7 @@ func (r *Visualizer) GetPoints() geo.Points {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	return r.Points
+	return r.points
 }
 
 type KNNInput struct {
@@ -75,7 +75,7 @@ func (r *Visualizer) KNN(input *KNNInput) (geo.Points, time.Duration) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	return r.Index.KNNTimed(input.Point, input.N)
+	return r.index.KNNTimed(input.Point, input.N)
 }
 
 type RangeSearchInput struct {
@@ -87,5 +87,5 @@ func (r *Visualizer) RangeSearch(input *RangeSearchInput) (geo.Points, time.Dura
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	return r.Index.RangeSearchTimed(input.Point, input.Radius)
+	return r.index.RangeSearchTimed(input.Point, input.Radius)
 }

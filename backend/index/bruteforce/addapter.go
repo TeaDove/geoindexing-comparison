@@ -33,17 +33,17 @@ func (r *CollectionBruteforce) InsertTimed(point geo.Point) time.Duration {
 }
 
 func (r *CollectionBruteforce) RangeSearchTimed(
-	point geo.Point,
+	origin geo.Point,
 	radius float64,
 ) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	points := make(geo.Points, 0, 10)
 
 	for _, indexPoint := range r.impl {
-		if indexPoint.Lat < point.Lat+radius &&
-			indexPoint.Lat > point.Lat-radius &&
-			indexPoint.Lon < point.Lon+radius &&
-			indexPoint.Lon > point.Lon-radius {
+		if indexPoint.Lat < origin.Lat+radius &&
+			indexPoint.Lat > origin.Lat-radius &&
+			indexPoint.Lon < origin.Lon+radius &&
+			indexPoint.Lon > origin.Lon-radius {
 			points = append(points, indexPoint)
 		}
 	}
@@ -53,7 +53,7 @@ func (r *CollectionBruteforce) RangeSearchTimed(
 	return points, dur
 }
 
-func (r *CollectionBruteforce) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
+func (r *CollectionBruteforce) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	if int(n) > len(r.impl) {
 		return r.impl, time.Since(t0)
@@ -66,7 +66,7 @@ func (r *CollectionBruteforce) KNNTimed(point geo.Point, n uint64) (geo.Points, 
 
 	knnMatrix := make([]dist, 0, len(r.impl))
 	for idx, indexPoint := range r.impl {
-		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceTo(point)})
+		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceTo(origin)})
 	}
 
 	slices.SortFunc(knnMatrix, func(a, b dist) int {

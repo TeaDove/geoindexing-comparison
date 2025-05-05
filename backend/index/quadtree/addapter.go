@@ -57,17 +57,17 @@ func toConcrete(qtreePoints []qtree.Point[string]) geo.Points {
 }
 
 func (r *CollectionQuadTree) RangeSearchTimed(
-	point geo.Point,
+	origin geo.Point,
 	radius float64,
 ) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
 	res := r.impl.QueryRange(
 		qtree.NewBounds[string](
-			point.Lat-radius,
-			point.Lon-radius,
-			point.Lat+radius,
-			point.Lon+radius,
+			origin.Lat-radius,
+			origin.Lon-radius,
+			origin.Lat+radius,
+			origin.Lon+radius,
 		),
 	)
 	dur := time.Since(t0)
@@ -75,13 +75,13 @@ func (r *CollectionQuadTree) RangeSearchTimed(
 	return toConcrete(res), dur
 }
 
-func (r *CollectionQuadTree) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
+func (r *CollectionQuadTree) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
 	if n == 0 {
 		return geo.Points{}, 0
 	}
 
 	t0 := time.Now()
-	res := r.impl.KNN(qtree.NewPoint[string](point.Lat, point.Lon, ""), int(n))
+	res := r.impl.KNN(qtree.NewPoint[string](origin.Lat, origin.Lon, ""), int(n))
 	dur := time.Since(t0)
 
 	return toConcrete(res), dur

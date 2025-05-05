@@ -8,12 +8,12 @@ import (
 )
 
 type CollectionGeohash struct {
-	btree            btree.Map[uint64, []geo.Point]
+	btree            btree.Map[uint64, geo.Points]
 	geohashPrecision uint
 }
 
 func New() index.Impl {
-	collection := CollectionGeohash{btree: *btree.NewMap[uint64, []geo.Point](1), geohashPrecision: 7}
+	collection := CollectionGeohash{btree: *btree.NewMap[uint64, geo.Points](1), geohashPrecision: 7}
 
 	return &collection
 }
@@ -48,10 +48,6 @@ func (r *CollectionGeohash) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
 	r.Insert(point)
 	return time.Since(t0)
-}
-
-func (r *CollectionGeohash) KNNTimed(point geo.Point, n uint64) (geo.Points, time.Duration) {
-	panic("implement me")
 }
 
 func (r *CollectionGeohash) String() string {

@@ -31,14 +31,18 @@ func (r *CollectionGeohash) searchNeighbors(origin geo.Point, originHash uint64,
 	return points
 }
 
-func (r *CollectionGeohash) RangeSearchTimed(point geo.Point, radius float64) (geo.Points, time.Duration) {
+func (r *CollectionGeohash) RangeSearchTimed(origin geo.Point, radius float64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
-	originGeohash := r.geohash(point)
-	points := r.findNear(originGeohash, point, radius)
+	return r.rangeSearch(origin, radius), time.Since(t0)
+}
 
-	neighbors := geohash.NeighborsIntWithPrecision(r.geohash(point), r.geohashPrecision)
-	points = append(points, r.searchNeighbors(point, originGeohash, radius, neighbors)...)
+func (r *CollectionGeohash) rangeSearch(origin geo.Point, radius float64) geo.Points {
+	originGeohash := r.geohash(origin)
+	points := r.findNear(originGeohash, origin, radius)
 
-	return points, time.Since(t0)
+	neighbors := geohash.NeighborsIntWithPrecision(r.geohash(origin), r.geohashPrecision)
+	points = append(points, r.searchNeighbors(origin, originGeohash, radius, neighbors)...)
+
+	return points
 }

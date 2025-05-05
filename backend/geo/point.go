@@ -90,6 +90,15 @@ func (r *Points) SortByID() {
 	})
 }
 
+func (r *Points) SortByDistance(origin Point) {
+	slices.SortFunc(*r, func(a, b Point) int {
+		if a.DistanceTo(origin) < b.DistanceTo(origin) {
+			return -1
+		}
+		return 1
+	})
+}
+
 func (r *Points) Equal(other Points) bool {
 	return r.ToSet().Equal(other.ToSet())
 }

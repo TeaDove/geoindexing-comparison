@@ -29,7 +29,7 @@
 
     A. Guttman. R-trees: A Dynamic Index Structure for Spatial Searching. Proceedings of ACM SIGMOD, pages 47-57, 1984. http://www.cs.jhu.edu/~misha/ReadingSeminar/Papers/Guttman84.pdf
 
-    N. Beckmann, H .P. Kriegel, R. Schneider and B. Seeger. The R*-tree: An Efficient and Robust Access Method for Points and Rectangles. Proceedings of ACM SIGMOD, pages 323-331, May 1990. http://infolab.usc.edu/csci587/Fall2011/papers/p322-beckmann.pdf
+    N. Beckmann, H .P. Kriegel, R. Schneider and B. Seeger. The R*-tree: An Efficient and Robust Access Method for points and Rectangles. Proceedings of ACM SIGMOD, pages 323-331, May 1990. http://infolab.usc.edu/csci587/Fall2011/papers/p322-beckmann.pdf
 
     N. Roussopoulos, S. Kelley and F. Vincent. Nearest Neighbor Queries. ACM SIGMOD, pages 71-79, 1995. http://www.postgis.org/support/nearestneighbor.pdf
 

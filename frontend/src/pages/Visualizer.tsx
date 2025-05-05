@@ -147,13 +147,29 @@ const Visualizer: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!selectedIndex) {
-            showNotification(400, '/visualizer', 'POST', 'Please select an index.') // No duration for client-side validation
+            showNotification(400, '/visualizer', 'POST', 'Please select an index.')
             return;
         }
         setIsLoadingGenerate(true);
+        // Clear previous points and KNN selection when generating new data
+        setSelectedPoint(null);
+        setKnnNeighborsGeoJson(null);
+        if (selectedMarkerRef.current) {
+            selectedMarkerRef.current.remove();
+            selectedMarkerRef.current = null;
+        }
+        // Also clear the main points layer
+        if (mapRef.current) {
+            const source = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
+            if (source) {
+                source.setData({ type: 'FeatureCollection', features: [] });
+            }
+        }
+
         const startTime = performance.now();
         let status = 500;
         let errorMsg: string | undefined;
+        let geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> | null = null;
         try {
             const response = await fetch(`${API_URL}/visualizer`, {
                 method: 'POST',
@@ -162,14 +178,16 @@ const Visualizer: React.FC = () => {
             });
             status = response.status;
             if (!response.ok) {
-                errorMsg = await response.text() || 'Failed to submit visualizer request';
+                errorMsg = await response.text() || 'Failed to generate/load data';
                 throw new Error(errorMsg);
             }
-            console.log('Visualizer POST successful.');
+            geoJsonData = await response.json(); // Expect GeoJSON directly from POST
+            console.log('Visualizer POST successful, received GeoJSON:', geoJsonData);
+
         } catch (error) {
             console.error('Error submitting visualizer request:', error);
             if (error instanceof Error) {
-                if (!error.message.includes('Failed to submit visualizer request')) {
+                if (!error.message.includes('Failed to generate/load data')) {
                     errorMsg = error.message;
                 }
             }
@@ -180,63 +198,23 @@ const Visualizer: React.FC = () => {
             const endTime = performance.now();
             const durationMs = endTime - startTime;
             showNotification(status, '/visualizer', 'POST', errorMsg, durationMs);
-            setIsLoadingGenerate(false);
-        }
-    };
 
-    const handleLoadData = async () => {
-        setIsLoadingPoints(true);
-        setSelectedPoint(null);
-        setKnnNeighborsGeoJson(null);
-        if (selectedMarkerRef.current) {
-            selectedMarkerRef.current.remove();
-            selectedMarkerRef.current = null;
-        }
-        const startTime = performance.now();
-        let status = 500;
-        let errorMsg: string | undefined;
-        let geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> | null = null;
-        try {
-            const response = await fetch(`${API_URL}/visualizer/points`);
-            status = response.status;
-            if (!response.ok) {
-                errorMsg = await response.text() || 'Failed to fetch points';
-                throw new Error(errorMsg);
-            }
-            geoJsonData = await response.json();
-            console.log("Fetched GeoJSON data:", geoJsonData);
-
-        } catch (error) {
-            console.error('Error loading points:', error);
-            if (error instanceof Error) {
-                if (!error.message.includes('Failed to fetch points')) {
-                    errorMsg = error.message;
-                }
-            }
-            if (status !== 200 && !errorMsg) {
-                errorMsg = 'Caught an unknown error';
-            }
-        } finally {
-            const endTime = performance.now();
-            const durationMs = endTime - startTime;
-            showNotification(status, '/visualizer/points', 'GET', errorMsg, durationMs);
-
-            // Only update map if data fetch was successful
+            // Update map source if request was successful
             if (status === 200 && geoJsonData && mapRef.current) {
                 const source = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
                 if (source) {
                     source.setData(geoJsonData);
-                    console.log('Updated Mapbox source with data.');
-                    // No need for separate map success notification here, handled above
+                    console.log('Updated Mapbox source with generated data.');
                 } else {
                     console.error('Mapbox source "points" not found.');
-                    showNotification(500, 'Mapbox', 'Source Update', 'Source not found');
+                    showNotification(500, 'Mapbox', 'Source Update', 'Source not found after generate');
                 }
             } else if (status === 200 && geoJsonData && !mapRef.current) {
-                console.error('Map instance not available when trying to update source.');
-                showNotification(500, 'Mapbox', 'Source Update', 'Map not ready');
+                console.error('Map instance not available when trying to update source after generate.');
+                showNotification(500, 'Mapbox', 'Source Update', 'Map not ready after generate');
             }
-            setIsLoadingPoints(false);
+
+            setIsLoadingGenerate(false);
         }
     };
 
@@ -332,18 +310,10 @@ const Visualizer: React.FC = () => {
                         disabled={isLoadingGenerate}
                     />
                 </div>
-                <button type="submit" disabled={isLoadingGenerate} className="submit-button">
-                    {isLoadingGenerate ? 'Generating...' : 'Generate Visualization Data'}
+                <button type="submit" disabled={isLoadingGenerate || isLoadingKnn} className="submit-button">
+                    {isLoadingGenerate ? 'Generating...' : 'Generate and Load Data'}
                 </button>
             </form>
-
-            <button
-                onClick={handleLoadData}
-                disabled={isLoadingPoints || isLoadingGenerate}
-                className="load-data-button"
-            >
-                {isLoadingPoints ? 'Loading...' : 'Load Points from Backend'}
-            </button>
 
             {/* --- KNN UI --- */}
             <div className="knn-controls form-group" style={{ marginTop: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -358,7 +328,7 @@ const Visualizer: React.FC = () => {
                     style={{ width: '60px' }}
                 />
                 <button
-                    onClick={handleFindKnn} // We will define this function next
+                    onClick={handleFindKnn}
                     disabled={!selectedPoint || isLoadingKnn || isLoadingGenerate}
                     className="knn-button"
                 >
