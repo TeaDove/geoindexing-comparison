@@ -8,6 +8,7 @@ import (
 	"geoindexing_comparison/backend/repository"
 	"geoindexing_comparison/backend/service/stats"
 	"geoindexing_comparison/backend/task"
+	"github.com/teadove/teasutils/utils/must_utils"
 	"runtime"
 	"strconv"
 	"time"
@@ -113,7 +114,7 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 	for int(idx) < len(inputs) {
 		result := runCol(ctx, inputs[idx].Points, inputs[idx].Index, inputs[idx].Task, inputs[idx].Amount)
 
-		err := r.repository.SaveStats(ctx, &repository.Stats{
+		err = r.repository.SaveStats(ctx, &repository.Stats{
 			Idx:    idx,
 			RunID:  run.ID,
 			Index:  result.Index,
@@ -129,10 +130,67 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 			zerolog.Ctx(ctx).Debug().
 				Uint64("idx", idx).
 				Msg("iteration.done")
+
+			run, err = r.repository.GetRun(ctx, run.ID)
+			if err != nil {
+				return errors.Wrap(err, "failed to get run")
+			}
+			if run.Status != repository.RunStatusPending {
+				zerolog.Ctx(ctx).
+					Info().
+					Uint64("idx", idx).
+					Interface("run", run).
+					Msg("ending.run.earlier")
+				return nil
+			}
+
 		}
 
 		idx++
 	}
+
+	return nil
+}
+
+func (r *Service) runPending(ctx context.Context, run *repository.Run) error {
+	ctx = logger_utils.WithValue(ctx, "run_id", strconv.FormatUint(run.ID, 10))
+	defer func() {
+		err := must_utils.AnyToErr(recover())
+		if err != nil {
+			run.Status = repository.RunStatusCancelled
+			saveErr := r.repository.SaveRun(ctx, run)
+			if saveErr != nil {
+				panic("failed to save run")
+			}
+
+			zerolog.Ctx(ctx).Error().
+				Err(err).
+				Interface("run", run).
+				Msg("run panicked")
+		}
+
+	}()
+
+	zerolog.Ctx(ctx).Info().Interface("run", run).Msg("run.started")
+
+	t0 := time.Now()
+
+	err := r.run(ctx, run)
+	if err != nil {
+		return errors.Wrap(err, "failed to run")
+	}
+
+	run.CompletedAt = null.NewTime(time.Now(), true)
+	run.Status = repository.RunStatusCompleted
+
+	err = r.repository.SaveRun(ctx, run)
+	if err != nil {
+		return errors.Wrap(err, "failed to save")
+	}
+
+	zerolog.Ctx(ctx).Info().
+		Str("elapsed", time_utils.RoundDuration(time.Since(t0))).
+		Msg("run.done")
 
 	return nil
 }
@@ -152,33 +210,15 @@ func (r *Service) initRunner() {
 		}
 
 		for _, run := range pendingRuns {
-			ctx := logger_utils.WithValue(ctx, "run_id", strconv.FormatUint(run.ID, 10))
-			zerolog.Ctx(ctx).Info().Interface("run", run).Msg("run.started")
-
-			t0 := time.Now()
-
-			err = r.run(ctx, &run)
+			err = r.runPending(ctx, &run)
 			if err != nil {
-				zerolog.Ctx(ctx).Error().Stack().Err(err).Msg("failed.to.run")
+				zerolog.Ctx(ctx).Error().
+					Stack().
+					Err(err).
+					Interface("run", run).
+					Msg("failed.to.run")
 				time.Sleep(sleepOnErr)
-
-				continue
 			}
-
-			run.CompletedAt = null.NewTime(time.Now(), true)
-			run.Status = repository.RunStatusCompleted
-
-			err = r.repository.SaveRun(ctx, &run)
-			if err != nil {
-				zerolog.Ctx(ctx).Error().Stack().Err(err).Msg("failed.to.save.run")
-				time.Sleep(sleepOnErr)
-
-				continue
-			}
-
-			zerolog.Ctx(ctx).Info().
-				Str("elapsed", time_utils.RoundDuration(time.Since(t0))).
-				Msg("run.done")
 		}
 
 		time.Sleep(time.Second)

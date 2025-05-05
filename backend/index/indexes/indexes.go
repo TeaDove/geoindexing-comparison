@@ -57,13 +57,45 @@ func AllIndexes() []index.Index {
 			},
 		},
 		{
-			Builder: geohash_btree.New,
+			Builder: geohash_btree.Factory(7),
 			Info: index.Info{
 				ShortName: "geohash_btree",
 				LongName:  "Геохэш + Б-дерево",
 				Description: "Смесь geohash, btree и перебора. Geohash кластеризирует точки, " +
 					"которые кладутся в btree и через него производится поиск кластеров. " +
 					"Далее в кластера перебором производится поиск указанных точек",
+			},
+		},
+		{
+			Builder: geohash_btree.Factory(6),
+			Info: index.Info{
+				ShortName:   "geohash_btree_6",
+				LongName:    "Геохэш + Б-дерево 6",
+				Description: "Аналогично geohash_btree, но с точностью геохеша 6",
+			},
+		},
+		{
+			Builder: geohash_btree.Factory(5),
+			Info: index.Info{
+				ShortName:   "geohash_btree_5",
+				LongName:    "Геохэш + Б-дерево 5",
+				Description: "Аналогично geohash_btree, но с точностью геохеша 5",
+			},
+		},
+		{
+			Builder: geohash_btree.Factory(4),
+			Info: index.Info{
+				ShortName:   "geohash_btree_4",
+				LongName:    "Геохэш + Б-дерево 4",
+				Description: "Аналогично geohash_btree, но с точностью геохеша 4",
+			},
+		},
+		{
+			Builder: geohash_btree.Factory(3),
+			Info: index.Info{
+				ShortName:   "geohash_btree_3",
+				LongName:    "Геохэш + Б-дерево 3",
+				Description: "Аналогично geohash_btree, но с точностью геохеша 3",
 			},
 		},
 	}

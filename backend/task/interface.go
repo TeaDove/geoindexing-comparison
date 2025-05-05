@@ -52,7 +52,15 @@ func AllTasks() []Task {
 				LongName:    "КНН 10",
 				Description: "КНН на 10 точек из структуры",
 			},
-			Builder: func() Impl { return &KNN1P{} },
+			Builder: func() Impl { return &KNN10{} },
+		},
+		{
+			Info: Info{
+				ShortName:   "knn_100",
+				LongName:    "КНН 100",
+				Description: "КНН на 100 точек из структуры",
+			},
+			Builder: func() Impl { return &KNN100{} },
 		},
 		{
 			Info: Info{

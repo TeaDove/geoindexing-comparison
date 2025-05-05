@@ -13,16 +13,21 @@ const headers = {
 const Visualizer: React.FC = () => {
     const [indexes, setIndexes] = useState<{ info: { shortName: string, longName: string } }[]>([]);
     const [selectedIndex, setSelectedIndex] = useState<string>('');
-    const [amount, setAmount] = useState<number>(1000);
+    const [amount, setAmount] = useState<number>(10000);
     const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
     const [isLoadingPoints, setIsLoadingPoints] = useState(false);
     const [notification, setNotification] = useState<NotificationMessage | null>(null);
 
     // --- KNN State ---
     const [selectedPoint, setSelectedPoint] = useState<mapboxgl.LngLat | null>(null);
-    const [knnN, setKnnN] = useState<number>(10);
+    const [knnN, setKnnN] = useState<number>(100);
     const [isLoadingKnn, setIsLoadingKnn] = useState(false);
     const [knnNeighborsGeoJson, setKnnNeighborsGeoJson] = useState<GeoJSON.FeatureCollection<GeoJSON.Point> | null>(null);
+
+    // --- Radius Search State ---
+    const [radius, setRadius] = useState<number>(1000); // Default radius (e.g., 1000 meters)
+    const [isLoadingRadius, setIsLoadingRadius] = useState(false);
+    const [radiusSearchResultsGeoJson, setRadiusSearchResultsGeoJson] = useState<GeoJSON.FeatureCollection<GeoJSON.Point> | null>(null);
 
     // --- Mapbox State and Refs ---
     const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -103,6 +108,18 @@ const Visualizer: React.FC = () => {
                 source: 'knn-neighbors',
                 paint: { 'circle-radius': 5, 'circle-color': '#2ca02c' } // Green color
             });
+
+            // Source and Layer for Radius Search Results
+            map.addSource('radius-search-results', {
+                type: 'geojson',
+                data: { type: 'FeatureCollection', features: [] } // Initially empty
+            });
+            map.addLayer({
+                id: 'radius-search-layer',
+                type: 'circle',
+                source: 'radius-search-results',
+                paint: { 'circle-radius': 5, 'circle-color': '#ff7f0e' } // Orange color
+            });
         });
 
         // --- Map Click Handler ---
@@ -110,7 +127,8 @@ const Visualizer: React.FC = () => {
             const coordinates = e.lngLat;
             console.log('Map clicked at:', coordinates);
             setSelectedPoint(coordinates);
-            setKnnNeighborsGeoJson(null); // Clear previous KNN results on new click
+            setKnnNeighborsGeoJson(null); // Clear previous KNN results
+            setRadiusSearchResultsGeoJson(null); // Clear previous Radius results
 
             // Remove previous marker if it exists
             if (selectedMarkerRef.current) {
@@ -144,6 +162,56 @@ const Visualizer: React.FC = () => {
         });
     };
 
+    const fetchAndLoadPoints = async (mapInstance: Map | null) => {
+        if (!mapInstance) {
+            console.error("Map instance not available for fetchAndLoadPoints");
+            showNotification(500, 'Map Operation', 'Source Update', 'Map not ready');
+            return false;
+        }
+
+        const startTime = performance.now();
+        let status = 500;
+        let errorMsg: string | undefined;
+        let success = false;
+
+        try {
+            const response = await fetch(`${API_URL}/visualizer/points`);
+            status = response.status;
+            if (!response.ok) {
+                errorMsg = await response.text() || 'Failed to fetch points';
+                throw new Error(errorMsg);
+            }
+            const geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
+            console.log("Fetched GeoJSON data for points layer:", geoJsonData);
+
+            // Update map source
+            const source = mapInstance.getSource('points') as mapboxgl.GeoJSONSource;
+            if (source) {
+                source.setData(geoJsonData);
+                console.log('Updated Mapbox source "points".');
+                success = true;
+            } else {
+                console.error('Mapbox source "points" not found during update.');
+                errorMsg = 'Source "points" not found'; // Set error message for notification
+                status = 500; // Ensure status reflects the source update error
+            }
+
+        } catch (error) {
+            console.error('Error loading points:', error);
+            if (error instanceof Error && !error.message.includes('Failed to fetch points')) {
+                errorMsg = error.message;
+            }
+            if (status < 400) status = 500; // Ensure error status if catch block is hit
+            if (!errorMsg) errorMsg = 'Caught an unknown error fetching points';
+        } finally {
+            const endTime = performance.now();
+            const durationMs = endTime - startTime;
+            // Notify about the point fetch/load attempt
+            showNotification(status, '/visualizer/points', 'GET', errorMsg, durationMs);
+        }
+        return success;
+    };
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!selectedIndex) {
@@ -154,6 +222,7 @@ const Visualizer: React.FC = () => {
         // Clear previous points and KNN selection when generating new data
         setSelectedPoint(null);
         setKnnNeighborsGeoJson(null);
+        setRadiusSearchResultsGeoJson(null); // Clear radius search results
         if (selectedMarkerRef.current) {
             selectedMarkerRef.current.remove();
             selectedMarkerRef.current = null;
@@ -262,6 +331,54 @@ const Visualizer: React.FC = () => {
         }
     };
 
+    // --- Handle Radius Search ---
+    const handleRadiusSearch = async () => {
+        if (!selectedPoint) {
+            showNotification(400, '/visualizer/range-search', 'POST', 'No point selected on the map.');
+            return;
+        }
+        setIsLoadingRadius(true);
+        setRadiusSearchResultsGeoJson(null); // Clear previous results visually
+        const startTime = performance.now();
+        let status = 500;
+        let errorMsg: string | undefined;
+        try {
+            const payload = {
+                point: { lon: selectedPoint.lng, lat: selectedPoint.lat },
+                radius: radius // Use radius state
+            };
+            const response = await fetch(`${API_URL}/visualizer/range-search`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload),
+            });
+            status = response.status;
+            if (!response.ok) {
+                errorMsg = await response.text() || 'Failed to find points in range';
+                throw new Error(errorMsg);
+            }
+            const radiusData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
+            setRadiusSearchResultsGeoJson(radiusData); // Update state, triggering useEffect
+            console.log('Range search successful, received points:', radiusData);
+
+        } catch (error) {
+            console.error('Error finding points in range:', error);
+            if (error instanceof Error) {
+                if (!error.message.includes('Failed to find points in range')) {
+                    errorMsg = error.message;
+                }
+            }
+            if (status !== 200 && !errorMsg) {
+                errorMsg = 'Caught an unknown error during range search';
+            }
+        } finally {
+            const endTime = performance.now();
+            const durationMs = endTime - startTime;
+            showNotification(status, '/visualizer/range-search', 'POST', errorMsg, durationMs);
+            setIsLoadingRadius(false);
+        }
+    };
+
     // --- Effect to Update KNN Neighbors Layer ---
     useEffect(() => {
         if (mapRef.current) {
@@ -273,6 +390,81 @@ const Visualizer: React.FC = () => {
             }
         }
     }, [knnNeighborsGeoJson]); // Re-run when knnNeighborsGeoJson changes
+
+    // --- Effect to Recreate Index on Backend When Selection Changes ---
+    useEffect(() => {
+        const recreateIndex = async () => {
+            if (!selectedIndex) return; // Don't run if index is empty
+
+            console.log(`Index selected: ${selectedIndex}. Sending request to backend.`);
+
+            const startTime = performance.now();
+            let status = 500;
+            let errorMsg: string | undefined;
+
+            try {
+                const response = await fetch(`${API_URL}/visualizer`, {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify({ index: selectedIndex }),
+                });
+                status = response.status;
+                if (!response.ok) {
+                    errorMsg = await response.text() || `Failed to switch index to ${selectedIndex}`;
+                    throw new Error(errorMsg);
+                }
+                console.log(`Backend acknowledged index switch to ${selectedIndex}`);
+                // Clear points and search results
+                setSelectedPoint(null);
+                setKnnNeighborsGeoJson(null);
+                setRadiusSearchResultsGeoJson(null); // Now this exists
+                if (selectedMarkerRef.current) {
+                    selectedMarkerRef.current.remove();
+                    selectedMarkerRef.current = null;
+                }
+                if (mapRef.current) {
+                    const pointsSource = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
+                    if (pointsSource) pointsSource.setData({ type: 'FeatureCollection', features: [] });
+                    const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
+                    if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
+                    const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
+                    // Need to add this source/layer first, will do later
+                    // if (radiusSource) radiusSource.setData({ type: 'FeatureCollection', features: [] }); 
+                }
+
+            } catch (error) {
+                console.error('Error switching index:', error);
+                if (error instanceof Error) {
+                    if (!error.message.includes('Failed to switch index')) { // Simpler check
+                        errorMsg = error.message;
+                    }
+                }
+                if (status !== 200 && !errorMsg) {
+                    errorMsg = 'Caught an unknown error during index switch';
+                }
+            } finally {
+                const endTime = performance.now();
+                const durationMs = endTime - startTime;
+                showNotification(status, `/visualizer (index: ${selectedIndex})`, 'POST', errorMsg, durationMs);
+            }
+        };
+
+        recreateIndex();
+    }, [selectedIndex]);
+
+    // --- Effect to Update Radius Search Layer ---
+    useEffect(() => {
+        if (mapRef.current) {
+            const source = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
+            if (source) {
+                source.setData(radiusSearchResultsGeoJson || { type: 'FeatureCollection', features: [] });
+                console.log('Updated radius-search-results source');
+            } else {
+                // Source might not exist yet on initial load, this is okay
+                // console.log('Radius search source not found yet.'); 
+            }
+        }
+    }, [radiusSearchResultsGeoJson]);
 
     return (
         <div className="page-container visualizer-page">
@@ -341,6 +533,28 @@ const Visualizer: React.FC = () => {
                 )}
             </div>
             {/* --- End KNN UI --- */}
+
+            {/* --- Radius Search UI --- */}
+            <div className="radius-controls form-group" style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <label htmlFor="radius-input">Radius (m):</label>
+                <input
+                    type="number"
+                    id="radius-input"
+                    value={radius}
+                    onChange={(e) => setRadius(Math.max(1, Number(e.target.value)))} // Ensure radius is positive
+                    min="1"
+                    disabled={isLoadingRadius}
+                    style={{ width: '80px' }}
+                />
+                <button
+                    onClick={handleRadiusSearch}
+                    disabled={!selectedPoint || isLoadingRadius || isLoadingGenerate}
+                    className="radius-button"
+                >
+                    {isLoadingRadius ? 'Searching...' : 'Search Radius'}
+                </button>
+            </div>
+            {/* --- End Radius Search UI --- */}
 
             <Notification message={notification} />
 

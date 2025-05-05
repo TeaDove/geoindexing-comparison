@@ -53,7 +53,7 @@ func (r *Service) SetVisualizer(ctx context.Context, input *NewVisualizerInput) 
 
 	zerolog.Ctx(ctx).
 		Info().
-		Interface("v", r.Visualizer).
+		Int("v", len(r.Visualizer.GetPoints())).
 		Msg("visualizer.set")
 
 	return &r.Visualizer, nil

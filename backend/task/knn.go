@@ -45,3 +45,13 @@ func (r *KNN10) Run(col index.Impl, _ uint64) time.Duration {
 
 	return t
 }
+
+type KNN100 struct{}
+
+func (r *KNN100) Run(col index.Impl, _ uint64) time.Duration {
+	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
+
+	_, t := col.KNNTimed(point, 100)
+
+	return t
+}

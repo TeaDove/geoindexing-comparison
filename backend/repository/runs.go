@@ -69,13 +69,13 @@ func (r *Repository) GetPending(ctx context.Context) ([]Run, error) {
 	return runs, nil
 }
 
-func (r *Repository) GetRun(ctx context.Context, id int) (*Run, error) {
+func (r *Repository) GetRun(ctx context.Context, id uint64) (*Run, error) {
 	var run Run
 
 	err := r.db.
 		WithContext(ctx).
-		Find(&run).
 		Where("id = ?", id).
+		Find(&run).
 		Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get run")

@@ -1,13 +1,16 @@
 package geo
 
-import "math"
+import (
+	"github.com/tidwall/geodesic"
+	"math"
+)
 
 // degreesToRadians converts from degrees to radians.
 func degreesToRadians(d float64) float64 {
 	return d * math.Pi / 180
 }
 
-func distance(lat1, lon1, lat2, lon2 float64) float64 {
+func distanceHaversine(lat1, lon1, lat2, lon2 float64) float64 {
 	const earthRadiusKm = 6371 // radius of the earth in kilometers.
 
 	lat1 = degreesToRadians(lat1)
@@ -26,8 +29,19 @@ func distance(lat1, lon1, lat2, lon2 float64) float64 {
 	return c * earthRadiusKm
 }
 
+func distanceGeodesic(lat1, lon1, lat2, lon2 float64) float64 {
+	var dist float64
+	geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2, &dist, nil, nil)
+
+	return dist
+}
+
+var distanceFunc = distanceHaversine
+
+//var distanceFunc = distanceGeodesic
+
 func Distance(a, b Point) float64 {
-	return distance(a.Lat, a.Lon, b.Lat, b.Lon)
+	return distanceFunc(a.Lat, a.Lon, b.Lat, b.Lon)
 }
 
 func (r Point) DistanceTo(other Point) float64 {
@@ -35,5 +49,5 @@ func (r Point) DistanceTo(other Point) float64 {
 }
 
 func (r Point) DistanceToLatLng(lat, lon float64) float64 {
-	return distance(r.Lat, r.Lon, lat, lon)
+	return distanceHaversine(r.Lat, r.Lon, lat, lon)
 }
