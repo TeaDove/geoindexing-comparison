@@ -5,9 +5,8 @@ import (
 	"geoindexing_comparison/backend/helpers"
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
-	"strings"
-
 	"golang.org/x/exp/slices"
+	"strings"
 
 	"github.com/pkg/errors"
 
@@ -97,6 +96,38 @@ func (r *Points) SortByDistance(origin Point) {
 		}
 		return 1
 	})
+}
+
+func (r *Points) GetClosestViaSort(origin Point, n int) Points {
+	if n > len(*r) {
+		return *r
+	}
+
+	type dist struct {
+		idx  int
+		dist float64
+	}
+
+	knnMatrix := make([]dist, 0, len(*r))
+	for idx, indexPoint := range *r {
+		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceTo(origin)})
+	}
+
+	slices.SortFunc(knnMatrix, func(a, b dist) int {
+		if a.dist < b.dist {
+			return -1
+		}
+
+		return 0
+	})
+
+	result := make(Points, n)
+
+	for idx := range n {
+		result[idx] = (*r)[knnMatrix[idx].idx]
+	}
+
+	return result
 }
 
 func (r *Points) Equal(other Points) bool {

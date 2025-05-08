@@ -1,0 +1,34 @@
+package geohash_btree
+
+import (
+	"geoindexing_comparison/backend/generator"
+	"github.com/stretchr/testify/assert"
+	"github.com/teadove/teasutils/utils/test_utils"
+	"testing"
+)
+
+func TestKNNOk(t *testing.T) {
+	t.Parallel()
+
+	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
+	collection := Factory(4)()
+	collection.FromArray(points)
+
+	origin := points.GetRandomPoint()
+	result, _ := collection.KNNTimed(origin, 100)
+	assert.Len(t, result, 100)
+}
+
+func TestRangeSearchOk(t *testing.T) {
+	t.Parallel()
+
+	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
+	collection := Factory(5)()
+	collection.FromArray(points)
+
+	origin := points.GetRandomPoint()
+	distance := origin.DistanceTo(points.GetRandomPoint())
+
+	points, _ = collection.RangeSearchTimed(origin, distance)
+	test_utils.Pprint(len(points))
+}

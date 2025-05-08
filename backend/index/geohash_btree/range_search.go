@@ -19,19 +19,20 @@ func (r *CollectionGeohash) findNear(pointGeohash uint64, origin geo.Point, dist
 }
 
 func (r *CollectionGeohash) searchNeighbors(origin geo.Point, originHash uint64, radius float64, neighbors []uint64) geo.Points {
+
 	var points geo.Points
 	for _, neighbor := range neighbors {
 		points = append(points, r.findNear(neighbor, origin, radius)...)
-		lat, lng := geohash.DecodeIntWithPrecision(neighbor, r.geohashPrecision)
+		lat, lng := geohash.DecodeIntWithPrecision(neighbor, r.geohashBits)
 		if origin.DistanceToLatLng(lat, lng) <= radius {
-			points = append(points, r.searchNeighbors(origin, originHash, radius, geohash.NeighborsIntWithPrecision(originHash, r.geohashPrecision))...)
+			points = append(points, r.searchNeighbors(origin, originHash, radius, geohash.NeighborsIntWithPrecision(originHash, r.geohashBits))...)
 		}
 	}
 
 	return points
 }
 
-func (r *CollectionGeohash) RangeSearchTimed(origin geo.Point, radius float64) (geo.Points, time.Duration) {
+func (r *CollectionGeohash) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
 	return r.rangeSearch(origin, radius), time.Since(t0)
@@ -41,7 +42,7 @@ func (r *CollectionGeohash) rangeSearch(origin geo.Point, radius float64) geo.Po
 	originGeohash := r.geohash(origin)
 	points := r.findNear(originGeohash, origin, radius)
 
-	neighbors := geohash.NeighborsIntWithPrecision(r.geohash(origin), r.geohashPrecision)
+	neighbors := geohash.NeighborsIntWithPrecision(r.geohash(origin), r.geohashBits)
 	points = append(points, r.searchNeighbors(origin, originGeohash, radius, neighbors)...)
 
 	return points

@@ -289,7 +289,7 @@ const Visualizer: React.FC = () => {
     // --- Handle Radius Search ---
     const handleRadiusSearch = async () => {
         if (!selectedPoint) {
-            showNotification(400, '/visualizer/range-search', 'POST', 'No point selected on the map.');
+            showNotification(400, '/visualizer/bbox', 'POST', 'No point selected on the map.');
             return;
         }
         setIsLoadingRadius(true);
@@ -298,38 +298,46 @@ const Visualizer: React.FC = () => {
         let status = 500;
         let errorMsg: string | undefined;
         try {
+            // Calculate BBox from selectedPoint and radius
+            const earthRadiusMeters = 6378137; // Earth's radius in meters
+            // Convert radius from meters to degrees for latitude
+            const latDiffDegrees = (radius / earthRadiusMeters) * (180 / Math.PI);
+            // Convert radius from meters to degrees for longitude (depends on latitude)
+            const lonDiffDegrees = (radius / (earthRadiusMeters * Math.cos(Math.PI * selectedPoint.lat / 180))) * (180 / Math.PI);
+
             const payload = {
-                point: { lon: selectedPoint.lng, lat: selectedPoint.lat },
-                radius: radius // Use radius state
+                bottomLeft: { lon: selectedPoint.lng - lonDiffDegrees, lat: selectedPoint.lat - latDiffDegrees },
+                upperRight: { lon: selectedPoint.lng + lonDiffDegrees, lat: selectedPoint.lat + latDiffDegrees }
             };
-            const response = await fetch(`${API_URL}/visualizer/range-search`, {
+
+            const response = await fetch(`${API_URL}/visualizer/bbox`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(payload),
             });
             status = response.status;
             if (!response.ok) {
-                errorMsg = await response.text() || 'Failed to find points in range';
+                errorMsg = await response.text() || 'Failed to find points in bounding box';
                 throw new Error(errorMsg);
             }
             const radiusData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
             setRadiusSearchResultsGeoJson(radiusData); // Update state, triggering useEffect
-            console.log('Range search successful, received points:', radiusData);
+            console.log('Bounding box search successful, received points:', radiusData);
 
         } catch (error) {
-            console.error('Error finding points in range:', error);
+            console.error('Error finding points in bounding box:', error);
             if (error instanceof Error) {
-                if (!error.message.includes('Failed to find points in range')) {
+                if (!error.message.includes('Failed to find points in bounding box')) {
                     errorMsg = error.message;
                 }
             }
             if (status !== 200 && !errorMsg) {
-                errorMsg = 'Caught an unknown error during range search';
+                errorMsg = 'Caught an unknown error during bounding box search';
             }
         } finally {
             const endTime = performance.now();
             const durationMs = endTime - startTime;
-            showNotification(status, '/visualizer/range-search', 'POST', errorMsg, durationMs);
+            showNotification(status, '/visualizer/bbox', 'POST', errorMsg, durationMs);
             setIsLoadingRadius(false);
         }
     };

@@ -1,6 +1,10 @@
 # Stage 1: Build the React application
 FROM node:lts-alpine AS build
 
+# Declare build arguments
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
 WORKDIR /app
 
 # Copy package.json and package-lock.json (or yarn.lock)

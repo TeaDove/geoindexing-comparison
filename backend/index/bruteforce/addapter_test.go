@@ -2,6 +2,7 @@ package bruteforce
 
 import (
 	"geoindexing_comparison/backend/generator"
+	"github.com/teadove/teasutils/utils/test_utils"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,9 +27,6 @@ func TestUnit_PointGenerator_RadiusSearch_Ok(t *testing.T) {
 	collection := New()
 	collection.FromArray(points)
 
-	origin := points.GetRandomPoint()
-	collection.RangeSearchTimed(
-		origin,
-		(generator.DefaultInput.LatUpperBound-generator.DefaultInput.LatLowerBound)/6,
-	)
+	points, _ = collection.BBoxTimed(points.GetRandomPoint(), points.GetRandomPoint())
+	test_utils.Pprint(points)
 }

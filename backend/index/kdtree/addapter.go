@@ -64,13 +64,10 @@ func (r *CollectionKDTree) InsertTimed(point geo.Point) time.Duration {
 	return time.Since(t0)
 }
 
-func (r *CollectionKDTree) RangeSearchTimed(
-	origin geo.Point,
-	radius float64,
-) (geo.Points, time.Duration) {
+func (r *CollectionKDTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	res := r.impl.RangeSearch(
-		kdrange.New(origin.Lat-radius, origin.Lat+radius, origin.Lon-radius, origin.Lon+radius),
+		kdrange.New(bottomLeft.Lat, upperRight.Lat, bottomLeft.Lon, upperRight.Lon),
 	)
 	dur := time.Since(t0)
 

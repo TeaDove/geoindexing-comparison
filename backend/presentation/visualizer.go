@@ -48,14 +48,14 @@ func (r *Presentation) KNN(c *fiber.Ctx) error {
 	return sendPoints(c, points, dur)
 }
 
-func (r *Presentation) RangeSearch(c *fiber.Ctx) error {
-	var req service.RangeSearchInput
+func (r *Presentation) BBox(c *fiber.Ctx) error {
+	var req service.BBoxInput
 
 	err := c.BodyParser(&req)
 	if err != nil {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
-	points, dur := r.service.Visualizer.RangeSearch(&req)
+	points, dur := r.service.Visualizer.BBox(&req)
 	return sendPoints(c, points, dur)
 }

@@ -53,7 +53,7 @@ func (r *Service) SetVisualizer(ctx context.Context, input *NewVisualizerInput) 
 
 	zerolog.Ctx(ctx).
 		Info().
-		Int("v", len(r.Visualizer.GetPoints())).
+		Int("v", len(r.Visualizer.points)).
 		Msg("visualizer.set")
 
 	return &r.Visualizer, nil
@@ -78,14 +78,14 @@ func (r *Visualizer) KNN(input *KNNInput) (geo.Points, time.Duration) {
 	return r.index.KNNTimed(input.Point, input.N)
 }
 
-type RangeSearchInput struct {
-	Point  geo.Point `json:"point"`
-	Radius float64   `json:"radius"`
+type BBoxInput struct {
+	BottomLeft geo.Point `json:"bottomLeft"`
+	UpperRight geo.Point `json:"upperRight"`
 }
 
-func (r *Visualizer) RangeSearch(input *RangeSearchInput) (geo.Points, time.Duration) {
+func (r *Visualizer) BBox(input *BBoxInput) (geo.Points, time.Duration) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	return r.index.RangeSearchTimed(input.Point, input.Radius)
+	return r.index.BBoxTimed(input.BottomLeft, input.UpperRight)
 }

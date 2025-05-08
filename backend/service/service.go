@@ -45,7 +45,6 @@ func NewRunner(ctx context.Context, repository *repository.Repository) *Service 
 	must_utils.Must(r.SetVisualizer(ctx, &NewVisualizerInput{Amount: 10, Index: r.Indexes[0].Info.ShortName}))
 
 	go r.initRunner()
-
 	zerolog.Ctx(ctx).
 		Info().
 		Strs("indexes", slices.Collect(maps.Keys(r.NameToIndex))).

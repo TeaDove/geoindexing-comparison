@@ -2,8 +2,6 @@ package geohash_btree
 
 import (
 	"geoindexing_comparison/backend/geo"
-	mapset "github.com/deckarep/golang-set/v2"
-	"github.com/mmcloughlin/geohash"
 	"time"
 )
 
@@ -24,40 +22,29 @@ func findMostDistantPoint(origin geo.Point, points geo.Points) (geo.Point, float
 	return mostDistantPoint, maxDistance
 }
 
-func (r *CollectionGeohash) findInNeighbors(processedNeighbors mapset.Set[uint64], foundPoints *geo.Points, n int) {
-	for neighbor := range processedNeighbors.Each {
-		neighbors := geohash.NeighborsIntWithPrecision(neighbor, r.geohashPrecision)
-		for _, foundNeighbor := range neighbors {
-			if processedNeighbors.Contains(foundNeighbor) {
-				continue
-			}
-
-			points, _ := r.btree.Get(neighbor)
-			*foundPoints = append(*foundPoints, points...)
-			if len(points) >= n {
-				return
-			}
-
-			processedNeighbors.Add(neighbor)
-		}
-	}
-}
-
 func (r *CollectionGeohash) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
 	originGeohash := r.geohash(origin)
+	iters := 0
 	points, _ := r.btree.Get(originGeohash)
-	processedGeohashes := mapset.NewSet[uint64]()
-	processedGeohashes.Add(originGeohash)
 
-	for len(points) < int(n) {
-		r.findInNeighbors(processedGeohashes, &points, int(n))
+	for neighbor := range geo.GeohashNeighborIter(originGeohash, r.geohashBits) {
+		neighborPoints, _ := r.btree.Get(neighbor)
+		points = append(points, neighborPoints...)
+
+		iters++
+		if len(neighborPoints) != 0 {
+			println(neighbor, len(points), n, len(points) >= int(n), len(neighborPoints), iters)
+		}
+
+		if len(points) >= int(n) {
+			break
+		}
 	}
 
 	_, maxDistance := findMostDistantPoint(origin, points)
 	pointsInRange := r.rangeSearch(origin, maxDistance)
-	pointsInRange.SortByDistance(origin)
 
-	return pointsInRange[:n], time.Since(t0)
+	return pointsInRange.GetClosestViaSort(origin, int(n)), time.Since(t0)
 }

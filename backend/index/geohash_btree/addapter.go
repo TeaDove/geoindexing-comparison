@@ -8,24 +8,18 @@ import (
 )
 
 type CollectionGeohash struct {
-	btree            btree.Map[uint64, geo.Points]
-	geohashPrecision uint
+	btree       btree.Map[uint64, geo.Points]
+	geohashBits uint
 }
 
-func New() index.Impl {
-	collection := CollectionGeohash{btree: *btree.NewMap[uint64, geo.Points](2), geohashPrecision: 7}
-
-	return &collection
-}
-
-func Factory(geohashPrecision uint) func() index.Impl {
+func Factory(geohashPrecisionChars uint) func() index.Impl {
 	return func() index.Impl {
-		return &CollectionGeohash{btree: *btree.NewMap[uint64, geo.Points](2), geohashPrecision: geohashPrecision}
+		return &CollectionGeohash{btree: *btree.NewMap[uint64, geo.Points](2), geohashBits: geohashPrecisionChars * 5}
 	}
 }
 
 func (r *CollectionGeohash) geohash(point geo.Point) uint64 {
-	return point.Geohash(r.geohashPrecision)
+	return point.Geohash(r.geohashBits)
 }
 
 func (r *CollectionGeohash) FromArray(points geo.Points) {

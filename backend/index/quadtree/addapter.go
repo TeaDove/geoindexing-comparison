@@ -56,18 +56,15 @@ func toConcrete(qtreePoints []qtree.Point[string]) geo.Points {
 	return geoPoints
 }
 
-func (r *CollectionQuadTree) RangeSearchTimed(
-	origin geo.Point,
-	radius float64,
-) (geo.Points, time.Duration) {
+func (r *CollectionQuadTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
 	res := r.impl.QueryRange(
 		qtree.NewBounds[string](
-			origin.Lat-radius,
-			origin.Lon-radius,
-			origin.Lat+radius,
-			origin.Lon+radius,
+			bottomLeft.Lat,
+			bottomLeft.Lon,
+			upperRight.Lat-bottomLeft.Lat,
+			upperRight.Lon-bottomLeft.Lon,
 		),
 	)
 	dur := time.Since(t0)

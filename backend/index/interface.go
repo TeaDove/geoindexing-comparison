@@ -24,8 +24,8 @@ type Impl interface {
 	// KNNTimed returns array of closest n geo.Points to given geo.Point
 	KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration)
 
-	// RangeSearchTimed returns run geo.Points in radius around geo.Point
-	RangeSearchTimed(origin geo.Point, radius float64) (geo.Points, time.Duration)
+	// BBoxTimed returns points inside rectangle
+	BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration)
 }
 
 type Info struct {

@@ -10,11 +10,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/teadove/teasutils/utils/logger_utils"
 	"github.com/teadove/teasutils/utils/notify_utils"
-	"github.com/teadove/teasutils/utils/settings_utils"
 )
 
 func withProfiler() error {
-	file, err := os.Create(settings_utils.ServiceSettings.Prof.ResultFilename)
+	file, err := os.Create("cpu.prof")
 	if err != nil {
 		return errors.Wrap(err, "could not open result file")
 	}
@@ -44,7 +43,9 @@ func main() {
 		panic(errors.Wrap(err, "failed to initialize repository"))
 	}
 
-	app := presentation.NewPresentation(service.NewRunner(ctx, runsRepository))
+	runner := service.NewRunner(ctx, runsRepository)
+
+	app := presentation.NewPresentation(runner)
 
 	err = app.Run(ctx, "0.0.0.0:8000")
 	if err != nil {

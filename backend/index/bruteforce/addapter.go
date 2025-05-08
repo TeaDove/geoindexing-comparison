@@ -4,8 +4,6 @@ import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
 	"time"
-
-	"golang.org/x/exp/slices"
 )
 
 type CollectionBruteforce struct {
@@ -32,18 +30,12 @@ func (r *CollectionBruteforce) InsertTimed(point geo.Point) time.Duration {
 	return time.Since(t0)
 }
 
-func (r *CollectionBruteforce) RangeSearchTimed(
-	origin geo.Point,
-	radius float64,
-) (geo.Points, time.Duration) {
+func (r *CollectionBruteforce) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	points := make(geo.Points, 0, 10)
 
 	for _, indexPoint := range r.impl {
-		if indexPoint.Lat < origin.Lat+radius &&
-			indexPoint.Lat > origin.Lat-radius &&
-			indexPoint.Lon < origin.Lon+radius &&
-			indexPoint.Lon > origin.Lon-radius {
+		if bottomLeft.Lat < indexPoint.Lat && bottomLeft.Lon < indexPoint.Lon && indexPoint.Lat < upperRight.Lat && indexPoint.Lon < upperRight.Lon {
 			points = append(points, indexPoint)
 		}
 	}
@@ -55,41 +47,7 @@ func (r *CollectionBruteforce) RangeSearchTimed(
 
 func (r *CollectionBruteforce) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
-	if int(n) > len(r.impl) {
-		return r.impl, time.Since(t0)
-	}
-
-	type dist struct {
-		idx  int
-		dist float64
-	}
-
-	knnMatrix := make([]dist, 0, len(r.impl))
-	for idx, indexPoint := range r.impl {
-		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceTo(origin)})
-	}
-
-	slices.SortFunc(knnMatrix, func(a, b dist) int {
-		if a.dist < b.dist {
-			return -1
-		}
-
-		if a.dist > b.dist {
-			return 1
-		}
-
-		return 0
-	})
-
-	result := make(geo.Points, n)
-
-	for idx := range n {
-		result[idx] = r.impl[knnMatrix[idx].idx]
-	}
-
-	dur := time.Since(t0)
-
-	return result, dur
+	return r.impl.GetClosestViaSort(origin, int(n)), time.Since(t0)
 }
 
 func (r *CollectionBruteforce) String() string {

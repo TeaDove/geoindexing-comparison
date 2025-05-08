@@ -64,11 +64,11 @@ func AllTasks() []Task {
 		},
 		{
 			Info: Info{
-				ShortName:   "radius_search",
-				LongName:    "Поиск в радиусе",
+				ShortName:   "bbox",
+				LongName:    "Поиск в прямоугольнике",
 				Description: "TDB",
 			},
-			Builder: func() Impl { return &RadiusSearch{} },
+			Builder: func() Impl { return &BBox{} },
 		},
 		//{
 		//	Info: TaskInfo{

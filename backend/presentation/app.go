@@ -24,17 +24,19 @@ func NewPresentation(service *service.Service) *Presentation {
 	app.Use(fiber_utils.MiddlewareLogger())
 	app.Use(cors.New(cors.ConfigDefault))
 
-	app.Get("/tasks", r.getTasks)
-	app.Get("/indexes", r.getIndexes)
-	app.Get("/runs", r.runs)
-	app.Post("/runs/stats", r.getStats)
-	app.Post("/runs/resume", r.runResume)
-	app.Post("/runs/reset", r.runReset)
+	api := app.Group("/api")
 
-	app.Post("/visualizer", r.NewVisualizer)
-	app.Get("/visualizer/points", r.GetPoints)
-	app.Post("/visualizer/knn", r.KNN)
-	app.Post("/visualizer/range-search", r.RangeSearch)
+	api.Get("/tasks", r.getTasks)
+	api.Get("/indexes", r.getIndexes)
+	api.Get("/runs", r.runs)
+	api.Post("/runs/stats", r.getStats)
+	api.Post("/runs/resume", r.runResume)
+	api.Post("/runs/reset", r.runReset)
+
+	api.Post("/visualizer", r.NewVisualizer)
+	api.Get("/visualizer/points", r.GetPoints)
+	api.Post("/visualizer/knn", r.KNN)
+	api.Post("/visualizer/bbox", r.BBox)
 
 	return &r
 }

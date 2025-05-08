@@ -3,6 +3,7 @@ package rtree
 import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
+	"github.com/pkg/errors"
 	"time"
 
 	"github.com/dhconnelly/rtreego"
@@ -45,11 +46,12 @@ func (r *CollectionRTree) KNNTimed(origin geo.Point, n uint64) (geo.Points, time
 	return result, dur
 }
 
-func (r *CollectionRTree) RangeSearchTimed(
-	origin geo.Point,
-	radius float64,
-) (geo.Points, time.Duration) {
-	rect, _ := rtreego.NewRect([]float64{origin.Lat, origin.Lon}, []float64{2 * radius, 2 * radius})
+func (r *CollectionRTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
+	rect, err := rtreego.NewRectFromPoints([]float64{bottomLeft.Lat, bottomLeft.Lon}, []float64{upperRight.Lat, upperRight.Lon})
+	if err != nil {
+		panic(errors.Wrap(err, "could not create rectangle"))
+	}
+
 	t0 := time.Now()
 	points := r.impl.SearchIntersect(rect)
 	dur := time.Since(t0)

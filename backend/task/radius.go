@@ -6,24 +6,14 @@ import (
 	"time"
 )
 
-type RadiusSearch struct{}
+type BBox struct{}
 
-func (r *RadiusSearch) Name() string {
-	return "Поиск в радиусе"
-}
-
-func (r *RadiusSearch) Filename() string { return "radius_search" }
-
-func (r *RadiusSearch) Description() string {
-	return ""
-}
-
-func (r *RadiusSearch) Run(index index.Impl, _ uint64) time.Duration {
+func (r *BBox) Run(index index.Impl, _ uint64) time.Duration {
 	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
 
-	_, t := index.RangeSearchTimed(
+	_, t := index.BBoxTimed(
 		point,
-		(generator.DefaultInput.LatUpperBound-generator.DefaultInput.LatLowerBound)/6,
+		generator.DefaultGenerator.Point(&generator.DefaultInput),
 	)
 
 	return t
