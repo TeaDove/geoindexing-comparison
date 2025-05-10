@@ -225,14 +225,14 @@ const Visualizer: React.FC = () => {
 
             // Update map source if request was successful
             if (status === 200 && geoJsonData && mapRef.current) {
-                const source = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
-                if (source) {
-                    source.setData(geoJsonData);
-                    console.log('Updated Mapbox source with generated data.');
-                } else {
-                    console.error('Mapbox source "points" not found.');
-                    showNotification(500, 'Mapbox', 'Source Update', 'Source not found after generate');
+                const pointsSource = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
+                if (pointsSource && geoJsonData) {
+                    pointsSource.setData(geoJsonData); // Only set data if we have valid GeoJSON
                 }
+                const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
+                if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
+                const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
+                if (radiusSource) radiusSource.setData({ type: 'FeatureCollection', features: [] });
             } else if (status === 200 && geoJsonData && !mapRef.current) {
                 console.error('Map instance not available when trying to update source after generate.');
                 showNotification(500, 'Mapbox', 'Source Update', 'Map not ready after generate');
@@ -364,6 +364,7 @@ const Visualizer: React.FC = () => {
             const startTime = performance.now();
             let status = 500;
             let errorMsg: string | undefined;
+            let geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> | null = null;
 
             try {
                 const response = await fetch(`${API_URL}/visualizer`, {
@@ -376,29 +377,30 @@ const Visualizer: React.FC = () => {
                     errorMsg = await response.text() || `Failed to switch index to ${selectedIndex}`;
                     throw new Error(errorMsg);
                 }
-                console.log(`Backend acknowledged index switch to ${selectedIndex}`);
+                geoJsonData = await response.json(); // Get GeoJSON data from response
+                console.log(`Backend acknowledged index switch to ${selectedIndex} and returned points data`);
+
                 // Clear points and search results
                 setSelectedPoint(null);
                 setKnnNeighborsGeoJson(null);
-                setRadiusSearchResultsGeoJson(null); // Now this exists
+                setRadiusSearchResultsGeoJson(null);
                 if (selectedMarkerRef.current) {
                     selectedMarkerRef.current.remove();
                     selectedMarkerRef.current = null;
                 }
                 if (mapRef.current) {
                     const pointsSource = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
-                    if (pointsSource) pointsSource.setData({ type: 'FeatureCollection', features: [] });
+                    if (pointsSource) pointsSource.setData(geoJsonData); // Update points with new data
                     const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
                     if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
-                    // const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource; // Commented out declaration
-                    // Need to add this source/layer first, will do later
-                    // if (radiusSource) radiusSource.setData({ type: 'FeatureCollection', features: [] }); // Commented out radiusSource usage
+                    const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
+                    if (radiusSource) radiusSource.setData({ type: 'FeatureCollection', features: [] });
                 }
 
             } catch (error) {
                 console.error('Error switching index:', error);
                 if (error instanceof Error) {
-                    if (!error.message.includes('Failed to switch index')) { // Simpler check
+                    if (!error.message.includes('Failed to switch index')) {
                         errorMsg = error.message;
                     }
                 }
