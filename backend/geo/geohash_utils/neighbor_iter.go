@@ -1,4 +1,4 @@
-package geo
+package geohash_utils
 
 import (
 	"github.com/mmcloughlin/geohash"
@@ -19,7 +19,7 @@ func geohashNextDirection(direction geohash.Direction) geohash.Direction {
 	panic("unreachable")
 }
 
-func GeohashNeighborIter(v uint64, bits uint) iter.Seq[uint64] {
+func NeighborIter(v uint64, bits uint) iter.Seq[uint64] {
 	return func(yield func(uint64) bool) {
 		var (
 			step      = 1
@@ -48,6 +48,22 @@ func GeohashNeighborIter(v uint64, bits uint) iter.Seq[uint64] {
 	}
 }
 
-func GeohashCircled(lat, lng float64, radius float64, bits uint) []uint64 {
-	return nil
+func NeighborIterSquared(v uint64, bits uint) iter.Seq[[]uint64] {
+	return func(yield func([]uint64) bool) {
+		if !yield([]uint64{v}) {
+			return
+		}
+
+		bottomLeft := geohash.NeighborIntWithPrecision(v, bits, geohash.SouthWest)
+
+		step := 2
+		for {
+			perimeter := collectPerimeter(bottomLeft, bits, step, step)
+			if !yield(perimeter) {
+				return
+			}
+			step += 2
+			bottomLeft = geohash.NeighborIntWithPrecision(bottomLeft, bits, geohash.SouthWest)
+		}
+	}
 }

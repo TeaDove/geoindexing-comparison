@@ -36,11 +36,19 @@ func (r Point) Geohash(bits uint) uint64 {
 	return geohash.EncodeIntWithPrecision(r.Lat, r.Lon, bits)
 }
 
+func (r Point) GeohashString(chars uint) string {
+	return geohash.EncodeWithPrecision(r.Lat, r.Lon, chars)
+}
+
 func (r Point) GeoJSON() *geojson.Feature {
 	feature := geojson.NewFeature(orb.Point{r.Lon, r.Lat})
 	feature.Properties["ID"] = r.ID
 
 	return feature
+}
+
+func (r Point) InsideBBox(bottomLeft Point, upperRight Point) bool {
+	return bottomLeft.Lat < r.Lat && bottomLeft.Lon < r.Lon && r.Lat < upperRight.Lat && r.Lon < upperRight.Lon
 }
 
 func (r *Points) GetRandomPoint() Point {

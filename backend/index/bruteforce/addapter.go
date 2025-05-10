@@ -34,9 +34,9 @@ func (r *CollectionBruteforce) BBoxTimed(bottomLeft geo.Point, upperRight geo.Po
 	t0 := time.Now()
 	points := make(geo.Points, 0, 10)
 
-	for _, indexPoint := range r.impl {
-		if bottomLeft.Lat < indexPoint.Lat && bottomLeft.Lon < indexPoint.Lon && indexPoint.Lat < upperRight.Lat && indexPoint.Lon < upperRight.Lon {
-			points = append(points, indexPoint)
+	for _, point := range r.impl {
+		if point.InsideBBox(bottomLeft, upperRight) {
+			points = append(points, point)
 		}
 	}
 
