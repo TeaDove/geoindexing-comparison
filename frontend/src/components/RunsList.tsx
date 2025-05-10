@@ -24,7 +24,7 @@ const RunsList: React.FC<RunsListProps> = ({ runs, onRunSelect, selectedRunId })
     };
 
     return (
-        <div className="runs-list">
+        <div className="runs-list" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
             {runs.map(run => (
                 <div
                     key={run.id}

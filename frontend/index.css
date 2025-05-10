@@ -59,6 +59,7 @@ fieldset {
     border-radius: 0.5rem;
     padding: 1.5rem;
     margin-bottom: 1rem;
+    margin-left: 1rem;
     background: rgba(255, 255, 255, 0.9);
 }
 
@@ -72,7 +73,6 @@ legend {
     display: flex;
     align-items: center;
     gap: 2rem;
-    margin-bottom: 2rem;
     background: rgba(255, 255, 255, 0.95);
     padding: 1.5rem;
     border-radius: 0.5rem;

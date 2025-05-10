@@ -23,33 +23,33 @@ import (
 )
 
 type Result struct {
-	Index  string
-	Task   string
-	Amount uint64
-	Durs   stats.Array[time.Duration]
-	Mems   stats.Array[uint64]
+	Durs stats.Array[time.Duration]
+	Mems stats.Array[uint64]
 }
 
-func runCol(ctx context.Context,
-	points geo.Points,
-	idx index.Index,
-	task task.Task,
-	amount uint64,
-) Result {
+func runCol(ctx context.Context, input *RunInput) Result {
 	const repetitions = 5
 
 	durs := make([]time.Duration, 0)
 	mems := make([]uint64, 0)
 
 	for range repetitions {
-		idxImpl := idx.Builder()
-		idxImpl.FromArray(points)
+		indexImpl := input.Index.Builder()
+		indexImpl.FromArray(input.Points)
+
+		taskInput := task.Input{
+			Index:       indexImpl,
+			Amount:      input.Amount,
+			Points:      input.Points,
+			RandomPoint: input.RandomPoint,
+		}
+		taskImpl := input.Task.Builder()
 
 		runtime.GC()
 
 		// TODO add mem checker
 
-		dur := task.Builder().Run(idxImpl, amount)
+		dur := taskImpl.Run(&taskInput)
 
 		runtime.GC()
 
@@ -59,10 +59,9 @@ func runCol(ctx context.Context,
 			zerolog.Ctx(ctx).
 				Warn().
 				Str("dur", dur.String()).
-				Str("col", idx.Info.ShortName).
-				Str("task", task.Info.ShortName).
-				Uint64("amount", amount).
-				Int("points", len(points)).
+				Str("index", input.Index.Info.ShortName).
+				Str("task", input.Task.Info.ShortName).
+				Uint64("amount", input.Amount).
 				Msg("run.is.too.long")
 
 			break
@@ -70,22 +69,18 @@ func runCol(ctx context.Context,
 	}
 
 	return Result{
-		Index:  idx.Info.ShortName,
-		Task:   task.Info.ShortName,
-		Durs:   stats.NewArray(durs),
-		Amount: amount,
-		Mems:   stats.NewArray(mems),
+		Durs: stats.NewArray(durs),
+		Mems: stats.NewArray(mems),
 	}
 }
 
 type RunInput struct {
-	Task      task.Task
-	Index     index.Index
-	TaskInput *task.Input
+	Task  task.Task
+	Index index.Index
 
-	Amount uint64
-	Points geo.Points
-	Point  geo.Point
+	Amount      uint64
+	Points      geo.Points
+	RandomPoint geo.Point
 }
 
 func (r *Service) run(ctx context.Context, run *repository.Run) error {
@@ -98,11 +93,11 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 
 			for _, runIndex := range run.Indexes {
 				inputs = append(inputs, RunInput{
-					Task:   r.NameToTask[runTask],
-					Index:  r.NameToIndex[runIndex],
-					Amount: amount,
-					Points: points,
-					Point:  point,
+					Task:        r.NameToTask[runTask],
+					Index:       r.NameToIndex[runIndex],
+					Amount:      amount,
+					Points:      points,
+					RandomPoint: point,
 				})
 			}
 		}
@@ -120,15 +115,17 @@ func (r *Service) run(ctx context.Context, run *repository.Run) error {
 		Msg("inputs.compiled")
 
 	for int(idx) < len(inputs) {
-		result := runCol(ctx, inputs[idx].Points, inputs[idx].Index, inputs[idx].Task, inputs[idx].Amount)
+		input := inputs[idx]
+		result := runCol(ctx, &input)
 
 		err = r.repository.SaveStats(ctx, &repository.Stats{
 			Idx:    idx,
 			RunID:  run.ID,
-			Index:  result.Index,
-			Task:   result.Task,
-			Amount: result.Amount,
-			Durs:   result.Durs,
+			Index:  input.Index.Info.ShortName,
+			Task:   input.Task.Info.ShortName,
+			Amount: input.Amount,
+
+			Durs: result.Durs,
 		})
 		if err != nil {
 			return errors.Wrap(err, "failed to save")

@@ -144,7 +144,7 @@ const Chart: React.FC = () => {
         <div>
             <div className="chart-header-settings">
                 <nav>
-                    <Link to="/visualizer">Go to Visualizer</Link>
+                    <Link to="/visualizer">Визуализация данных</Link>
                 </nav>
                 <div className="points-input" style={{ marginBottom: '1.5rem' }}>
                     <div>

@@ -19,12 +19,12 @@ body {
   color: var(--text-color);
   line-height: 1.5;
   margin: 0;
-  padding: 2rem;
+  padding: 0;
 }
 
 .app {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
 }
 
 .controls {
@@ -61,12 +61,28 @@ button:disabled {
 }
 
 .run-settings {
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(255, 215, 0, 0.1), 0 2px 4px -2px rgba(255, 215, 0, 0.1);
-  margin-bottom: 2rem;
-  border: 1px solid var(--border-color);
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.run-settings fieldset {
+  background: #fffbe9;
+  border: 2px solid #f5e6c4;
+  border-radius: 12px;
+  padding: 24px 24px 16px 24px;
+  margin-bottom: 24px;
+  min-width: 0;
+}
+
+.run-settings legend {
+  color: #d62728;
+  font-weight: 600;
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  padding: 0 8px;
 }
 
 .points-input {
@@ -288,10 +304,12 @@ fieldset input[type="checkbox"] {
 }
 
 .runs-list {
-  margin-top: 2rem;
+  margin-right: 2rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #FFD700 #f8f6ed;
 }
 
 .run-item {
@@ -419,8 +437,13 @@ fieldset input[type="checkbox"] {
   background-color: #357abd;
 }
 
-.page-container {
-  padding: 2rem;
+.page-container,
+.visualizer-page {
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .visualizer-page nav {
@@ -445,25 +468,18 @@ fieldset input[type="checkbox"] {
 .chart-layout {
   display: flex;
   flex-direction: row;
-  height: 100vh;
-  background: #f8f6ed;
 }
 
 .sidebar {
-  width: 370px;
-  min-width: 320px;
-  max-width: 400px;
-  background: #fff;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  width: 280px;
+  min-width: 220px;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   position: relative;
-  z-index: 2;
   flex-shrink: 0;
-  border-right: 1.5px solid #f0e9d2;
-  overflow-y: auto;
+  margin-left: 16px;
 }
 
 .sidebar nav {
@@ -474,12 +490,11 @@ fieldset input[type="checkbox"] {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start;
-  padding: 3rem 2rem 2rem 2rem;
+  padding: 8px;
   min-width: 0;
   overflow-y: auto;
-  background: #f8f6ed;
 }
 
 @media (max-width: 900px) {
@@ -494,12 +509,83 @@ fieldset input[type="checkbox"] {
     height: auto;
     position: static;
     box-shadow: none;
-    padding: 1rem;
+    padding: 12px;
     border-right: none;
-    border-bottom: 1.5px solid #f0e9d2;
   }
 
   .main-content {
-    padding: 1rem;
+    padding: 4px;
+    height: auto;
   }
+}
+
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-chart {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  overflow: auto;
+}
+
+.runs-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.runs-list::-webkit-scrollbar-thumb {
+  background: #FFD700;
+  border-radius: 4px;
+}
+
+.runs-list::-webkit-scrollbar-track {
+  background: #f8f6ed;
+}
+
+.chart-header-settings {
+  padding: 16px 16px 0 16px;
+}
+
+.visualizer-page>nav {
+  padding: 16px 16px 0 16px;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    padding: 12px;
+  }
+
+  .main-content {
+    padding: 8px;
+  }
+
+  .chart-header-settings {
+    padding: 8px 8px 0 8px;
+  }
+
+  .visualizer-page>nav {
+    padding: 8px 8px 0 8px;
+  }
+}
+
+.visualizer-form {
+  margin: 16px 16px 0 16px;
+}
+
+.mapbox-gl-container {
+  margin: 16px;
+  border-radius: 16px;
 }

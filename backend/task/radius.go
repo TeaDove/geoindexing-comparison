@@ -2,13 +2,18 @@ package task
 
 import (
 	"geoindexing_comparison/backend/geo"
+	"geoindexing_comparison/backend/index/rtree"
 	"time"
 )
 
-type BBoxAll struct{}
+type BBox100 struct{}
 
-func (r *BBoxAll) Run(input *Input) time.Duration {
-	leftBottom, rightUpper := input.Points.FindCorners()
+func (r *BBox100) Run(input *Input) time.Duration {
+	idx := rtree.New()
+	idx.FromArray(input.Points)
+	points, _ := idx.KNNTimed(input.RandomPoint, 100)
+
+	leftBottom, rightUpper := points.FindCorners()
 
 	_, t := input.Index.BBoxTimed(leftBottom, rightUpper)
 

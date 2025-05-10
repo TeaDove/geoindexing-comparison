@@ -486,9 +486,9 @@ const Visualizer: React.FC = () => {
     return (
         <div className="page-container visualizer-page">
             <nav>
-                <Link to="/">Go to Chart</Link>
+                <Link to="/">Вернуться к графикам</Link>
             </nav>
-            <h1>Mapbox GL JS Visualization</h1>
+            <h1>Визуализация</h1>
 
             <div style={{ display: 'flex', flexDirection: 'row', gap: '32px', alignItems: 'flex-start' }}>
                 {/* Index select panel */}
@@ -504,7 +504,7 @@ const Visualizer: React.FC = () => {
                         height: 'fit-content',
                     }}
                 >
-                    <legend style={{ color: '#d62728', fontWeight: 600, fontSize: '1.2em', marginBottom: '12px' }}>Select Index:</legend>
+                    <legend style={{ color: '#d62728', fontWeight: 600, fontSize: '1.2em', marginBottom: '12px' }}>Индексы</legend>
                     {indexes.map(index => (
                         index?.info?.shortName && (
                             <div key={index.info.shortName} style={{ marginBottom: '8px' }}>
@@ -529,7 +529,7 @@ const Visualizer: React.FC = () => {
                     <form onSubmit={handleSubmit} className="visualizer-form">
                         <div className="points-input" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <div>
-                                <label htmlFor="amount-input">Amount:</label>
+                                <label htmlFor="amount-input">Кол-во точек:</label>
                                 <input
                                     type="number"
                                     id="amount-input"
@@ -540,7 +540,7 @@ const Visualizer: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="knn-n-input">Neighbors (N):</label>
+                                <label htmlFor="knn-n-input">Соседи (N):</label>
                                 <input
                                     type="number"
                                     id="knn-n-input"
@@ -551,7 +551,7 @@ const Visualizer: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="radius-input">Radius (m):</label>
+                                <label htmlFor="radius-input">Радиус (m):</label>
                                 <input
                                     type="number"
                                     id="radius-input"
@@ -562,25 +562,25 @@ const Visualizer: React.FC = () => {
                                 />
                             </div>
                             <button type="submit" disabled={isLoadingGenerate || isLoadingKnn} className="submit-button">
-                                {isLoadingGenerate ? 'Generating...' : 'Generate and Load Data'}
+                                {isLoadingGenerate ? 'Generating...' : 'Загрузить данные'}
                             </button>
                             <button
                                 onClick={handleFindKnn}
                                 disabled={isLoadingKnn || isLoadingGenerate}
                                 className="knn-button"
                             >
-                                {isLoadingKnn ? 'Finding...' : 'Find KNN'}
+                                {isLoadingKnn ? 'Finding...' : 'Найти ближайщих соседей'}
                             </button>
                             <button
                                 onClick={handleRadiusSearch}
                                 disabled={isLoadingRadius || isLoadingGenerate}
                                 className="radius-button"
                             >
-                                {isLoadingRadius ? 'Searching...' : 'Search Radius'}
+                                {isLoadingRadius ? 'Searching...' : 'Найти в квадрате'}
                             </button>
                             {selectedPoint && (
                                 <span style={{ fontSize: '0.9em' }}>
-                                    Selected: {selectedPoint.lat.toFixed(4)}, {selectedPoint.lng.toFixed(4)}
+                                    Выбранная точка: {selectedPoint.lat.toFixed(4)}, {selectedPoint.lng.toFixed(4)}
                                 </span>
                             )}
                         </div>

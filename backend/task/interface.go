@@ -72,11 +72,11 @@ func AllTasks() []Task {
 		},
 		{
 			Info: Info{
-				ShortName:   "bbox_all",
-				LongName:    "BBox all",
-				Description: "Поиск всех точек",
+				ShortName:   "bbox_100",
+				LongName:    "BBox 100",
+				Description: "Поиска точек в прямоугольнике, в котором должно быть найдено до 100 точек",
 			},
-			Builder: func() Impl { return &BBoxAll{} },
+			Builder: func() Impl { return &BBox100{} },
 		},
 		{
 			Info: Info{

@@ -35,7 +35,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
-    const [showSE, setShowSE] = useState(false);
+    const [fullscreenTask, setFullscreenTask] = useState<string | null>(null);
 
     // Generate consistent colors for indexes
     const colorMap = useMemo(() => new Map<string, string>(), []);
@@ -163,9 +163,6 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
 
         return (
             <div className="charts-container">
-                <button onClick={() => setShowSE(se => !se)} style={{ marginBottom: 16 }}>
-                    {showSE ? 'Hide SE' : 'Show SE'}
-                </button>
                 {tasks.map(task => {
                     // Filter points for this task
                     const taskPoints = points.filter(p => p.task === task);
@@ -184,15 +181,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                                 errorBarWhiskerColor: getColorForIndex(point.index),
                             };
                         }
-                        if (showSE) {
-                            acc[point.index].data.push({
-                                x: point.x,
-                                y: point.y,
-                                yError: point.se
-                            });
-                        } else {
-                            acc[point.index].data.push({ x: point.x, y: point.y });
-                        }
+                        acc[point.index].data.push({ x: point.x, y: point.y });
                         return acc;
                     }, {} as Record<string, any>);
 
@@ -228,10 +217,28 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                         }
                     };
 
+                    // Fullscreen modal for this chart
+                    const isFullscreen = fullscreenTask === task;
+
                     return (
-                        <div key={task} className="chart-wrapper">
-                            <Line data={chartData} options={options} />
-                        </div>
+                        <React.Fragment key={task}>
+                            <div className="chart-wrapper">
+                                <button style={{ float: 'right', marginBottom: 8 }} onClick={() => setFullscreenTask(task)}>
+                                    Fullscreen
+                                </button>
+                                <Line data={chartData} options={options} />
+                            </div>
+                            {isFullscreen && (
+                                <div className="fullscreen-modal" onClick={() => setFullscreenTask(null)}>
+                                    <div className="fullscreen-chart" onClick={e => e.stopPropagation()}>
+                                        <button style={{ float: 'right', marginBottom: 8 }} onClick={() => setFullscreenTask(null)}>
+                                            Close
+                                        </button>
+                                        <Line data={chartData} options={options} height={600} />
+                                    </div>
+                                </div>
+                            )}
+                        </React.Fragment>
                     );
                 })}
             </div>
