@@ -5,14 +5,14 @@ import (
 	"math"
 )
 
+const earthRadiusKm = 6371 // radius of the earth in kilometers.
+
 // degreesToRadians converts from degrees to radians.
 func degreesToRadians(d float64) float64 {
 	return d * math.Pi / 180
 }
 
 func distanceHaversine(lat1, lon1, lat2, lon2 float64) float64 {
-	const earthRadiusKm = 6371 // radius of the earth in kilometers.
-
 	lat1 = degreesToRadians(lat1)
 	lon1 = degreesToRadians(lon1)
 	lat2 = degreesToRadians(lat2)

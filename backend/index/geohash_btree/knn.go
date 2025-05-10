@@ -6,6 +6,22 @@ import (
 	"time"
 )
 
+func findMostDistant(origin geo.Point, points geo.Points) float64 {
+	var (
+		mostDistance float64
+		distance     float64
+	)
+
+	for _, point := range points {
+		distance = point.DistanceTo(origin)
+		if distance > mostDistance {
+			mostDistance = distance
+		}
+	}
+
+	return mostDistance
+}
+
 func (r *CollectionGeohash) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
@@ -18,5 +34,10 @@ func (r *CollectionGeohash) KNNTimed(origin geo.Point, n uint64) (geo.Points, ti
 		}
 	}
 
-	return points.GetClosestViaSort(origin, int(n)), time.Since(t0)
+	mostDistance := findMostDistant(origin, points)
+	bottomLeft := origin.AddLatitude(-mostDistance).AddLongitude(-mostDistance)
+	upperRight := origin.AddLatitude(mostDistance).AddLongitude(mostDistance)
+	bboxedPoints := r.bbox(bottomLeft, upperRight)
+
+	return bboxedPoints.GetClosestViaSort(origin, int(n)), time.Since(t0)
 }

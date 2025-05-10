@@ -6,6 +6,7 @@ import (
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
 	"golang.org/x/exp/slices"
+	"math"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -51,6 +52,16 @@ func (r Point) InsideBBox(bottomLeft Point, upperRight Point) bool {
 	return bottomLeft.Lat < r.Lat && bottomLeft.Lon < r.Lon && r.Lat < upperRight.Lat && r.Lon < upperRight.Lon
 }
 
+func (r Point) AddLatitude(dvKM float64) Point {
+	r.Lat = r.Lat + (dvKM/earthRadiusKm)*(180/math.Pi)
+	return r
+}
+
+func (r Point) AddLongitude(dvKM float64) Point {
+	r.Lon = r.Lon + (dvKM/earthRadiusKm)*(180/math.Pi)/math.Cos(r.Lat*math.Pi/180)
+	return r
+}
+
 func (r *Points) GetRandomPoint() Point {
 	return (*r)[helpers.RNG.IntN(len(*r))] //nolint: gosec // Allowed here
 }
@@ -62,6 +73,16 @@ func (r *Points) String() string {
 	}
 
 	return string(byteArray)
+}
+
+func (r *Points) IDs() string {
+	var ids []string
+	for _, point := range *r {
+		ids = append(ids, point.ID)
+	}
+
+	slices.Sort(ids)
+	return strings.Join(ids, ",")
 }
 
 func (r *Points) Delete(pointID string) {

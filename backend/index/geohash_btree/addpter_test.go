@@ -26,9 +26,6 @@ func TestRangeSearchOk(t *testing.T) {
 	collection := Factory(5)()
 	collection.FromArray(points)
 
-	origin := points.GetRandomPoint()
-	distance := origin.DistanceTo(points.GetRandomPoint())
-
-	points, _ = collection.RangeSearchTimed(origin, distance)
+	points, _ = collection.BBoxTimed(points.GetRandomPoint(), points.GetRandomPoint())
 	test_utils.Pprint(len(points))
 }

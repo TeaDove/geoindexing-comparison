@@ -5,6 +5,7 @@ import (
 	"geoindexing_comparison/backend/generator"
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
+	"github.com/teadove/teasutils/utils/test_utils"
 	"math"
 	"testing"
 
@@ -103,6 +104,7 @@ func TestKNNOk(t *testing.T) {
 	t.Parallel()
 
 	for _, inputs := range testInputs.PerIndex() { //nolint: paralleltest // Fails otherwise
+
 		var results []geo.Points
 
 		for _, tt := range inputs {
@@ -110,18 +112,34 @@ func TestKNNOk(t *testing.T) {
 				indexObj := tt.Index.Builder()
 				indexObj.FromArray(tt.Points)
 
-				points, _ := indexObj.KNNTimed(tt.Point, 5)
+				points, _ := indexObj.KNNTimed(tt.Point, 10)
 
-				assert.Len(t, points, 5)
+				assert.Len(t, points, 10)
 				results = append(results, points)
 			})
+			test_utils.Pprint(tt.Index.Info.ShortName)
 		}
 
 		results[0].EqualMany(results)
 	}
 }
 
-func TestRangeSearchOk(t *testing.T) {
+func findCornes(points geo.Points) (geo.Point, geo.Point) {
+	bottomLeft, upperRight := points[0], points[0]
+	for _, point := range points {
+		if point.Lat < bottomLeft.Lat && point.Lon < bottomLeft.Lon {
+			bottomLeft = point
+		}
+
+		if point.Lat > upperRight.Lat && point.Lon > upperRight.Lon {
+			upperRight = point
+		}
+	}
+
+	return bottomLeft, upperRight
+}
+
+func TestBBoxOk(t *testing.T) {
 	t.Parallel()
 
 	for _, inputs := range testInputs.PerIndex() { //nolint: paralleltest // Fails otherwise
@@ -132,11 +150,10 @@ func TestRangeSearchOk(t *testing.T) {
 				indexObj := tt.Index.Builder()
 				indexObj.FromArray(tt.Points)
 
-				neiborhs, _ := indexObj.KNNTimed(tt.Point, 5)
+				knns, _ := indexObj.KNNTimed(tt.Point, 5)
+				bottomLeft, upperRight := findCornes(knns)
 
-				points, _ := indexObj.RangeSearchTimed(tt.Point, tt.Point.DistanceTo(neiborhs[len(neiborhs)-1]))
-				assert.GreaterOrEqual(t, len(points), 5)
-
+				points, _ := indexObj.BBoxTimed(bottomLeft, upperRight)
 				results = append(results, points)
 			})
 		}
