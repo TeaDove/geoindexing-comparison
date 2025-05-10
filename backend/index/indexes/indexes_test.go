@@ -124,21 +124,6 @@ func TestKNNOk(t *testing.T) {
 	}
 }
 
-func findCornes(points geo.Points) (geo.Point, geo.Point) {
-	bottomLeft, upperRight := points[0], points[0]
-	for _, point := range points {
-		if point.Lat < bottomLeft.Lat && point.Lon < bottomLeft.Lon {
-			bottomLeft = point
-		}
-
-		if point.Lat > upperRight.Lat && point.Lon > upperRight.Lon {
-			upperRight = point
-		}
-	}
-
-	return bottomLeft, upperRight
-}
-
 func TestBBoxOk(t *testing.T) {
 	t.Parallel()
 
@@ -151,7 +136,7 @@ func TestBBoxOk(t *testing.T) {
 				indexObj.FromArray(tt.Points)
 
 				knns, _ := indexObj.KNNTimed(tt.Point, 5)
-				bottomLeft, upperRight := findCornes(knns)
+				bottomLeft, upperRight := knns.FindCorners()
 
 				points, _ := indexObj.BBoxTimed(bottomLeft, upperRight)
 				results = append(results, points)

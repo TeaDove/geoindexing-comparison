@@ -79,24 +79,30 @@ func runCol(ctx context.Context,
 }
 
 type RunInput struct {
-	Task   task.Task
-	Index  index.Index
+	Task      task.Task
+	Index     index.Index
+	TaskInput *task.Input
+
 	Amount uint64
 	Points geo.Points
+	Point  geo.Point
 }
 
 func (r *Service) run(ctx context.Context, run *repository.Run) error {
 	var inputs []RunInput
 
 	for amount := run.Start; amount < run.Stop; amount += run.Step {
-		for _, runIndex := range run.Indexes {
+		for _, runTask := range run.Tasks {
 			points := generator.DefaultGenerator.Points(&generator.DefaultInput, amount)
-			for _, runTask := range run.Tasks {
+			point := points.GetRandomPoint()
+
+			for _, runIndex := range run.Indexes {
 				inputs = append(inputs, RunInput{
 					Task:   r.NameToTask[runTask],
 					Index:  r.NameToIndex[runIndex],
 					Amount: amount,
 					Points: points,
+					Point:  point,
 				})
 			}
 		}

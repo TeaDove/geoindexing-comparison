@@ -1,12 +1,20 @@
 package task
 
 import (
+	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
 	"time"
 )
 
+type Input struct {
+	Index       index.Impl
+	Amount      uint64
+	Points      geo.Points
+	RandomPoint geo.Point
+}
+
 type Impl interface {
-	Run(index index.Impl, amount uint64) time.Duration
+	Run(input *Input) time.Duration
 }
 
 type Info struct {
@@ -64,11 +72,19 @@ func AllTasks() []Task {
 		},
 		{
 			Info: Info{
-				ShortName:   "bbox",
-				LongName:    "Поиск в прямоугольнике",
-				Description: "TDB",
+				ShortName:   "bbox_all",
+				LongName:    "BBox all",
+				Description: "Поиск всех точек",
 			},
-			Builder: func() Impl { return &BBox{} },
+			Builder: func() Impl { return &BBoxAll{} },
+		},
+		{
+			Info: Info{
+				ShortName:   "bbox_2km",
+				LongName:    "BBox 2km",
+				Description: "Поиск точек в прямоугольнике 2 на 2 км.",
+			},
+			Builder: func() Impl { return &BBox2km{} },
 		},
 		//{
 		//	Info: TaskInfo{

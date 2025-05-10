@@ -66,6 +66,26 @@ func (r *Points) GetRandomPoint() Point {
 	return (*r)[helpers.RNG.IntN(len(*r))] //nolint: gosec // Allowed here
 }
 
+func (r *Points) FindCorners() (Point, Point) {
+	bottomLeft, upperRight := (*r)[0], (*r)[0]
+	for _, point := range *r {
+		if point.Lat < bottomLeft.Lat && point.Lon < bottomLeft.Lon {
+			bottomLeft = point
+		}
+
+		if point.Lat > upperRight.Lat && point.Lon > upperRight.Lon {
+			upperRight = point
+		}
+	}
+
+	return bottomLeft, upperRight
+}
+
+func (r *Points) Center() (float64, float64) {
+	bottomLeft, upperRight := r.FindCorners()
+	return (bottomLeft.Lat + upperRight.Lat) / 2.0, (bottomLeft.Lon + upperRight.Lon) / 2.0
+}
+
 func (r *Points) String() string {
 	byteArray, err := json.Marshal(r)
 	if err != nil {

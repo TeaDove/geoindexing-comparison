@@ -8,17 +8,14 @@ interface RunSettingsProps {
     onResume: (settings: RunSettings) => void;
     onReset: () => void;
     isLoading: boolean;
+    pointsStart: number;
+    pointsEnd: number;
+    pointsStep: number;
 }
 
-const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading }: RunSettingsProps) => {
+const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading, pointsStart, pointsEnd, pointsStep }: RunSettingsProps) => {
     const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
     const [selectedIndexes, setSelectedIndexes] = useState<string[]>([]);
-    const [pointsStart, setPointsStart] = useState(1000);
-    const [pointsEnd, setPointsEnd] = useState(10000);
-    const [pointsStep, setPointsStep] = useState(100);
-    const [displayStart, setDisplayStart] = useState(formatNumber(1000));
-    const [displayEnd, setDisplayEnd] = useState(formatNumber(10000));
-    const [displayStep, setDisplayStep] = useState(formatNumber(100));
 
     // Set default selections when tasks or indexes change
     useEffect(() => {
@@ -69,42 +66,6 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading }: RunSettin
 
     return (
         <div className="run-settings">
-            <div className="points-input">
-                <div>
-                    <label htmlFor="pointsStart">Начальное кол-во точек</label>
-                    <input
-                        type="text"
-                        id="pointsStart"
-                        value={displayStart}
-                        onChange={(e) => handleNumberInput(e.target.value, setPointsStart, setDisplayStart)}
-                        min="100"
-                        max="1000000"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="pointsEnd">Конечное кол-во точек</label>
-                    <input
-                        type="text"
-                        id="pointsEnd"
-                        value={displayEnd}
-                        onChange={(e) => handleNumberInput(e.target.value, setPointsEnd, setDisplayEnd)}
-                        min="100"
-                        max="1000000"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="pointsStep">Шаг</label>
-                    <input
-                        type="text"
-                        id="pointsStep"
-                        value={displayStep}
-                        onChange={(e) => handleNumberInput(e.target.value, setPointsStep, setDisplayStep)}
-                        min="1"
-                        max="1000"
-                    />
-                </div>
-            </div>
-
             <fieldset id="indexes">
                 <legend>Индексы</legend>
                 {indexes.map(index => (

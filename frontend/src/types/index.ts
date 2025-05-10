@@ -53,4 +53,5 @@ export interface Point {
     index: string;
     x: number;
     y: number;
+    se: number;
 } 

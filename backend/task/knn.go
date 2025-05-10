@@ -1,57 +1,45 @@
 package task
 
 import (
-	"geoindexing_comparison/backend/generator"
-	"geoindexing_comparison/backend/index"
 	"time"
 )
 
 type KNN25P struct{}
 
-func (r *KNN25P) Run(index index.Impl, amount uint64) time.Duration {
-	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
-
-	_, t := index.KNNTimed(point, amount/4)
+func (r *KNN25P) Run(input *Input) time.Duration {
+	_, t := input.Index.KNNTimed(input.RandomPoint, input.Amount/4)
 
 	return t
 }
 
 type KNN90P struct{}
 
-func (r *KNN90P) Run(col index.Impl, amount uint64) time.Duration {
-	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
-
-	_, t := col.KNNTimed(point, amount*90/100)
+func (r *KNN90P) Run(input *Input) time.Duration {
+	_, t := input.Index.KNNTimed(input.RandomPoint, input.Amount*90/100)
 
 	return t
 }
 
 type KNN1P struct{}
 
-func (r *KNN1P) Run(col index.Impl, amount uint64) time.Duration {
-	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
-
-	_, t := col.KNNTimed(point, amount/100)
+func (r *KNN1P) Run(input *Input) time.Duration {
+	_, t := input.Index.KNNTimed(input.RandomPoint, input.Amount/100)
 
 	return t
 }
 
 type KNN10 struct{}
 
-func (r *KNN10) Run(col index.Impl, _ uint64) time.Duration {
-	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
-
-	_, t := col.KNNTimed(point, 10)
+func (r *KNN10) Run(input *Input) time.Duration {
+	_, t := input.Index.KNNTimed(input.RandomPoint, 10)
 
 	return t
 }
 
 type KNN100 struct{}
 
-func (r *KNN100) Run(col index.Impl, _ uint64) time.Duration {
-	point := generator.DefaultGenerator.Point(&generator.DefaultInput)
-
-	_, t := col.KNNTimed(point, 100)
+func (r *KNN100) Run(input *Input) time.Duration {
+	_, t := input.Index.KNNTimed(input.RandomPoint, 100)
 
 	return t
 }

@@ -17,6 +17,12 @@ const Chart: React.FC = () => {
     const [selectedRunId, setSelectedRunId] = useState<number | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [notification, setNotification] = useState<NotificationMessage | null>(null)
+    const [pointsStart, setPointsStart] = useState(1000)
+    const [pointsEnd, setPointsEnd] = useState(10000)
+    const [pointsStep, setPointsStep] = useState(100)
+    const [displayStart, setDisplayStart] = useState('1 000')
+    const [displayEnd, setDisplayEnd] = useState('10 000')
+    const [displayStep, setDisplayStep] = useState('100')
 
     useEffect(() => {
         fetchTasks()
@@ -135,23 +141,96 @@ const Chart: React.FC = () => {
     }
 
     return (
-        <div className="page-container">
-            <nav>
-                <Link to="/visualizer">Go to Visualizer</Link>
-            </nav>
-            <RunSettingsComponent
-                tasks={tasks}
-                indexes={indexes}
-                onResume={handleResume}
-                onReset={handleReset}
-                isLoading={isLoading}
-            />
-            <RunsList
-                runs={runs}
-                onRunSelect={setSelectedRunId}
-                selectedRunId={selectedRunId}
-            />
-            <Notification message={notification} />
+        <div>
+            <div className="chart-header-settings">
+                <nav>
+                    <Link to="/visualizer">Go to Visualizer</Link>
+                </nav>
+                <div className="points-input" style={{ marginBottom: '1.5rem' }}>
+                    <div>
+                        <label htmlFor="pointsStart">Начальное кол-во точек</label>
+                        <input
+                            type="text"
+                            id="pointsStart"
+                            value={displayStart}
+                            onChange={e => {
+                                const value = e.target.value;
+                                const numericValue = parseInt(value.replace(/\s/g, ''), 10);
+                                if (!isNaN(numericValue)) {
+                                    setPointsStart(numericValue);
+                                    setDisplayStart(numericValue.toLocaleString('ru-RU'));
+                                } else {
+                                    setDisplayStart(value);
+                                }
+                            }}
+                            min="100"
+                            max="1000000"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="pointsEnd">Конечное кол-во точек</label>
+                        <input
+                            type="text"
+                            id="pointsEnd"
+                            value={displayEnd}
+                            onChange={e => {
+                                const value = e.target.value;
+                                const numericValue = parseInt(value.replace(/\s/g, ''), 10);
+                                if (!isNaN(numericValue)) {
+                                    setPointsEnd(numericValue);
+                                    setDisplayEnd(numericValue.toLocaleString('ru-RU'));
+                                } else {
+                                    setDisplayEnd(value);
+                                }
+                            }}
+                            min="100"
+                            max="1000000"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="pointsStep">Шаг</label>
+                        <input
+                            type="text"
+                            id="pointsStep"
+                            value={displayStep}
+                            onChange={e => {
+                                const value = e.target.value;
+                                const numericValue = parseInt(value.replace(/\s/g, ''), 10);
+                                if (!isNaN(numericValue)) {
+                                    setPointsStep(numericValue);
+                                    setDisplayStep(numericValue.toLocaleString('ru-RU'));
+                                } else {
+                                    setDisplayStep(value);
+                                }
+                            }}
+                            min="1"
+                            max="1000"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="chart-layout">
+                <aside className="sidebar">
+                    <RunSettingsComponent
+                        tasks={tasks}
+                        indexes={indexes}
+                        onResume={handleResume}
+                        onReset={handleReset}
+                        isLoading={isLoading}
+                        pointsStart={pointsStart}
+                        pointsEnd={pointsEnd}
+                        pointsStep={pointsStep}
+                    />
+                </aside>
+                <main className="main-content">
+                    <RunsList
+                        runs={runs}
+                        onRunSelect={setSelectedRunId}
+                        selectedRunId={selectedRunId}
+                    />
+                </main>
+                <Notification message={notification} />
+            </div>
         </div>
     )
 }

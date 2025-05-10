@@ -10,6 +10,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import * as errorBarPlugin from 'chartjs-chart-error-bars';
 import type { Point, Run } from '../types/index';
 import { API_URL } from '../config';
 
@@ -20,8 +21,9 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
 );
+ChartJS.register(errorBarPlugin);
 
 interface ChartsProps {
     selectedRunId: number | null;
@@ -33,6 +35,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
+    const [showSE, setShowSE] = useState(false);
 
     // Generate consistent colors for indexes
     const colorMap = useMemo(() => new Map<string, string>(), []);
@@ -160,6 +163,9 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
 
         return (
             <div className="charts-container">
+                <button onClick={() => setShowSE(se => !se)} style={{ marginBottom: 16 }}>
+                    {showSE ? 'Hide SE' : 'Show SE'}
+                </button>
                 {tasks.map(task => {
                     // Filter points for this task
                     const taskPoints = points.filter(p => p.task === task);
@@ -173,9 +179,20 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                                 borderColor: getColorForIndex(point.index),
                                 tension: 0.4,
                                 cubicInterpolationMode: 'monotone',
+                                showLine: true,
+                                pointStyle: 'circle',
+                                errorBarWhiskerColor: getColorForIndex(point.index),
                             };
                         }
-                        acc[point.index].data.push({ x: point.x, y: point.y });
+                        if (showSE) {
+                            acc[point.index].data.push({
+                                x: point.x,
+                                y: point.y,
+                                yError: point.se
+                            });
+                        } else {
+                            acc[point.index].data.push({ x: point.x, y: point.y });
+                        }
                         return acc;
                     }, {} as Record<string, any>);
 
