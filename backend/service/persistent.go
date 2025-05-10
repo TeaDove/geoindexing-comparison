@@ -62,6 +62,7 @@ type Point struct {
 	Task  string  `json:"task"`
 	X     float64 `json:"x"`
 	Y     float64 `json:"y"`
+	SE    float64 `json:"se"`
 }
 
 func (r *Service) GetChartPoints(ctx context.Context, runID uint64) ([]Point, error) {
@@ -79,6 +80,7 @@ func (r *Service) GetChartPoints(ctx context.Context, runID uint64) ([]Point, er
 			Task:  r.NameToTask[stat.Task].Info.LongName,
 			X:     float64(stat.Amount),
 			Y:     float64(stat.Durs.Median().Microseconds()),
+			SE:    stat.Durs.SE() / 1e3,
 		})
 	}
 

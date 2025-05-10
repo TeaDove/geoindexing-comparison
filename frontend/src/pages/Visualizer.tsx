@@ -85,6 +85,14 @@ const Visualizer: React.FC = () => {
             mapRef.current = map;
             console.log('Mapbox map loaded.');
 
+            // Set default selected point
+            const defaultPoint = new mapboxgl.LngLat(37.609461, 55.728292);
+            setSelectedPoint(defaultPoint);
+            const marker = new Marker({ color: '#d62728' })
+                .setLngLat(defaultPoint)
+                .addTo(map);
+            selectedMarkerRef.current = marker;
+
             // Source and Layer for initially loaded points
             map.addSource('points', {
                 type: 'geojson',
@@ -354,8 +362,9 @@ const Visualizer: React.FC = () => {
         }
     }, [knnNeighborsGeoJson]); // Re-run when knnNeighborsGeoJson changes
 
-    // --- Effect to Load Points on Page Load ---
+    // --- Effect to Load Points on Page Load (after map is ready) ---
     useEffect(() => {
+        if (!mapRef.current) return;
         const loadInitialPoints = async () => {
             const startTime = performance.now();
             let status = 500;
@@ -399,9 +408,8 @@ const Visualizer: React.FC = () => {
                 showNotification(status, '/visualizer/points', 'GET', errorMsg, durationMs);
             }
         };
-
         loadInitialPoints();
-    }, []); // Empty dependency array means this runs once on mount
+    }, [mapRef.current]);
 
     // --- Effect to Recreate Index on Backend When Selection Changes ---
     useEffect(() => {
@@ -429,13 +437,12 @@ const Visualizer: React.FC = () => {
                 geoJsonData = await response.json(); // Get GeoJSON data from response
                 console.log(`Backend acknowledged index switch to ${selectedIndex} and returned points data`);
 
-                // Clear points and search results
-                setSelectedPoint(null);
+                // Clear KNN and radius search results, but DO NOT clear selectedPoint
                 setKnnNeighborsGeoJson(null);
                 setRadiusSearchResultsGeoJson(null);
                 if (mapRef.current) {
                     const pointsSource = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
-                    if (pointsSource) pointsSource.setData(geoJsonData); // Update points with new data
+                    if (pointsSource) pointsSource.setData(geoJsonData);
                     const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
                     if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
                     const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
@@ -483,12 +490,24 @@ const Visualizer: React.FC = () => {
             </nav>
             <h1>Mapbox GL JS Visualization</h1>
 
-            <form onSubmit={handleSubmit} className="visualizer-form">
-                <fieldset id="indexes">
-                    <legend>Select Index:</legend>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '32px', alignItems: 'flex-start' }}>
+                {/* Index select panel */}
+                <fieldset
+                    id="indexes"
+                    style={{
+                        minWidth: '280px',
+                        background: '#fffbe9',
+                        border: '2px solid #f5e6c4',
+                        borderRadius: '8px',
+                        padding: '24px 24px 16px 24px',
+                        margin: 0,
+                        height: 'fit-content',
+                    }}
+                >
+                    <legend style={{ color: '#d62728', fontWeight: 600, fontSize: '1.2em', marginBottom: '12px' }}>Select Index:</legend>
                     {indexes.map(index => (
                         index?.info?.shortName && (
-                            <div key={index.info.shortName}>
+                            <div key={index.info.shortName} style={{ marginBottom: '8px' }}>
                                 <input
                                     type="radio"
                                     id={`index-${index.info.shortName}`}
@@ -497,77 +516,81 @@ const Visualizer: React.FC = () => {
                                     checked={selectedIndex === index.info.shortName}
                                     onChange={(e) => setSelectedIndex(e.target.value)}
                                     disabled={isLoadingGenerate}
+                                    style={{ marginRight: '8px' }}
                                 />
-                                <label htmlFor={`index-${index.info.shortName}`}>
-                                    {index.info.longName} ({index.info.shortName})
-                                </label>
+                                <label htmlFor={`index-${index.info.shortName}`}>{index.info.longName} ({index.info.shortName})</label>
                             </div>
                         )
                     ))}
                 </fieldset>
-                <div className="points-input" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div>
-                        <label htmlFor="amount-input">Amount:</label>
-                        <input
-                            type="number"
-                            id="amount-input"
-                            value={amount}
-                            onChange={(e) => setAmount(Number(e.target.value))}
-                            min="1"
-                            disabled={isLoadingGenerate}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="knn-n-input">Neighbors (N):</label>
-                        <input
-                            type="number"
-                            id="knn-n-input"
-                            value={knnN}
-                            onChange={(e) => setKnnN(Math.max(1, Number(e.target.value)))}
-                            min="1"
-                            disabled={isLoadingKnn}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="radius-input">Radius (m):</label>
-                        <input
-                            type="number"
-                            id="radius-input"
-                            value={radius}
-                            onChange={(e) => setRadius(Math.max(1, Number(e.target.value)))}
-                            min="1"
-                            disabled={isLoadingRadius}
-                        />
-                    </div>
-                    <button type="submit" disabled={isLoadingGenerate || isLoadingKnn} className="submit-button">
-                        {isLoadingGenerate ? 'Generating...' : 'Generate and Load Data'}
-                    </button>
-                    <button
-                        onClick={handleFindKnn}
-                        disabled={!selectedPoint || isLoadingKnn || isLoadingGenerate}
-                        className="knn-button"
-                    >
-                        {isLoadingKnn ? 'Finding...' : 'Find KNN'}
-                    </button>
-                    <button
-                        onClick={handleRadiusSearch}
-                        disabled={!selectedPoint || isLoadingRadius || isLoadingGenerate}
-                        className="radius-button"
-                    >
-                        {isLoadingRadius ? 'Searching...' : 'Search Radius'}
-                    </button>
-                    {selectedPoint && (
-                        <span style={{ fontSize: '0.9em' }}>
-                            Selected: {selectedPoint.lat.toFixed(4)}, {selectedPoint.lng.toFixed(4)}
-                        </span>
-                    )}
+
+                {/* Controls and map */}
+                <div style={{ flex: 1 }}>
+                    <form onSubmit={handleSubmit} className="visualizer-form">
+                        <div className="points-input" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div>
+                                <label htmlFor="amount-input">Amount:</label>
+                                <input
+                                    type="number"
+                                    id="amount-input"
+                                    value={amount}
+                                    onChange={(e) => setAmount(Number(e.target.value))}
+                                    min="1"
+                                    disabled={isLoadingGenerate}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="knn-n-input">Neighbors (N):</label>
+                                <input
+                                    type="number"
+                                    id="knn-n-input"
+                                    value={knnN}
+                                    onChange={(e) => setKnnN(Math.max(1, Number(e.target.value)))}
+                                    min="1"
+                                    disabled={isLoadingKnn}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="radius-input">Radius (m):</label>
+                                <input
+                                    type="number"
+                                    id="radius-input"
+                                    value={radius}
+                                    onChange={(e) => setRadius(Math.max(1, Number(e.target.value)))}
+                                    min="1"
+                                    disabled={isLoadingRadius}
+                                />
+                            </div>
+                            <button type="submit" disabled={isLoadingGenerate || isLoadingKnn} className="submit-button">
+                                {isLoadingGenerate ? 'Generating...' : 'Generate and Load Data'}
+                            </button>
+                            <button
+                                onClick={handleFindKnn}
+                                disabled={isLoadingKnn || isLoadingGenerate}
+                                className="knn-button"
+                            >
+                                {isLoadingKnn ? 'Finding...' : 'Find KNN'}
+                            </button>
+                            <button
+                                onClick={handleRadiusSearch}
+                                disabled={isLoadingRadius || isLoadingGenerate}
+                                className="radius-button"
+                            >
+                                {isLoadingRadius ? 'Searching...' : 'Search Radius'}
+                            </button>
+                            {selectedPoint && (
+                                <span style={{ fontSize: '0.9em' }}>
+                                    Selected: {selectedPoint.lat.toFixed(4)}, {selectedPoint.lng.toFixed(4)}
+                                </span>
+                            )}
+                        </div>
+                    </form>
+
+                    <Notification message={notification} />
+
+                    <div ref={mapContainerRef} className="mapbox-gl-container" style={{ height: '800px', width: '100%', marginTop: '20px' }} />
                 </div>
-            </form>
-
-            <Notification message={notification} />
-
-            <div ref={mapContainerRef} className="mapbox-gl-container" style={{ height: '800px', width: '100%', marginTop: '20px' }} />
-
+            </div>
         </div>
     );
 };

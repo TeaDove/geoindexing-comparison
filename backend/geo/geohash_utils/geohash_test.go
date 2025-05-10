@@ -1,6 +1,7 @@
 package geohash_utils
 
 import (
+	"fmt"
 	"geoindexing_comparison/backend/geo"
 	"github.com/mmcloughlin/geohash"
 	"github.com/stretchr/testify/assert"
@@ -86,5 +87,22 @@ func TestGeohashBboxInnterOk(t *testing.T) {
 	for idx, hash := range bbox.Inner() {
 		lat, lng := geohash.DecodeIntWithPrecision(hash, bits)
 		assert.Equal(t, expHashed[idx], geohash.EncodeWithPrecision(lat, lng, chars))
+	}
+}
+
+func TestGeohashFastNeighborsOk(t *testing.T) {
+	chars := uint(6)
+	bits := chars * 5
+
+	lat, lng := geohash.Decode("ucfv7t")
+	originGeohash := geohash.EncodeIntWithPrecision(lat, lng, bits)
+
+	directions := []geohash.Direction{geohash.North, geohash.NorthEast, geohash.East, geohash.SouthEast, geohash.South, geohash.SouthWest, geohash.West, geohash.NorthWest}
+	for _, direction := range directions {
+		t.Run(fmt.Sprint(direction), func(tt *testing.T) {
+			tt.Parallel()
+
+			assert.Equal(tt, NeighborIntWithPrecision(originGeohash, bits, direction), geohash.NeighborIntWithPrecision(originGeohash, bits, direction))
+		})
 	}
 }

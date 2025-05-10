@@ -28,7 +28,7 @@ func NeighborIter(v uint64, bits uint) iter.Seq[uint64] {
 
 		for {
 			for range step {
-				v = geohash.NeighborIntWithPrecision(v, bits, direction)
+				v = NeighborIntWithPrecision(v, bits, direction)
 				if !yield(v) {
 					return
 				}
@@ -36,7 +36,7 @@ func NeighborIter(v uint64, bits uint) iter.Seq[uint64] {
 
 			direction = geohashNextDirection(direction)
 			for range step {
-				v = geohash.NeighborIntWithPrecision(v, bits, direction)
+				v = NeighborIntWithPrecision(v, bits, direction)
 				if !yield(v) {
 					return
 				}
@@ -54,7 +54,7 @@ func NeighborIterSquared(v uint64, bits uint) iter.Seq[[]uint64] {
 			return
 		}
 
-		bottomLeft := geohash.NeighborIntWithPrecision(v, bits, geohash.SouthWest)
+		bottomLeft := NeighborIntWithPrecision(v, bits, geohash.SouthWest)
 
 		step := 2
 		for {
@@ -63,7 +63,7 @@ func NeighborIterSquared(v uint64, bits uint) iter.Seq[[]uint64] {
 				return
 			}
 			step += 2
-			bottomLeft = geohash.NeighborIntWithPrecision(bottomLeft, bits, geohash.SouthWest)
+			bottomLeft = NeighborIntWithPrecision(bottomLeft, bits, geohash.SouthWest)
 		}
 	}
 }

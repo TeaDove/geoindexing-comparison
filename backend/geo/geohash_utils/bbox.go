@@ -26,7 +26,7 @@ func NewBBox(bottomLeftLat, bottomLeftLon, upperRightLat, upperRightLon float64,
 		if bottomLeftHash == upperLeftHash {
 			break
 		}
-		upperLeftHash = geohash.NeighborIntWithPrecision(upperLeftHash, bits, geohash.South)
+		upperLeftHash = NeighborIntWithPrecision(upperLeftHash, bits, geohash.South)
 		height++
 	}
 
@@ -34,7 +34,7 @@ func NewBBox(bottomLeftLat, bottomLeftLon, upperRightLat, upperRightLon float64,
 		if bottomLeftHash == bottomRightHash {
 			break
 		}
-		bottomRightHash = geohash.NeighborIntWithPrecision(bottomRightHash, bits, geohash.West)
+		bottomRightHash = NeighborIntWithPrecision(bottomRightHash, bits, geohash.West)
 		wight++
 	}
 
@@ -53,22 +53,22 @@ func collectPerimeter(hash uint64, bits uint, height, wight int) []uint64 {
 
 	for range height {
 		perimeter = append(perimeter, hash)
-		hash = geohash.NeighborIntWithPrecision(hash, bits, geohash.North)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.North)
 	}
 
 	for range wight {
 		perimeter = append(perimeter, hash)
-		hash = geohash.NeighborIntWithPrecision(hash, bits, geohash.East)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.East)
 	}
 
 	for range height {
 		perimeter = append(perimeter, hash)
-		hash = geohash.NeighborIntWithPrecision(hash, bits, geohash.South)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.South)
 	}
 
 	for range wight {
 		perimeter = append(perimeter, hash)
-		hash = geohash.NeighborIntWithPrecision(hash, bits, geohash.West)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.West)
 	}
 
 	return perimeter
@@ -83,7 +83,7 @@ func (r *BBox) Inner() []uint64 {
 		height    = r.height - 1
 		wight     = r.wight - 1
 		inner     = make([]uint64, 0, r.height)
-		hash      = geohash.NeighborIntWithPrecision(r.leftBottom, r.bits, geohash.NorthEast)
+		hash      = NeighborIntWithPrecision(r.leftBottom, r.bits, geohash.NorthEast)
 		innerHash = hash
 	)
 
@@ -91,9 +91,9 @@ func (r *BBox) Inner() []uint64 {
 		innerHash = hash
 		for range wight {
 			inner = append(inner, innerHash)
-			innerHash = geohash.NeighborIntWithPrecision(innerHash, r.bits, geohash.East)
+			innerHash = NeighborIntWithPrecision(innerHash, r.bits, geohash.East)
 		}
-		hash = geohash.NeighborIntWithPrecision(hash, r.bits, geohash.North)
+		hash = NeighborIntWithPrecision(hash, r.bits, geohash.North)
 	}
 
 	return inner

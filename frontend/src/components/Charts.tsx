@@ -171,7 +171,8 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                                 label: point.index,
                                 data: [],
                                 borderColor: getColorForIndex(point.index),
-                                tension: 0.1
+                                tension: 0.4,
+                                cubicInterpolationMode: 'monotone',
                             };
                         }
                         acc[point.index].data.push({ x: point.x, y: point.y });

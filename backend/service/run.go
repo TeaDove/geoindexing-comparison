@@ -61,6 +61,8 @@ func runCol(ctx context.Context,
 				Str("dur", dur.String()).
 				Str("col", idx.Info.ShortName).
 				Str("task", task.Info.ShortName).
+				Uint64("amount", amount).
+				Int("points", len(points)).
 				Msg("run.is.too.long")
 
 			break
