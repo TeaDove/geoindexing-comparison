@@ -304,6 +304,7 @@ fieldset input[type="checkbox"] {
 }
 
 .runs-list {
+  width: 60%;
   margin-right: 2rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
@@ -534,12 +535,25 @@ fieldset input[type="checkbox"] {
 
 .fullscreen-chart {
   background: #fff;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 90vw;
-  max-height: 90vh;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   overflow: auto;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.fullscreen-chart canvas {
+  width: 100vw !important;
+  height: 90vh !important;
+  max-width: 100vw !important;
+  max-height: 90vh !important;
 }
 
 .runs-list::-webkit-scrollbar {

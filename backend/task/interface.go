@@ -86,13 +86,13 @@ func AllTasks() []Task {
 			},
 			Builder: func() Impl { return &BBox2km{} },
 		},
-		//{
-		//	Info: TaskInfo{
-		//		ShortName:   "insert",
-		//		LongName:    "Вставка",
-		//		Description: "Вставка 10% точек",
-		//	},
-		//	Builder: func() TaskImpl { return &Insert{} },
-		// },
+		{
+			Info: Info{
+				ShortName:   "insert",
+				LongName:    "Вставка",
+				Description: "Вставка 20 случайных точек",
+			},
+			Builder: func() Impl { return &Insert{} },
+		},
 	}
 }

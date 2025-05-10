@@ -1,20 +1,27 @@
 package task
 
-// type Insert struct{}
-//
-// func (r *Insert) Run(index index.IndexImpl, amount uint64) time.Duration {
-//	durs := make([]time.Duration, 0, amount/10)
-//
-//	for range amount / 10 {
-//		runtime.GC()
-//
-//		durs = append(
-//			durs,
-//			index.InsertTimed(generator.DefaultGenerator.Point(&generator.DefaultInput)),
-//		)
-//
-//		runtime.GC()
-//	}
-//
-//	return stats.NewArray(durs).Avg()
-//}
+import (
+	"geoindexing_comparison/backend/generator"
+	"geoindexing_comparison/backend/service/stats"
+	"runtime"
+	"time"
+)
+
+type Insert struct{}
+
+func (r *Insert) Run(input *Input) time.Duration {
+	durs := make([]time.Duration, 0)
+
+	for range 20 {
+		runtime.GC()
+
+		durs = append(
+			durs,
+			input.Index.InsertTimed(generator.DefaultGenerator.Point(&generator.DefaultInput)),
+		)
+
+		runtime.GC()
+	}
+
+	return stats.NewArray(durs).Median()
+}
