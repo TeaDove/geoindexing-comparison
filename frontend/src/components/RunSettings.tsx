@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Task, Index, RunSettings } from '../types/index';
 import { formatNumber } from '../utils';
+import './RunSettings.css';
 
 interface RunSettingsProps {
     tasks: Task[];
@@ -69,16 +70,15 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading, pointsStart
             <fieldset id="indexes">
                 <legend>Индексы</legend>
                 {indexes.map(index => (
-                    <div key={index.info.shortName}>
+                    <div key={index.info.shortName} className="tooltip-container">
                         <input
                             type="checkbox"
                             id={`index-${index.info.shortName}`}
                             checked={selectedIndexes.includes(index.info.shortName)}
                             onChange={() => handleIndexChange(index.info.shortName)}
                         />
-                        <label htmlFor={`index-${index.info.shortName}`}>
-                            {index.info.longName}
-                        </label>
+                        <label htmlFor={`index-${index.info.shortName}`}>{index.info.longName}</label>
+                        <span className="custom-tooltip">{index.info.description || 'Описание не доступно'}</span>
                     </div>
                 ))}
             </fieldset>
@@ -86,16 +86,15 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading, pointsStart
             <fieldset id="tasks">
                 <legend>Задачи</legend>
                 {tasks.map(task => (
-                    <div key={task.info.shortName}>
+                    <div key={task.info.shortName} className="tooltip-container">
                         <input
                             type="checkbox"
                             id={`task-${task.info.shortName}`}
                             checked={selectedTasks.includes(task.info.shortName)}
                             onChange={() => handleTaskChange(task.info.shortName)}
                         />
-                        <label htmlFor={`task-${task.info.shortName}`}>
-                            {task.info.longName}
-                        </label>
+                        <label htmlFor={`task-${task.info.shortName}`}>{task.info.longName}</label>
+                        <span className="custom-tooltip">{task.info.description || 'Описание не доступно'}</span>
                     </div>
                 ))}
             </fieldset>

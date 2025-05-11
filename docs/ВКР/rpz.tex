@@ -1,13 +1,15 @@
 %% Преамбула TeX-файла
 
 % 1. Стиль и язык
-\documentclass[utf8x, 12pt]{G7-32} % Стиль (по умолчанию будет 14pt)
+\documentclass[utf8x, 14pt]{G7-32} % Стиль (по умолчанию будет 14pt)
 \usepackage[T2A]{fontenc}
 \usepackage[russian]{babel}
 \usepackage{float}
 \usepackage{pdfpages}
 \usepackage{tabularx}
- 
+\usepackage{centernot}
+\usepackage[utf8]{inputenc}
+
 % Остальные стандартные настройки убраны в preamble.inc.tex.
 \include{preamble.inc}
 
@@ -30,9 +32,14 @@
 
 \includepdf{pdf/title-page.pdf}
 
+\includepdf[pages={1,2}]{pdf/diplZadanie.pdf}
+
 \include{00-abstract}
 
 \tableofcontents
+
+\include{01-referat}
+\include{02-referatEN}
 
 \include{10-defines}
 \include{11-abbrev}
@@ -44,11 +51,15 @@
 \include{23-analysis}
 
 \include{30-statement}
-\include{40-math}
-\include{50-development}
+\include{31-math}
+\include{32-testing-system}
+\include{33-new-indexes}
 
-\include{60-conclusion}
-\include{61-biblio}
+\include{40-results}
+\include{50-conclusion}
+\include{60-biblio}
+\include{61-application-a}
+\include{62-application-b}
 
 \end{document}
 

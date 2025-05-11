@@ -1,3 +1,6 @@
+// Package geohash_utils
+//
+// Geohash utils, such as BBox
 package geohash_utils
 
 import (
@@ -74,10 +77,14 @@ func collectPerimeter(hash uint64, bits uint, height, wight int) []uint64 {
 	return perimeter
 }
 
+// Perimeter
+// Returns outer part of BBox
 func (r *BBox) Perimeter() []uint64 {
 	return collectPerimeter(r.leftBottom, r.bits, r.height, r.wight)
 }
 
+// Inner
+// Returns inner part of BBox, points from Perimeter are not included
 func (r *BBox) Inner() []uint64 {
 	var (
 		height    = r.height - 1

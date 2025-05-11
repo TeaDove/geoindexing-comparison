@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, createRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -36,6 +36,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
     const [error, setError] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
     const [fullscreenTask, setFullscreenTask] = useState<string | null>(null);
+    const chartRefs = useRef<Record<string, React.MutableRefObject<any>>>({});
 
     // Generate consistent colors for indexes
     const colorMap = useMemo(() => new Map<string, string>(), []);
@@ -125,6 +126,18 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
         };
     }, [selectedRunId, run?.Status, retryCount]);
 
+    // Download chart as image
+    const handleDownload = (task: string) => {
+        const chartRef = chartRefs.current[task];
+        if (chartRef && chartRef.current) {
+            const url = chartRef.current.toBase64Image();
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `chart-${task}.png`;
+            link.click();
+        }
+    };
+
     if (!selectedRunId) {
         return null;
     }
@@ -197,7 +210,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                             },
                             title: {
                                 display: true,
-                                text: `Task: ${task}`
+                                text: `Задача: ${task}`
                             }
                         },
                         scales: {
@@ -205,13 +218,13 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                                 type: 'linear' as const,
                                 title: {
                                     display: true,
-                                    text: 'Points'
+                                    text: 'Кол-во точек'
                                 }
                             },
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Time (μs)'
+                                    text: 'Время выполнения (μs)'
                                 }
                             }
                         }
@@ -220,13 +233,22 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                     // Fullscreen modal for this chart
                     const isFullscreen = fullscreenTask === task;
 
+                    if (!chartRefs.current[task]) {
+                        chartRefs.current[task] = React.createRef<any>();
+                    }
+
                     return (
                         <React.Fragment key={task}>
                             <div className="chart-wrapper">
-                                <button style={{ float: 'right', marginBottom: 8 }} onClick={() => setFullscreenTask(task)}>
-                                    Fullscreen
-                                </button>
-                                <Line data={chartData} options={options} />
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
+                                    <button onClick={() => handleDownload(task)}>
+                                        Download
+                                    </button>
+                                    <button onClick={() => setFullscreenTask(task)}>
+                                        Fullscreen
+                                    </button>
+                                </div>
+                                <Line ref={chartRefs.current[task]} data={chartData} options={options} />
                             </div>
                             {isFullscreen && (
                                 <div className="fullscreen-modal" onClick={() => setFullscreenTask(null)}>

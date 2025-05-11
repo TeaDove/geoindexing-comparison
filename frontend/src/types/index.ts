@@ -1,11 +1,13 @@
 export interface TaskInfo {
     shortName: string;
     longName: string;
+    description: string;
 }
 
 export interface IndexInfo {
     shortName: string;
     longName: string;
+    description: string;
 }
 
 export interface Task {
@@ -54,4 +56,4 @@ export interface Point {
     x: number;
     y: number;
     se: number;
-} 
+}

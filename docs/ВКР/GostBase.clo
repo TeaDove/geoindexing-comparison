@@ -2,7 +2,7 @@
 \newif\if@usehyperref\@usehyperreffalse
 \newif\if@usepscyr   \@usepscyrfalse
 \newcommand\Gost@encoding{}
-\newcommand\Gost@LineSpread{1.3}
+\newcommand\Gost@LineSpread{1.5}
 
 \DeclareOption{a3paper}{\setlength\paperheight{420mm}\setlength\paperwidth{297mm}}
 \DeclareOption{a4paper}{\setlength\paperheight{297mm}\setlength\paperwidth{210mm}}
@@ -18,7 +18,7 @@
 \DeclareOption{cp1251}{\renewcommand\Gost@encoding{cp1251}}
 \DeclareOption{utf8}{\renewcommand\Gost@encoding{utf8x}}
 \DeclareOption{cp866} {\renewcommand\Gost@encoding{cp866} }
-\DeclareOption{econommode}{\newcommand\Gost@LineSpread{1.3}\erroqweqwe}
+\DeclareOption{econommode}{\newcommand\Gost@LineSpread{1.5}\erroqweqwe}
 
 \ExecuteOptions{a4paper,14pt,final,utf8}
 \ProcessOptions

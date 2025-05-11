@@ -1,0 +1,76 @@
+<mxfile host="65bd71144e" scale="1" border="10">
+    <diagram id="XqBicFpUvlEA9KhxsFl6" name="Page-1">
+        <mxGraphModel dx="2366" dy="1089" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Менеджер" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="-250" y="385" width="650" height="495" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="runs (Запуски тестов)&lt;div&gt;stats (Результаты запусков)&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="2">
+                    <mxGeometry x="239.99999999999997" y="295" width="170" height="165" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="2" source="47" target="4">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="570" y="156.47000000000003" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="570" y="378"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="Сохранение результатов&lt;div&gt;Получение результатов&lt;/div&gt;&lt;div&gt;Создание и обновление запусков&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9">
+                    <mxGeometry x="0.1576" y="-1" relative="1" as="geometry">
+                        <mxPoint x="-29" y="-32" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="12" style="edgeStyle=none;html=1;" edge="1" parent="2" source="51" target="47">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="152" y="106.62561434797726" as="sourcePoint"/>
+                        <mxPoint x="530" y="110.42460162480438" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="13" value="Запуск запусков&lt;div&gt;Получение результатов&lt;/div&gt;&lt;div&gt;Получение списка доступных индексов и задач&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="12">
+                    <mxGeometry x="-0.2469" y="-1" relative="1" as="geometry">
+                        <mxPoint x="49" y="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="47" value="Менеджер&amp;nbsp;&lt;div&gt;системы&lt;/div&gt;" style="image;aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;fontColor=#4277BB;labelBackgroundColor=default;fontSize=12;spacingTop=3;image=img/lib/ibm/infrastructure/mobile_backend.svg;" vertex="1" parent="2">
+                    <mxGeometry x="530" y="69.96000000000001" width="73.36" height="73.36" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="Frontend&lt;div&gt;(react + nginx)&lt;/div&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#505050;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;align=center;shape=mxgraph.office.concepts.web_page;" vertex="1" parent="2">
+                    <mxGeometry x="71" y="79.63999999999999" width="50" height="54" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Исполнитель" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="590" y="385" width="220" height="215" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="Выполнение&amp;nbsp;&lt;div&gt;запусков&lt;/div&gt;" style="image;aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;fontColor=#4277BB;labelBackgroundColor=default;fontSize=12;spacingTop=3;image=img/lib/ibm/infrastructure/mobile_backend.svg;" vertex="1" parent="3">
+                    <mxGeometry x="80" y="69.96000000000004" width="73.36" height="73.36" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" style="edgeStyle=none;html=1;" edge="1" parent="1" source="48" target="47">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="680" y="495.3649023989178" as="sourcePoint"/>
+                        <mxPoint x="351.19000000000005" y="495.7350000000001" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="Получение списка запусков&lt;div&gt;Отправка результатов&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7">
+                    <mxGeometry x="0.1334" y="-2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="15" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="14" target="51">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-210.00000000000023" y="491.6428571428571" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="16" value="Клиент-серверное&amp;nbsp;&lt;div&gt;взаимодействие&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="15">
+                    <mxGeometry x="-0.3014" y="-1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="14" value="Клиент" style="image;aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image=img/lib/active_directory/laptop_client.svg;" vertex="1" parent="1">
+                    <mxGeometry x="-498" y="445.82" width="84.02" height="93.36" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,3 +1,6 @@
+// Package geo
+//
+//	Point, Points method
 package geo
 
 import (
@@ -140,7 +143,7 @@ func (r *Points) SortByID() {
 
 func (r *Points) SortByDistance(origin Point) {
 	slices.SortFunc(*r, func(a, b Point) int {
-		if a.DistanceTo(origin) < b.DistanceTo(origin) {
+		if a.DistanceHaversine(origin) < b.DistanceHaversine(origin) {
 			return -1
 		}
 		return 1
@@ -159,7 +162,7 @@ func (r *Points) GetClosestViaSort(origin Point, n int) Points {
 
 	knnMatrix := make([]dist, 0, len(*r))
 	for idx, indexPoint := range *r {
-		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceTo(origin)})
+		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceHaversine(origin)})
 	}
 
 	slices.SortFunc(knnMatrix, func(a, b dist) int {

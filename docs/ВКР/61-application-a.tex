@@ -1,0 +1,374 @@
+\chapter{ПРИЛОЖЕНИЕ А}
+\section{Основные фрагменты кода}
+
+\begin{lstlisting}[caption=points.go]
+// Package geo
+//
+//	Point, Points method
+package geo
+
+import (
+	"encoding/json"
+	"geoindexing_comparison/backend/helpers"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"
+	"golang.org/x/exp/slices"
+	"math"
+	"strings"
+
+	"github.com/pkg/errors"
+
+	"github.com/mmcloughlin/geohash"
+
+	mapset "github.com/deckarep/golang-set/v2"
+)
+
+// Point represents a geographic coordinate.
+type Point struct {
+	ID string `json:"id"`
+
+	Lat float64 `json:"lat"`
+	Lon float64 `json:"lon"`
+}
+type Points []Point
+
+func NewPoint(lat float64, lng float64) Point {
+	return Point{
+		ID:  helpers.ID(),
+		Lat: lat,
+		Lon: lng,
+	}
+}
+
+func (r Point) Geohash(bits uint) uint64 {
+	return geohash.EncodeIntWithPrecision(r.Lat, r.Lon, bits)
+}
+
+func (r Point) GeohashString(chars uint) string {
+	return geohash.EncodeWithPrecision(r.Lat, r.Lon, chars)
+}
+
+func (r Point) GeoJSON() *geojson.Feature {
+	feature := geojson.NewFeature(orb.Point{r.Lon, r.Lat})
+	feature.Properties["ID"] = r.ID
+
+	return feature
+}
+
+func (r Point) InsideBBox(bottomLeft Point, upperRight Point) bool {
+	return bottomLeft.Lat < r.Lat && bottomLeft.Lon < r.Lon && r.Lat < upperRight.Lat && r.Lon < upperRight.Lon
+}
+
+func (r Point) AddLatitude(dvKM float64) Point {
+	r.Lat = r.Lat + (dvKM/earthRadiusKm)*(180/math.Pi)
+	return r
+}
+
+func (r Point) AddLongitude(dvKM float64) Point {
+	r.Lon = r.Lon + (dvKM/earthRadiusKm)*(180/math.Pi)/math.Cos(r.Lat*math.Pi/180)
+	return r
+}
+
+func (r *Points) GetRandomPoint() Point {
+	return (*r)[helpers.RNG.IntN(len(*r))] //nolint: gosec // Allowed here
+}
+
+func (r *Points) FindCorners() (Point, Point) {
+	bottomLeft, upperRight := (*r)[0], (*r)[0]
+	for _, point := range *r {
+		if point.Lat < bottomLeft.Lat && point.Lon < bottomLeft.Lon {
+			bottomLeft = point
+		}
+
+		if point.Lat > upperRight.Lat && point.Lon > upperRight.Lon {
+			upperRight = point
+		}
+	}
+
+	return bottomLeft, upperRight
+}
+
+func (r *Points) Center() (float64, float64) {
+	bottomLeft, upperRight := r.FindCorners()
+	return (bottomLeft.Lat + upperRight.Lat) / 2.0, (bottomLeft.Lon + upperRight.Lon) / 2.0
+}
+
+func (r *Points) String() string {
+	byteArray, err := json.Marshal(r)
+	if err != nil {
+		panic(errors.Wrap(err, "failed to marshal points"))
+	}
+
+	return string(byteArray)
+}
+
+func (r *Points) IDs() string {
+	var ids []string
+	for _, point := range *r {
+		ids = append(ids, point.ID)
+	}
+
+	slices.Sort(ids)
+	return strings.Join(ids, ",")
+}
+
+func (r *Points) Delete(pointID string) {
+	for idx, point := range *r {
+		if pointID == point.ID {
+			*r = append((*r)[:idx], (*r)[idx+1:]...)
+			return
+		}
+	}
+}
+
+func (r *Points) ToSet() mapset.Set[string] {
+	result := mapset.NewSet[string]()
+	for _, point := range *r {
+		result.Add(point.ID)
+	}
+
+	return result
+}
+
+func (r *Points) GeoJSON() *geojson.FeatureCollection {
+	featureCollection := geojson.NewFeatureCollection()
+	for _, point := range *r {
+		featureCollection.Append(point.GeoJSON())
+	}
+
+	return featureCollection
+}
+
+func (r *Points) SortByID() {
+	slices.SortFunc(*r, func(a, b Point) int {
+		return strings.Compare(a.ID, b.ID)
+	})
+}
+
+func (r *Points) SortByDistance(origin Point) {
+	slices.SortFunc(*r, func(a, b Point) int {
+		if a.DistanceHaversine(origin) < b.DistanceHaversine(origin) {
+			return -1
+		}
+		return 1
+	})
+}
+
+func (r *Points) GetClosestViaSort(origin Point, n int) Points {
+	if n > len(*r) {
+		return *r
+	}
+
+	type dist struct {
+		idx  int
+		dist float64
+	}
+
+	knnMatrix := make([]dist, 0, len(*r))
+	for idx, indexPoint := range *r {
+		knnMatrix = append(knnMatrix, dist{idx: idx, dist: indexPoint.DistanceHaversine(origin)})
+	}
+
+	slices.SortFunc(knnMatrix, func(a, b dist) int {
+		if a.dist < b.dist {
+			return -1
+		}
+
+		return 0
+	})
+
+	result := make(Points, n)
+
+	for idx := range n {
+		result[idx] = (*r)[knnMatrix[idx].idx]
+	}
+
+	return result
+}
+
+func (r *Points) Equal(other Points) bool {
+	return r.ToSet().Equal(other.ToSet())
+}
+
+func (r *Points) EqualMany(other []Points) bool {
+	for _, otherPoint := range other {
+		if !r.Equal(otherPoint) {
+			return false
+		}
+	}
+
+	return true
+}
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=distance.go]
+// Package geo
+//
+// Distance functions
+package geo
+
+import (
+	"github.com/tidwall/geodesic"
+	"math"
+)
+
+const earthRadiusKm = 6371 // radius of the earth in kilometers.
+
+func distanceEuclidean(lat1, lon1, lat2, lon2 float64) float64 {
+	return math.Sqrt(math.Pow(lat2-lat1, 2) + math.Pow(lon2-lon1, 2))
+}
+
+// degreesToRadians converts from degrees to radians.
+func degreesToRadians(d float64) float64 {
+	return d * math.Pi / 180
+}
+
+func distanceHaversine(lat1, lon1, lat2, lon2 float64) float64 {
+	lat1 = degreesToRadians(lat1)
+	lon1 = degreesToRadians(lon1)
+	lat2 = degreesToRadians(lat2)
+	lon2 = degreesToRadians(lon2)
+
+	diffLat := lat2 - lat1
+	diffLon := lon2 - lon1
+
+	マギカ := math.Pow(math.Sin(diffLat/2), 2) + math.Cos(lat1)*math.Cos(lat2)*
+		math.Pow(math.Sin(diffLon/2), 2)
+
+	c := 2 * math.Atan2(math.Sqrt(マギカ), math.Sqrt(1-マギカ))
+
+	return c * earthRadiusKm
+}
+
+func distanceGeodesic(lat1, lon1, lat2, lon2 float64) float64 {
+	var dist float64
+	geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2, &dist, nil, nil)
+
+	return dist
+}
+
+func (r Point) DistanceHaversine(other Point) float64 {
+	return distanceHaversine(r.Lat, r.Lon, other.Lat, other.Lon)
+}
+
+func (r Point) DistanceGeodesic(other Point) float64 {
+	return distanceGeodesic(r.Lat, r.Lon, other.Lat, other.Lon)
+}
+
+func (r Point) DistanceEuclidean(other Point) float64 {
+	return distanceEuclidean(r.Lat, r.Lon, other.Lat, other.Lon)
+}
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=bbox.go]
+// Package geohash_utils
+//
+// Geohash utils, such as BBox
+package geohash_utils
+
+import (
+	"github.com/mmcloughlin/geohash"
+)
+
+type BBox struct {
+	bits       uint
+	leftBottom uint64
+
+	height int
+	wight  int
+}
+
+func NewBBox(bottomLeftLat, bottomLeftLon, upperRightLat, upperRightLon float64, bits uint) BBox {
+	var (
+		wight  = 0
+		height = 0
+
+		bottomLeftHash  = geohash.EncodeIntWithPrecision(bottomLeftLat, bottomLeftLon, bits)
+		upperLeftHash   = geohash.EncodeIntWithPrecision(upperRightLat, bottomLeftLon, bits)
+		bottomRightHash = geohash.EncodeIntWithPrecision(bottomLeftLat, upperRightLon, bits)
+	)
+
+	for {
+		if bottomLeftHash == upperLeftHash {
+			break
+		}
+		upperLeftHash = NeighborIntWithPrecision(upperLeftHash, bits, geohash.South)
+		height++
+	}
+
+	for {
+		if bottomLeftHash == bottomRightHash {
+			break
+		}
+		bottomRightHash = NeighborIntWithPrecision(bottomRightHash, bits, geohash.West)
+		wight++
+	}
+
+	r := BBox{
+		bits:       bits,
+		leftBottom: bottomLeftHash,
+		height:     height,
+		wight:      wight,
+	}
+
+	return r
+}
+
+func collectPerimeter(hash uint64, bits uint, height, wight int) []uint64 {
+	perimeter := make([]uint64, 0, height)
+
+	for range height {
+		perimeter = append(perimeter, hash)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.North)
+	}
+
+	for range wight {
+		perimeter = append(perimeter, hash)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.East)
+	}
+
+	for range height {
+		perimeter = append(perimeter, hash)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.South)
+	}
+
+	for range wight {
+		perimeter = append(perimeter, hash)
+		hash = NeighborIntWithPrecision(hash, bits, geohash.West)
+	}
+
+	return perimeter
+}
+
+// Perimeter
+// Returns outer part of BBox
+func (r *BBox) Perimeter() []uint64 {
+	return collectPerimeter(r.leftBottom, r.bits, r.height, r.wight)
+}
+
+// Inner
+// Returns inner part of BBox, points from Perimeter are not included
+func (r *BBox) Inner() []uint64 {
+	var (
+		height    = r.height - 1
+		wight     = r.wight - 1
+		inner     = make([]uint64, 0, r.height)
+		hash      = NeighborIntWithPrecision(r.leftBottom, r.bits, geohash.NorthEast)
+		innerHash = hash
+	)
+
+	for range height {
+		innerHash = hash
+		for range wight {
+			inner = append(inner, innerHash)
+			innerHash = NeighborIntWithPrecision(innerHash, r.bits, geohash.East)
+		}
+		hash = NeighborIntWithPrecision(hash, r.bits, geohash.North)
+	}
+
+	return inner
+}
+
+\end{lstlisting}

@@ -13,7 +13,7 @@ func findMostDistant(origin geo.Point, points geo.Points) float64 {
 	)
 
 	for _, point := range points {
-		distance = point.DistanceTo(origin)
+		distance = point.DistanceHaversine(origin)
 		if distance > mostDistance {
 			mostDistance = distance
 		}
