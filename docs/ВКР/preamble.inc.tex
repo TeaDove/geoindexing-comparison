@@ -34,9 +34,6 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows,positioning,shadows}
 
-% Произвольная нумерация списков.
-\usepackage{enumerate}
-
 % ячейки в несколько строчек
 \usepackage{multirow}
 
@@ -44,3 +41,48 @@
 \usepackage{paralist,array}
 
 \usepackage{hyperref}
+
+% Стили аннотаций
+\usepackage{caption}
+\captionsetup{font={stretch=1}}
+
+% Размер шрифтов для заголовков
+\usepackage{titlesec}
+\titleformat{\chapter}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thechapter}{1em}{}
+\titleformat{\section}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thesubsubsection}{1em}{}
+
+\titlespacing*{\chapter}{0pt}{0pt}{0pt}
+% \titlespacing*{\section}
+%   {0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+% \titlespacing*{\subsection}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+% \titlespacing*{\subsubsection}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+
+
+% Отсупы в перечислениях
+\usepackage{enumitem}
+\usepackage[russian]{babel}
+\AddEnumerateCounter{\asbuk}{\@asbuk}{а}
+\usepackage{enumitem}
+\setlist[enumerate]{
+    label=\asbuk*),
+    leftmargin=0.67cm, 
+}
+
+% Нумерации в библио c точками
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@biblabel}{#1}{#1.}{}{}
+\makeatother
+
+% Елочка в содержании
+\usepackage{tocloft}
+\setlength{\cftchapindent}{0pt}      % глава без отступа
+\setlength{\cftsecindent}{1em}     % отступ для \section
+\setlength{\cftsubsecindent}{1.75em}    % отступ для \subsection
+\setlength{\cftsubsubsecindent}{4.5em} % если используете \subsubsection
+
+\setlength{\cftsecnumwidth}{2.5em}      % ширина для номера section
+\setlength{\cftsubsecnumwidth}{3.5em}   % ширина для номера subsection
+\setlength{\cftsubsubsecnumwidth}{4.5em} % ширина номера subsubsection

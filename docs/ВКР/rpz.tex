@@ -1,7 +1,7 @@
 %% Преамбула TeX-файла
 
 % 1. Стиль и язык
-\documentclass[utf8x, 14pt]{G7-32} % Стиль (по умолчанию будет 14pt)
+\documentclass[utf8x, 14pt, openany, oneside]{G7-32} % Стиль (по умолчанию будет 14pt)
 \usepackage[T2A]{fontenc}
 \usepackage[russian]{babel}
 \usepackage{float}
@@ -20,6 +20,8 @@
 % Полезные макросы листингов.
 \include{macros.inc}
 
+\include{00-abstract}
+
 \begin{document}
 
 \frontmatter % выключает нумерацию ВСЕГО; здесь начинаются ненумерованные главы: реферат, введение, глоссарий, сокращения и прочее.
@@ -29,15 +31,14 @@
 % По-умолчанию страница разрывается.
 
 % \nobreakingbeforechapters
-\breakingbeforechapters
 
-\includepdf{pdf/title-page.pdf}
+% \includepdf{pdf/title-page.pdf}
 
 \includepdf[pages={1,2}]{pdf/task.pdf}
-
-\include{00-abstract}
-
+\setcounter{page}{4}
 \tableofcontents
+\clearpage
+\onecolumn
 
 \include{01-referat}
 \include{02-referatEN}
@@ -46,17 +47,17 @@
 \include{11-abbrev}
 \include{12-intro}
 
-\include{20-intro}
-\include{21-indexes}
-\include{22-other-indexes}
-\include{23-analysis}
+\input{20-intro}
+\input{21-indexes}
+\input{22-other-indexes}
+\input{23-analysis}
 
-\include{30-statement}
-\include{31-math}
-\include{32-testing-system}
-\include{33-new-indexes}
+\input{30-statement}
+\input{31-math}
+\input{32-testing-system}
+\input{33-new-indexes}
 
-\include{40-results}
+\input{40-results}
 \include{50-conclusion}
 \include{60-biblio}
 \include{61-application-a}

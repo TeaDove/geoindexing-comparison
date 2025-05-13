@@ -1,5 +1,6 @@
 Тексты:
 - [Диплом](https://www.overleaf.com/project/65720de492a7c7ef53cdbd65)
+- [Задание](https://docs.google.com/document/d/1Z4I0YvsdCHyMg3VjQnPnBtcOacJDXMc1jqcAPSq001Y/edit?tab=t.0)
 
 Литература:
 - https://onlinelibrary.wiley.com/doi/10.1002/cpe.6029

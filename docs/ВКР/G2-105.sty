@@ -162,7 +162,7 @@
 \newcounter{chapter}
 \renewcommand\thechapter{\@arabic\c@chapter}
 \newcommand\chapter{%
- \clearpage%
+ %\clearpage%
  \if@figuresonchapter%
   \addtocounter{totalfigure}{\c@figure}\setcounter{figure}{0}%
  \fi%
@@ -549,7 +549,7 @@
 \newenvironment{theindex}{
                 \columnseprule \z@
                 \columnsep 35\p@
-                \twocolumn[\@makeschapterhead{\indexname}]%
+                % \twocolumn[\@makeschapterhead{\indexname}]%
                 \thispagestyle{plain}\parindent\z@
                 \parskip\z@ \@plus .3\p@\relax
                 \let\item\@idxitem}
@@ -592,38 +592,37 @@
 % \nobreakingbeforechapters и \breakingbeforechapters
 % добавлены кем-то с ИУ7 %)
 
-\newcommand\nobreakingbeforechapters{
-\makeatletter
-\renewcommand\chapter{%
- \if@figuresonchapter%
-  \addtocounter{totalfigure}{\c@figure}\setcounter{figure}{0}%
- \fi%
- \if@tablesonchapter%
-  \addtocounter{totaltable} {\c@table }\setcounter{table}{0}%
- \fi%
- \@startsection{chapter}{0}%
-  {\Gost@ChapterIndent}{0mm}{\GostAfterTitleSkip}%
-  {\GostTitleStyle\large\Gost@ChapterStyle}%
-}
-\makeatother
-}
+%\newcommand\nobreakingbeforechapters{
+%\makeatletter
+%\renewcommand\chapter{%
+% \if@figuresonchapter%
+%  \addtocounter{totalfigure}{\c@figure}\setcounter{figure}{0}%
+% \fi%
+ %\if@tablesonchapter%
+%  \addtocounter{totaltable} {\c@table }\setcounter{table}{0}%
+% \fi%
+% \@startsection{chapter}{0}%
+%  {\Gost@ChapterIndent}{0mm}{\GostAfterTitleSkip}%
+%  {\GostTitleStyle\large\Gost@ChapterStyle}%
+%}
+%\makeatother
+%}
 
-\newcommand\breakingbeforechapters{
-\makeatletter
-\renewcommand\chapter{%
- \clearpage%
- \if@figuresonchapter%
-  \addtocounter{totalfigure}{\c@figure}\setcounter{figure}{0}%
- \fi%
- \if@tablesonchapter%
-  \addtocounter{totaltable} {\c@table }\setcounter{table}{0}%
- \fi%
- \@startsection{chapter}{0}%
-  {\Gost@ChapterIndent}{0mm}{\GostAfterTitleSkip}%
-  {\GostTitleStyle\large\Gost@ChapterStyle}%
-}
-\makeatother
-}
+%\newcommand\breakingbeforechapters{
+%\makeatletter
+%\renewcommand\chapter{%
+ %\clearpage%
+% \if@figuresonchapter%
+%  \addtocounter{totalfigure}{\c@figure}\setcounter{figure}{0}%
+% \fi%
+% \if@tablesonchapter%
+%  \addtocounter{totaltable} {\c@table }\setcounter{table}{0}%
+% \fi%
+ %\@startsection{chapter}{0}%
+%  {\Gost@ChapterIndent}{0mm}{\GostAfterTitleSkip}%
+ %%}
+%\makeatother
+%}
 
 \makeatletter %only needed in preamble
 \renewcommand\Huge{\@setfontsize\Huge{14pt}{14}}
