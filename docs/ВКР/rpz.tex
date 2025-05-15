@@ -10,7 +10,6 @@
 \usepackage{centernot}
 \usepackage{tabularx}
 \usepackage[utf8]{inputenc}
-
 % Остальные стандартные настройки убраны в preamble.inc.tex.
 \include{preamble.inc}
 
@@ -24,6 +23,8 @@
 
 \begin{document}
 
+\fontsize{14}{16}\selectfont
+
 \frontmatter % выключает нумерацию ВСЕГО; здесь начинаются ненумерованные главы: реферат, введение, глоссарий, сокращения и прочее.
 
 % Команды \breakingbeforechapters и \nonbreakingbeforechapters
@@ -36,12 +37,17 @@
 
 \includepdf[pages={1,2}]{pdf/task.pdf}
 \setcounter{page}{4}
+\include{01-referat}
+\include{02-referatEN}
+
+\myChapterStar{СОДЕРЖАНИЕ}
+\vspace{-2em}
 \tableofcontents
+
 \clearpage
 \onecolumn
 
-\include{01-referat}
-\include{02-referatEN}
+
 
 \include{10-defines}
 \include{11-abbrev}
@@ -62,6 +68,7 @@
 \include{60-biblio}
 \include{61-application-a}
 \include{62-application-b}
+
 
 \end{document}
 

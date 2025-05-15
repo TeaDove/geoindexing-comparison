@@ -18,6 +18,8 @@
 
 % \usepackage{cyrtimespatched}
 
+\usepackage{setspace}
+
 \usepackage{graphicx}   % Пакет для включения рисунков
 \graphicspath{ {./images/} }
 
@@ -40,18 +42,41 @@
 % itemize внутри tabular
 \usepackage{paralist,array}
 
-\usepackage{hyperref}
+% Оставить ссылки, но убрать рамки
+\usepackage[hidelinks]{hyperref}
 
 % Стили аннотаций
 \usepackage{caption}
 \captionsetup{font={stretch=1}}
 
+% Times new roman
+% \usepackage{mathptmx}
+
 % Размер шрифтов для заголовков
 \usepackage{titlesec}
-\titleformat{\chapter}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thechapter}{1em}{}
+\titleformat{\chapter}[block]{\normalfont\fontsize{14}{16}\selectfont\bfseries}{\thechapter}{1em}{}
 \titleformat{\section}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thesection}{1em}{}
 \titleformat{\subsection}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}[block]{\fontsize{14}{16}\selectfont\bfseries}{\thesubsubsection}{1em}{}
+
+\usepackage{tocloft}
+\renewcommand{\cftbeforechapskip}{0.10cm}  % интервал между главами
+\renewcommand{\cftbeforesecskip}{0.10cm}   % интервал между разделами
+\renewcommand{\cftbeforesubsecskip}{0.10cm} % интервал между подразделами
+
+% Глава (chapter) — обычный (не жирный)
+\renewcommand{\cftchapfont}{\normalfont}
+\renewcommand{\cftchappagefont}{\normalfont}
+
+% Раздел (section)
+\renewcommand{\cftsecfont}{\normalfont}
+\renewcommand{\cftsecpagefont}{\normalfont}
+
+% Подраздел (subsection)
+\renewcommand{\cftsubsecfont}{\normalfont}
+\renewcommand{\cftsubsecpagefont}{\normalfont}
+
+
 
 \titlespacing*{\chapter}{0pt}{0pt}{0pt}
 % \titlespacing*{\section}

@@ -2,4 +2,36 @@
 \newcommand{\Code}[1]{\textbf{#1}}
 \newcommand{\eqspace}[0]{\setlength\abovedisplayskip{3.2ex}\setlength\belowdisplayskip{3.2ex}\setlength\abovedisplayshortskip{3.2ex}\setlength\belowdisplayshortskip{3.2ex}}
 
-\newcommand{\myChapter}[1]{\newpage\par\textbf{#1}\newline\addcontentsline{toc}{chapter}{#1}}
+\newcommand{\myChapterParts}[2]{
+  \newpage
+  \noindent
+  \vspace{1em}
+  \textbf{\centerline{#1}}
+  \textbf{\centerline{#2}}
+  \addcontentsline{toc}{chapter}{#1 #2}
+}
+
+\newcommand{\myChapterStar}[1]{%
+  \newpage
+  \noindent
+  \textbf{\centerline{#1}}\newline
+}
+
+\newcommand{\myChapterSmall}[1]{%
+  \newpage
+  \noindent
+  \textbf{\centerline{#1}}\newline
+  \addcontentsline{toc}{chapter}{#1}
+}
+
+\newcommand{\myChapter}[1]{%
+  \newpage
+  \par
+  \textbf{#1}
+  \newline
+  \addcontentsline{toc}{chapter}{#1}
+}
+
+
+
+

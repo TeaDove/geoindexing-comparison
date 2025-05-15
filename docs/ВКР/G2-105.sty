@@ -496,7 +496,7 @@
 }
 
 %всякие оглавления
-\newcommand\tableofcontents{\chapter*{\contentsname}\@starttoc{toc}}
+\newcommand\tableofcontents{{\usepackage{mathptmx}\centerline\contentsname}\@starttoc{toc}}
 \newcommand\listoffigures{\chapter*{\listfigurename}\@starttoc{lof}}
 \newcommand\listoftables{\chapter*{\listtablename}\@starttoc{lot}}
 
