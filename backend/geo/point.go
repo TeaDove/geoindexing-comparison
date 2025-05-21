@@ -5,6 +5,7 @@ package geo
 
 import (
 	"encoding/json"
+	"geoindexing_comparison/backend/geo/distance_utils"
 	"geoindexing_comparison/backend/helpers"
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
@@ -56,12 +57,12 @@ func (r Point) InsideBBox(bottomLeft Point, upperRight Point) bool {
 }
 
 func (r Point) AddLatitude(dvKM float64) Point {
-	r.Lat = r.Lat + (dvKM/earthRadiusKm)*(180/math.Pi)
+	r.Lat = r.Lat + (dvKM/distance_utils.EarthRadiusKm)*(180/math.Pi)
 	return r
 }
 
 func (r Point) AddLongitude(dvKM float64) Point {
-	r.Lon = r.Lon + (dvKM/earthRadiusKm)*(180/math.Pi)/math.Cos(r.Lat*math.Pi/180)
+	r.Lon = r.Lon + (dvKM/distance_utils.EarthRadiusKm)*(180/math.Pi)/math.Cos(r.Lat*math.Pi/180)
 	return r
 }
 

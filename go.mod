@@ -17,7 +17,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.10.0
 	github.com/teadove/teasutils/fiber_utils v0.2.6
-	github.com/teadove/teasutils/utils v0.2.8
+	github.com/teadove/teasutils/utils v0.2.10
 	github.com/tidwall/btree v1.7.0
 	github.com/tidwall/geodesic v1.52.4
 	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6
@@ -48,6 +48,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
+	github.com/uber/h3-go/v4 v4.2.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.62.0 // indirect
 	go.mongodb.org/mongo-driver v1.17.3 // indirect

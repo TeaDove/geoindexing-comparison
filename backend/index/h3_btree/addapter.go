@@ -1,27 +1,34 @@
-package geohash_btree
+package h3_btree
 
 import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/geo/distance_utils"
 	"geoindexing_comparison/backend/index"
+	"github.com/pkg/errors"
 	"github.com/tidwall/btree"
+	"github.com/uber/h3-go/v4"
 	"time"
 )
 
 type CollectionGeohash struct {
-	btree       btree.Map[uint64, geo.Points]
-	geohashBits uint
-	metric      distance_utils.Metric
+	btree      btree.Map[h3.Cell, geo.Points]
+	resolution int
+	metric     distance_utils.Metric
 }
 
-func Factory(geohashPrecisionChars uint) func() index.Impl {
+func Factory(resolution int) func() index.Impl {
 	return func() index.Impl {
-		return &CollectionGeohash{btree: *btree.NewMap[uint64, geo.Points](2), geohashBits: geohashPrecisionChars * 5, metric: distance_utils.MetricHaversine}
+		return &CollectionGeohash{btree: *btree.NewMap[h3.Cell, geo.Points](2), resolution: resolution, metric: distance_utils.MetricHaversine}
 	}
 }
 
-func (r *CollectionGeohash) geohash(point geo.Point) uint64 {
-	return point.Geohash(r.geohashBits)
+func (r *CollectionGeohash) hash(point geo.Point) h3.Cell {
+	cell, err := h3.LatLngToCell(h3.NewLatLng(point.Lat, point.Lon), r.resolution)
+	if err != nil {
+		panic(errors.New("failed to build cell"))
+	}
+
+	return cell
 }
 
 func (r *CollectionGeohash) FromArray(points geo.Points) {
@@ -39,11 +46,11 @@ func (r *CollectionGeohash) ToArray() geo.Points {
 }
 
 func (r *CollectionGeohash) Insert(point geo.Point) {
-	v := r.geohash(point)
+	v := r.hash(point)
 	points, _ := r.btree.Get(v)
 	points = append(points, point)
 
-	r.btree.Set(r.geohash(point), points)
+	r.btree.Set(r.hash(point), points)
 }
 
 func (r *CollectionGeohash) InsertTimed(point geo.Point) time.Duration {

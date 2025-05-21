@@ -1,33 +1,17 @@
-package geohash_btree
+package h3_btree
 
 import (
 	"geoindexing_comparison/backend/geo"
-	"geoindexing_comparison/backend/geo/geohash_utils"
+	"geoindexing_comparison/backend/geo/h3_utils"
 	"time"
 )
-
-func findMostDistant(origin geo.Point, points geo.Points) float64 {
-	var (
-		mostDistance float64
-		distance     float64
-	)
-
-	for _, point := range points {
-		distance = point.DistanceHaversine(origin)
-		if distance > mostDistance {
-			mostDistance = distance
-		}
-	}
-
-	return mostDistance
-}
 
 func (r *CollectionGeohash) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
-	originGeohash := r.geohash(origin)
+	originHash := r.hash(origin)
 	var points geo.Points
-	for neighbors := range geohash_utils.NeighborIterSquared(originGeohash, r.geohashBits) {
+	for neighbors := range h3_utils.GridDiskInf(originHash) {
 		points = append(points, r.getMany(neighbors)...)
 		if len(points) >= int(n) {
 			break
