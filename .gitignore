@@ -1,7 +1,7 @@
 bootstrap
 cpu.prof
 ref_diploma
-data
+.data/
 ### SAM BUILD ###
 **/.aws-sam
 ### SAM TEMPLATE ###
