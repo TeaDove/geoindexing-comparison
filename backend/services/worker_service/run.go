@@ -116,7 +116,9 @@ func (r *Service) Job() {
 			zerolog.Ctx(ctx).
 				Info().
 				Int("idx", idx).
-				Interface("job", job).
+				Interface("job_task", job.Task).
+				Interface("job_index", job.Index).
+				Interface("job_amount", job.Amount).
 				Msg("iteration.done")
 		}
 		idx++
