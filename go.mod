@@ -8,7 +8,7 @@ require (
 	github.com/anayks/go-rstar-tree v1.3.1
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dhconnelly/rtreego v1.2.0
-	github.com/gofiber/fiber/v2 v2.52.7
+	github.com/gofiber/fiber/v2 v2.52.8
 	github.com/guregu/null/v6 v6.0.0
 	github.com/kyroy/kdtree v0.0.0-20200419114247-70830f883f1d
 	github.com/mmcloughlin/geohash v0.10.0
@@ -17,12 +17,13 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.10.0
 	github.com/teadove/teasutils/fiber_utils v0.2.6
-	github.com/teadove/teasutils/utils v0.2.10
+	github.com/teadove/teasutils/utils v0.2.11
 	github.com/tidwall/btree v1.7.0
 	github.com/tidwall/geodesic v1.52.4
+	github.com/uber/h3-go/v4 v4.2.2
 	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6
 	gorm.io/driver/sqlite v1.5.7
-	gorm.io/gorm v1.26.1
+	gorm.io/gorm v1.30.0
 )
 
 require (
@@ -49,7 +50,6 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
-	github.com/uber/h3-go/v4 v4.2.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.62.0 // indirect
 	go.mongodb.org/mongo-driver v1.17.3 // indirect

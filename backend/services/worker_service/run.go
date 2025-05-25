@@ -70,6 +70,7 @@ func (r *Service) run(ctx context.Context, job *schemas.Job) schemas.JobResult {
 }
 
 func (r *Service) Job() {
+	var idx = 0
 	const (
 		notFoundSleep = 200 * time.Millisecond
 		errorSleep    = 500 * time.Millisecond
@@ -110,5 +111,14 @@ func (r *Service) Job() {
 
 			continue
 		}
+
+		if idx%10 == 0 {
+			zerolog.Ctx(ctx).
+				Info().
+				Int("idx", idx).
+				Interface("job", job).
+				Msg("iteration.done")
+		}
+		idx++
 	}
 }
