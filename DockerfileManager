@@ -9,7 +9,7 @@ RUN go get ./...
 
 COPY . .
 
-RUN make build
+RUN make build-backend-manager
 
 ## Now copy it into our base image.
 FROM debian:trixie-slim

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { Task, Index, RunSettings } from '../types/index';
-import { formatNumber } from '../utils';
 import './RunSettings.css';
 
 interface RunSettingsProps {
@@ -45,14 +44,6 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading, pointsStart
                 ? prev.filter(i => i !== indexName)
                 : [...prev, indexName]
         );
-    };
-
-    const handleNumberInput = (value: string, setter: (n: number) => void, displaySetter: (s: string) => void) => {
-        const numericValue = parseInt(value.replace(/\s/g, ''), 10);
-        if (!isNaN(numericValue)) {
-            setter(numericValue);
-            displaySetter(formatNumber(numericValue));
-        }
     };
 
     const handleResume = () => {

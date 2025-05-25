@@ -234,8 +234,15 @@ const Visualizer: React.FC = () => {
             // Update map source if request was successful
             if (status === 200 && geoJsonData && mapRef.current) {
                 const pointsSource = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
-                if (pointsSource && geoJsonData !== null) {
-                    pointsSource.setData(geoJsonData as GeoJSON.FeatureCollection<GeoJSON.Point>);
+                if (pointsSource) {
+                    // Create a default empty GeoJSON if data is null
+                    const defaultGeoJson: GeoJSON.FeatureCollection<GeoJSON.Point> = {
+                        type: 'FeatureCollection',
+                        features: []
+                    };
+                    // Use the provided data if it exists, otherwise use default
+                    const validGeoJson = geoJsonData || defaultGeoJson;
+                    pointsSource.setData(validGeoJson);
                 }
                 const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
                 if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
@@ -442,7 +449,14 @@ const Visualizer: React.FC = () => {
                 setRadiusSearchResultsGeoJson(null);
                 if (mapRef.current) {
                     const pointsSource = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
-                    if (pointsSource) pointsSource.setData(geoJsonData);
+                    if (pointsSource) {
+                        if (geoJsonData) {
+                            pointsSource.setData(geoJsonData);
+                        } else {
+                            pointsSource.setData({ type: 'FeatureCollection', features: [] });
+                        }
+                    }
+
                     const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
                     if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
                     const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
