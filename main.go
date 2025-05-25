@@ -1,9 +1,9 @@
 package main
 
 import (
-	"geoindexing_comparison/backend/presentation"
-	"geoindexing_comparison/backend/repository"
-	"geoindexing_comparison/backend/service"
+	"geoindexing_comparison/backend/presentations/manager_presentation"
+	"geoindexing_comparison/backend/repositories/manager_repository"
+	manager_service "geoindexing_comparison/backend/services/worker_service"
 	"os"
 	"runtime/pprof"
 
@@ -38,14 +38,14 @@ func main() {
 		panic(errors.Wrap(err, "could not start profiler"))
 	}
 
-	runsRepository, err := repository.NewRepository(ctx)
+	runsRepository, err := manager_repository.NewRepository(ctx)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to initialize repository"))
 	}
 
-	runner := service.NewRunner(ctx, runsRepository)
+	runner := manager_service.NewService(ctx, runsRepository)
 
-	app := presentation.NewPresentation(runner)
+	app := manager_presentation.NewPresentation(runner)
 
 	err = app.Run(ctx, "0.0.0.0:8000")
 	if err != nil {

@@ -22,7 +22,7 @@ type Impl interface {
 	InsertTimed(point geo.Point) time.Duration
 
 	// KNNTimed returns array of closest n geo.Points to given geo.Point
-	KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration)
+	KNNTimed(origin geo.Point, k int) (geo.Points, time.Duration)
 
 	// BBoxTimed returns points inside rectangle
 	BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration)

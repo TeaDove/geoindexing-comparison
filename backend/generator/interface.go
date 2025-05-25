@@ -2,11 +2,12 @@ package generator
 
 import (
 	"geoindexing_comparison/backend/geo"
+	"math/rand/v2"
 )
 
 type Impl interface {
 	Point(input *Input) geo.Point
-	Points(input *Input, amount uint64) geo.Points
+	Points(input *Input, amount int) geo.Points
 }
 
 type Info struct {
@@ -16,8 +17,8 @@ type Info struct {
 }
 
 type Generator struct {
-	Info    Info        `json:"info"`
-	Builder func() Impl `json:"-"`
+	Info    Info                      `json:"info"`
+	Builder func(rng *rand.Rand) Impl `json:"-"`
 }
 
 func AllGenerators() []Generator {
@@ -28,7 +29,7 @@ func AllGenerators() []Generator {
 				LongName:    "Простой генератор",
 				Description: "Генерирует точки используя простые случайные точки",
 			},
-			Builder: func() Impl { return &SimpleGenerator{} },
+			Builder: func(rng *rand.Rand) Impl { return &SimpleGenerator{rng: rng} },
 		},
 		//{
 		//	Info: Info{

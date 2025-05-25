@@ -1,10 +1,16 @@
 GO ?= GO111MODULE=on CGO_ENABLED=1 go
 
-run-backend:
-	$(GO) run main.go
+run-backend-manager:
+	$(GO) run backend/entrypoints/manager/main.go
+
+run-backend-worker:
+	$(GO) run backend/entrypoints/worker/main.go
 
 show-pprof:
-	$(GO) tool pprof -web cpu.prof
+	rm profile001.pdf | true
+	$(GO) tool pprof -pdf cpu.prof
+	open profile001.pdf
+	rm profile001.pdf
 
 test:
 	$(GO) test ./...

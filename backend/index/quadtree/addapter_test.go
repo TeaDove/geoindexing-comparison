@@ -8,7 +8,7 @@ import (
 func TestUnit_PointGenerator_GeneratePoint_Ok(t *testing.T) {
 	t.Parallel()
 
-	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
+	points := generator.NewSimplerGenerator().Points(&generator.DefaultInput, 1000)
 	collection := New()
 	collection.FromArray(points)
 

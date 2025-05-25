@@ -33,9 +33,9 @@ func (r *CollectionRTree) ToArray() geo.Points {
 	return res
 }
 
-func (r *CollectionRTree) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
+func (r *CollectionRTree) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
-	spatials := r.impl.NearestNeighbors(int(n), []float64{origin.Lat, origin.Lon})
+	spatials := r.impl.NearestNeighbors(n, []float64{origin.Lat, origin.Lon})
 	dur := time.Since(t0)
 
 	result := make(geo.Points, len(spatials))

@@ -10,7 +10,7 @@ import (
 func TestKNNOk(t *testing.T) {
 	t.Parallel()
 
-	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
+	points := generator.NewSimplerGenerator().Points(&generator.DefaultInput, 1000)
 	collection := Factory(4)()
 	collection.FromArray(points)
 
@@ -22,7 +22,7 @@ func TestKNNOk(t *testing.T) {
 func TestRangeSearchOk(t *testing.T) {
 	t.Parallel()
 
-	points := generator.DefaultGenerator.Points(&generator.DefaultInput, 1000)
+	points := generator.NewSimplerGenerator().Points(&generator.DefaultInput, 1000)
 	collection := Factory(5)()
 	collection.FromArray(points)
 

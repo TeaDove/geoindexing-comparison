@@ -29,11 +29,11 @@ type Point struct {
 }
 type Points []Point
 
-func NewPoint(lat float64, lng float64) Point {
+func NewPoint(lat float64, lon float64) Point {
 	return Point{
-		ID:  helpers.ID(),
+		ID:  helpers.ID(helpers.NewRNG(uint64(lat*1000_000), uint64(lon*1000_000))),
 		Lat: lat,
-		Lon: lng,
+		Lon: lon,
 	}
 }
 
@@ -67,7 +67,7 @@ func (r Point) AddLongitude(dvKM float64) Point {
 }
 
 func (r *Points) GetRandomPoint() Point {
-	return (*r)[helpers.RNG.IntN(len(*r))] //nolint: gosec // Allowed here
+	return (*r)[helpers.NewRNG(uint64(len(*r)), uint64(len(*r))).IntN(len(*r))] //nolint: gosec // Allowed here
 }
 
 func (r *Points) FindCorners() (Point, Point) {

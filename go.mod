@@ -26,6 +26,7 @@ require (
 )
 
 require (
+	github.com/aead/siphash v1.0.1 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/aquilax/go-perlin v1.1.0 // indirect
 	github.com/caarlos0/env/v11 v11.3.1 // indirect

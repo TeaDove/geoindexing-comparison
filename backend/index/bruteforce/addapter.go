@@ -45,9 +45,9 @@ func (r *CollectionBruteforce) BBoxTimed(bottomLeft geo.Point, upperRight geo.Po
 	return points, dur
 }
 
-func (r *CollectionBruteforce) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
+func (r *CollectionBruteforce) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
-	return r.impl.GetClosestViaSort(origin, int(n)), time.Since(t0)
+	return r.impl.GetClosestViaSort(origin, n), time.Since(t0)
 }
 
 func (r *CollectionBruteforce) String() string {

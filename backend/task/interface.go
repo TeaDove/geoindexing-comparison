@@ -8,7 +8,7 @@ import (
 
 type Input struct {
 	Index       index.Impl
-	Amount      uint64
+	Amount      int
 	Points      geo.Points
 	RandomPoint geo.Point
 }

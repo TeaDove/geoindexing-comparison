@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"geoindexing_comparison/backend/generator"
 	"geoindexing_comparison/backend/geo"
+	"geoindexing_comparison/backend/helpers"
 	"geoindexing_comparison/backend/index"
 	"github.com/teadove/teasutils/utils/test_utils"
 	"math"
@@ -15,7 +16,7 @@ import (
 type TestInput struct {
 	InputName string
 	Name      string
-	Amount    uint64
+	Amount    int
 	Point     geo.Point
 	Points    geo.Points
 	Index     index.Index
@@ -26,10 +27,10 @@ func makeTestInputs() TestInputs {
 	var inputs []TestInput
 
 	for idx := range 4 {
-		amount := 100 * uint64(math.Pow(10, float64(idx)))
+		amount := 100 * int(math.Pow(10, float64(idx)))
 
 		for _, gen := range generator.AllGenerators() {
-			genObj := gen.Builder()
+			genObj := gen.Builder(helpers.RNG())
 			points := genObj.Points(&generator.DefaultInput, amount)
 			point := genObj.Point(&generator.DefaultInput)
 

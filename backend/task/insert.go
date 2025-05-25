@@ -2,7 +2,7 @@ package task
 
 import (
 	"geoindexing_comparison/backend/generator"
-	"geoindexing_comparison/backend/service/stats"
+	"geoindexing_comparison/backend/helpers/stats"
 	"runtime"
 	"time"
 )
@@ -17,7 +17,7 @@ func (r *Insert) Run(input *Input) time.Duration {
 
 		durs = append(
 			durs,
-			input.Index.InsertTimed(generator.DefaultGenerator.Point(&generator.DefaultInput)),
+			input.Index.InsertTimed(generator.NewSimplerGenerator().Point(&generator.DefaultInput)),
 		)
 
 		runtime.GC()

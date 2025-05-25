@@ -304,7 +304,7 @@ fieldset input[type="checkbox"] {
 }
 
 .runs-list {
-  width: 60%;
+  width: 75%;
   margin-right: 2rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;

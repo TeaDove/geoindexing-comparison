@@ -72,13 +72,13 @@ func (r *CollectionQuadTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Poin
 	return toConcrete(res), dur
 }
 
-func (r *CollectionQuadTree) KNNTimed(origin geo.Point, n uint64) (geo.Points, time.Duration) {
+func (r *CollectionQuadTree) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	if n == 0 {
 		return geo.Points{}, 0
 	}
 
 	t0 := time.Now()
-	res := r.impl.KNN(qtree.NewPoint[string](origin.Lat, origin.Lon, ""), int(n))
+	res := r.impl.KNN(qtree.NewPoint[string](origin.Lat, origin.Lon, ""), n)
 	dur := time.Since(t0)
 
 	return toConcrete(res), dur
