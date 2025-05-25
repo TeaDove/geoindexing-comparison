@@ -16,7 +16,7 @@ var DefaultNormalGenerator = NormalGenerator{ClusterN: 6, rng: helpers.RNG()} //
 
 func (r *NormalGenerator) Points(input *Input, amount int) geo.Points {
 	amounts := make([]int64, r.ClusterN)
-	mapPerCluster := int64(float64(int(amount)/r.ClusterN) * 0.2)
+	mapPerCluster := int64(float64(amount/r.ClusterN) * 0.2)
 	remain := int64(amount)
 
 	for idx := range amounts {

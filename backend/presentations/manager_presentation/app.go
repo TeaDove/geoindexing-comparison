@@ -4,6 +4,7 @@ import (
 	"geoindexing_comparison/backend/services/builder_service"
 	"geoindexing_comparison/backend/services/manager_service"
 	"geoindexing_comparison/backend/services/visualizer_service"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	recover2 "github.com/gofiber/fiber/v2/middleware/recover"
@@ -18,9 +19,18 @@ type Presentation struct {
 	builderService    *builder_service.Service
 }
 
-func NewPresentation(managerService *manager_service.Service, visualizerService *visualizer_service.Service, builderService *builder_service.Service) *Presentation {
+func NewPresentation(
+	managerService *manager_service.Service,
+	visualizerService *visualizer_service.Service,
+	builderService *builder_service.Service,
+) *Presentation {
 	app := fiber.New(fiber.Config{ErrorHandler: fiber_utils.ErrHandler()})
-	r := Presentation{fiberApp: app, managerService: managerService, builderService: builderService, visualizerService: visualizerService}
+	r := Presentation{
+		fiberApp:          app,
+		managerService:    managerService,
+		builderService:    builderService,
+		visualizerService: visualizerService,
+	}
 
 	app.Use(recover2.New())
 	app.Use(fiber_utils.MiddlewareLogger())

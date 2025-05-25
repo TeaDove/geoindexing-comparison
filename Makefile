@@ -6,6 +6,13 @@ run-backend-manager:
 run-backend-worker:
 	$(GO) run backend/entrypoints/worker/main.go
 
+
+build-backend-manager:
+	$(GO) build -o bootstrap backend/entrypoints/manager/main.go
+
+build-backend-worker:
+	$(GO) build -o bootstrap backend/entrypoints/worker/main.go
+
 show-pprof:
 	rm profile001.pdf | true
 	$(GO) tool pprof -pdf cpu.prof
@@ -14,9 +21,6 @@ show-pprof:
 
 test:
 	$(GO) test ./...
-
-build:
-	$(GO) build -o bootstrap main.go
 
 lint:
 	gofumpt -w .

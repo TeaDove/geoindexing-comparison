@@ -4,6 +4,7 @@ import (
 	"context"
 	"geoindexing_comparison/backend/repositories/manager_repository"
 	"geoindexing_comparison/backend/schemas"
+
 	"github.com/pkg/errors"
 )
 

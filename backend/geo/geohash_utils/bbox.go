@@ -25,18 +25,12 @@ func NewBBox(bottomLeftLat, bottomLeftLon, upperRightLat, upperRightLon float64,
 		bottomRightHash = geohash.EncodeIntWithPrecision(bottomLeftLat, upperRightLon, bits)
 	)
 
-	for {
-		if bottomLeftHash == upperLeftHash {
-			break
-		}
+	for bottomLeftHash != upperLeftHash {
 		upperLeftHash = NeighborIntWithPrecision(upperLeftHash, bits, geohash.South)
 		height++
 	}
 
-	for {
-		if bottomLeftHash == bottomRightHash {
-			break
-		}
+	for bottomLeftHash != bottomRightHash {
 		bottomRightHash = NeighborIntWithPrecision(bottomRightHash, bits, geohash.West)
 		wight++
 	}
@@ -78,20 +72,20 @@ func collectPerimeter(hash uint64, bits uint, height, wight int) []uint64 {
 }
 
 // Perimeter
-// Returns outer part of BBox
+// Returns outer part of BBox.
 func (r *BBox) Perimeter() []uint64 {
 	return collectPerimeter(r.leftBottom, r.bits, r.height, r.wight)
 }
 
 // Inner
-// Returns inner part of BBox, points from Perimeter are not included
+// Returns inner part of BBox, points from Perimeter are not included.
 func (r *BBox) Inner() []uint64 {
 	var (
 		height    = r.height - 1
 		wight     = r.wight - 1
 		inner     = make([]uint64, 0, r.height)
 		hash      = NeighborIntWithPrecision(r.leftBottom, r.bits, geohash.NorthEast)
-		innerHash = hash
+		innerHash = hash //nolint: ineffassign, wastedassign // have no idea how to do
 	)
 
 	for range height {
@@ -100,6 +94,7 @@ func (r *BBox) Inner() []uint64 {
 			inner = append(inner, innerHash)
 			innerHash = NeighborIntWithPrecision(innerHash, r.bits, geohash.East)
 		}
+
 		hash = NeighborIntWithPrecision(hash, r.bits, geohash.North)
 	}
 

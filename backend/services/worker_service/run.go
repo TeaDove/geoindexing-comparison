@@ -6,10 +6,11 @@ import (
 	"geoindexing_comparison/backend/schemas"
 	"geoindexing_comparison/backend/suppliers/manager_supplier"
 	"geoindexing_comparison/backend/task"
-	"github.com/pkg/errors"
-	"github.com/teadove/teasutils/utils/logger_utils"
 	"runtime"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/teadove/teasutils/utils/logger_utils"
 
 	"github.com/rs/zerolog"
 )
@@ -76,13 +77,15 @@ func (r *Service) Job() {
 
 	for {
 		ctx := logger_utils.NewLoggedCtx()
+
 		job, err := r.managerSupplier.GetPendingJobs(ctx)
 		if err != nil {
-			if errors.Is(err, manager_supplier.NotFoundError) {
+			if errors.Is(err, manager_supplier.ErrNotFound) {
 				zerolog.Ctx(ctx).
 					Debug().
 					Msg("no.pending.jobs")
 				time.Sleep(notFoundSleep)
+
 				continue
 			}
 
@@ -91,6 +94,7 @@ func (r *Service) Job() {
 				Stack().Err(err).
 				Msg("failed.to.get.pending.jobs")
 			time.Sleep(errorSleep)
+
 			continue
 		}
 
@@ -103,6 +107,7 @@ func (r *Service) Job() {
 				Stack().Err(err).
 				Msg("failed.to.report.result")
 			time.Sleep(errorSleep)
+
 			continue
 		}
 	}

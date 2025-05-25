@@ -6,9 +6,10 @@ import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/helpers"
 	"geoindexing_comparison/backend/index"
-	"github.com/teadove/teasutils/utils/test_utils"
 	"math"
 	"testing"
+
+	"github.com/teadove/teasutils/utils/test_utils"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -105,7 +106,6 @@ func TestKNNOk(t *testing.T) {
 	t.Parallel()
 
 	for _, inputs := range testInputs.PerIndex() { //nolint: paralleltest // Fails otherwise
-
 		var results []geo.Points
 
 		for _, tt := range inputs {
@@ -132,7 +132,7 @@ func TestBBoxOk(t *testing.T) {
 		var results []geo.Points
 
 		for _, tt := range inputs {
-			t.Run(tt.Name, func(t *testing.T) {
+			t.Run(tt.Name, func(_ *testing.T) {
 				indexObj := tt.Index.Builder()
 				indexObj.FromArray(tt.Points)
 

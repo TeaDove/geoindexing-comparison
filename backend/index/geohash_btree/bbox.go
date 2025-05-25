@@ -11,6 +11,7 @@ func (r *CollectionGeohash) getMany(hashed []uint64) geo.Points {
 		points      geo.Points
 		foundPoints geo.Points
 	)
+
 	for _, hash := range hashed {
 		foundPoints, _ = r.btree.Get(hash)
 		points = append(points, foundPoints...)

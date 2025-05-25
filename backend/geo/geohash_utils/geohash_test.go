@@ -3,9 +3,10 @@ package geohash_utils
 import (
 	"fmt"
 	"geoindexing_comparison/backend/geo"
+	"testing"
+
 	"github.com/mmcloughlin/geohash"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestGeohashNeighborIter(t *testing.T) {
@@ -40,7 +41,28 @@ func TestGeohashNeighborIterSquared(t *testing.T) {
 	lat, lng := geohash.Decode("ucfv7t")
 	originGeohash := geohash.EncodeIntWithPrecision(lat, lng, bits)
 	idx := 0
-	exp := [][]string{{"ucfv7t"}, {"ucfv7k", "ucfv7m", "ucfv7q", "ucfv7w", "ucfv7y", "ucfv7v", "ucfv7u", "ucfv7s"}, {"ucfv75", "ucfv7h", "ucfv7j", "ucfv7n", "ucfv7p", "ucfv7r", "ucfv7x", "ucfv7z", "ucfvkp", "ucfvkn", "ucfvkj", "ucfvkh", "ucfvk5", "ucfv7g", "ucfv7e", "ucfv77"}}
+	exp := [][]string{
+		{"ucfv7t"},
+		{"ucfv7k", "ucfv7m", "ucfv7q", "ucfv7w", "ucfv7y", "ucfv7v", "ucfv7u", "ucfv7s"},
+		{
+			"ucfv75",
+			"ucfv7h",
+			"ucfv7j",
+			"ucfv7n",
+			"ucfv7p",
+			"ucfv7r",
+			"ucfv7x",
+			"ucfv7z",
+			"ucfvkp",
+			"ucfvkn",
+			"ucfvkj",
+			"ucfvkh",
+			"ucfvk5",
+			"ucfv7g",
+			"ucfv7e",
+			"ucfv77",
+		},
+	}
 
 	for neighbors := range NeighborIterSquared(originGeohash, bits) {
 		for jdx, neighbor := range neighbors {
@@ -65,7 +87,18 @@ func TestGeohashBboxPerimeterOk(t *testing.T) {
 	upperRight := geo.NewPoint(55.801616, 37.803966)
 
 	bbox := NewBBox(bottomLeft.Lat, bottomLeft.Lon, upperRight.Lat, upperRight.Lon, bits)
-	expHashed := []string{"ucfv7s", "ucfv7t", "ucfv7w", "ucfv7y", "ucfvkn", "ucfvkq", "ucfvkm", "ucfvkk", "ucfvkh", "ucfv7u"}
+	expHashed := []string{
+		"ucfv7s",
+		"ucfv7t",
+		"ucfv7w",
+		"ucfv7y",
+		"ucfvkn",
+		"ucfvkq",
+		"ucfvkm",
+		"ucfvkk",
+		"ucfvkh",
+		"ucfv7u",
+	}
 
 	for idx, hash := range bbox.Perimeter() {
 		lat, lng := geohash.DecodeIntWithPrecision(hash, bits)
@@ -91,18 +124,33 @@ func TestGeohashBboxInnterOk(t *testing.T) {
 }
 
 func TestGeohashFastNeighborsOk(t *testing.T) {
+	t.Parallel()
+
 	chars := uint(6)
 	bits := chars * 5
 
 	lat, lng := geohash.Decode("ucfv7t")
 	originGeohash := geohash.EncodeIntWithPrecision(lat, lng, bits)
 
-	directions := []geohash.Direction{geohash.North, geohash.NorthEast, geohash.East, geohash.SouthEast, geohash.South, geohash.SouthWest, geohash.West, geohash.NorthWest}
+	directions := []geohash.Direction{
+		geohash.North,
+		geohash.NorthEast,
+		geohash.East,
+		geohash.SouthEast,
+		geohash.South,
+		geohash.SouthWest,
+		geohash.West,
+		geohash.NorthWest,
+	}
 	for _, direction := range directions {
 		t.Run(fmt.Sprint(direction), func(tt *testing.T) {
 			tt.Parallel()
 
-			assert.Equal(tt, NeighborIntWithPrecision(originGeohash, bits, direction), geohash.NeighborIntWithPrecision(originGeohash, bits, direction))
+			assert.Equal(
+				tt,
+				NeighborIntWithPrecision(originGeohash, bits, direction),
+				geohash.NeighborIntWithPrecision(originGeohash, bits, direction),
+			)
 		})
 	}
 }

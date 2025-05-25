@@ -4,8 +4,9 @@ import (
 	"geoindexing_comparison/backend/generator"
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/helpers"
-	"github.com/pkg/errors"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 type NewVisualizerInput struct {

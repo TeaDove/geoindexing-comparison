@@ -3,10 +3,11 @@ package manager_presentation
 import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/services/visualizer_service"
-	"github.com/gofiber/fiber/v2"
-	"github.com/pkg/errors"
 	"strconv"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/pkg/errors"
 )
 
 func sendPoints(c *fiber.Ctx, points geo.Points, dur time.Duration) error {
@@ -28,6 +29,7 @@ func (r *Presentation) NewVisualizer(c *fiber.Ctx) error {
 	}
 
 	points := r.visualizerService.GetPoints()
+
 	return c.JSON(points.GeoJSON())
 }
 
@@ -45,6 +47,7 @@ func (r *Presentation) KNN(c *fiber.Ctx) error {
 	}
 
 	points, dur := r.visualizerService.KNN(&req)
+
 	return sendPoints(c, points, dur)
 }
 
@@ -57,5 +60,6 @@ func (r *Presentation) BBox(c *fiber.Ctx) error {
 	}
 
 	points, dur := r.visualizerService.BBox(&req)
+
 	return sendPoints(c, points, dur)
 }

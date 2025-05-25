@@ -2,9 +2,10 @@ package h3_btree
 
 import (
 	"geoindexing_comparison/backend/geo"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/uber/h3-go/v4"
-	"time"
 )
 
 func (r *CollectionGeohash) getMany(hashed []h3.Cell) geo.Points {
@@ -12,6 +13,7 @@ func (r *CollectionGeohash) getMany(hashed []h3.Cell) geo.Points {
 		points      geo.Points
 		foundPoints geo.Points
 	)
+
 	for _, hash := range hashed {
 		foundPoints, _ = r.btree.Get(hash)
 		points = append(points, foundPoints...)
@@ -29,7 +31,8 @@ func (r *CollectionGeohash) bbox(bottomLeft geo.Point, upperRight geo.Point) geo
 				h3.NewLatLng(upperRight.Lat, upperRight.Lon),
 				h3.NewLatLng(bottomLeft.Lat, upperRight.Lon),
 				h3.NewLatLng(bottomLeft.Lat, bottomLeft.Lon),
-			}},
+			},
+		},
 		r.resolution,
 		h3.ContainmentOverlappingBbox,
 	)
@@ -38,6 +41,7 @@ func (r *CollectionGeohash) bbox(bottomLeft geo.Point, upperRight geo.Point) geo
 	}
 
 	var points geo.Points
+
 	posiblePoints := r.getMany(cells)
 
 	for _, point := range posiblePoints {

@@ -8,7 +8,7 @@ require (
 	github.com/anayks/go-rstar-tree v1.3.1
 	github.com/deckarep/golang-set/v2 v2.8.0
 	github.com/dhconnelly/rtreego v1.2.0
-	github.com/gofiber/fiber/v2 v2.52.6
+	github.com/gofiber/fiber/v2 v2.52.7
 	github.com/guregu/null/v6 v6.0.0
 	github.com/kyroy/kdtree v0.0.0-20200419114247-70830f883f1d
 	github.com/mmcloughlin/geohash v0.10.0

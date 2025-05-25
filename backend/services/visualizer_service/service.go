@@ -5,8 +5,9 @@ import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/index"
 	"geoindexing_comparison/backend/services/builder_service"
-	"github.com/pkg/errors"
 	"sync"
+
+	"github.com/pkg/errors"
 )
 
 type Service struct {

@@ -5,13 +5,14 @@ import (
 	"geoindexing_comparison/backend/generator"
 	"geoindexing_comparison/backend/repositories/manager_repository"
 	"geoindexing_comparison/backend/schemas"
+	"strconv"
+	"time"
+
 	"github.com/guregu/null/v6"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/teadove/teasutils/utils/logger_utils"
 	"github.com/teadove/teasutils/utils/time_utils"
-	"strconv"
-	"time"
 )
 
 func (r *Service) generateJobs(run *manager_repository.Run) {
@@ -40,8 +41,8 @@ func (r *Service) generateJobs(run *manager_repository.Run) {
 	r.allJobsDone = make(chan struct{})
 	r.jobIdx = 0
 	r.currentRun = run
-
 }
+
 func (r *Service) runPending(ctx context.Context, run *manager_repository.Run) error {
 	ctx = logger_utils.WithValue(ctx, "run_id", strconv.Itoa(run.ID))
 

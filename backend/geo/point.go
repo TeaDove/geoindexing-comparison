@@ -7,11 +7,12 @@ import (
 	"encoding/json"
 	"geoindexing_comparison/backend/geo/distance_utils"
 	"geoindexing_comparison/backend/helpers"
+	"math"
+	"strings"
+
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
 	"golang.org/x/exp/slices"
-	"math"
-	"strings"
 
 	"github.com/pkg/errors"
 
@@ -57,17 +58,17 @@ func (r Point) InsideBBox(bottomLeft Point, upperRight Point) bool {
 }
 
 func (r Point) AddLatitude(dvKM float64) Point {
-	r.Lat = r.Lat + (dvKM/distance_utils.EarthRadiusKm)*(180/math.Pi)
+	r.Lat += (dvKM / distance_utils.EarthRadiusKm) * (180 / math.Pi)
 	return r
 }
 
 func (r Point) AddLongitude(dvKM float64) Point {
-	r.Lon = r.Lon + (dvKM/distance_utils.EarthRadiusKm)*(180/math.Pi)/math.Cos(r.Lat*math.Pi/180)
+	r.Lon += (dvKM / distance_utils.EarthRadiusKm) * (180 / math.Pi) / math.Cos(r.Lat*math.Pi/180)
 	return r
 }
 
 func (r *Points) GetRandomPoint() Point {
-	return (*r)[helpers.NewRNG(uint64(len(*r)), uint64(len(*r))).IntN(len(*r))] //nolint: gosec // Allowed here
+	return (*r)[helpers.NewRNG(uint64(len(*r)), uint64(len(*r))).IntN(len(*r))]
 }
 
 func (r *Points) FindCorners() (Point, Point) {
@@ -106,6 +107,7 @@ func (r *Points) IDs() string {
 	}
 
 	slices.Sort(ids)
+
 	return strings.Join(ids, ",")
 }
 
@@ -147,6 +149,7 @@ func (r *Points) SortByDistance(origin Point) {
 		if a.DistanceHaversine(origin) < b.DistanceHaversine(origin) {
 			return -1
 		}
+
 		return 1
 	})
 }

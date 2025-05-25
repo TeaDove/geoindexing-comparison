@@ -10,7 +10,9 @@ func (r *CollectionGeohash) KNNTimed(origin geo.Point, n int) (geo.Points, time.
 	t0 := time.Now()
 
 	originHash := r.hash(origin)
+
 	var points geo.Points
+
 	for neighbors := range h3_utils.GridDiskInf(originHash) {
 		points = append(points, r.getMany(neighbors)...)
 		if len(points) >= n {

@@ -11,7 +11,7 @@ import (
 	"geoindexing_comparison/backend/index/rtree"
 )
 
-func AllIndexes() []index.Index {
+func AllIndexes() []index.Index { //nolint: funlen // Combiner
 	return []index.Index{
 		{
 			Builder: kdtree.New,

@@ -2,9 +2,10 @@ package h3_btree
 
 import (
 	"geoindexing_comparison/backend/generator"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/teadove/teasutils/utils/test_utils"
-	"testing"
 )
 
 func TestKNNOk(t *testing.T) {

@@ -2,8 +2,9 @@ package bruteforce
 
 import (
 	"geoindexing_comparison/backend/generator"
-	"github.com/teadove/teasutils/utils/test_utils"
 	"testing"
+
+	"github.com/teadove/teasutils/utils/test_utils"
 
 	"github.com/stretchr/testify/assert"
 )

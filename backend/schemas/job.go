@@ -12,13 +12,13 @@ type Job struct {
 
 	Amount      int        `json:"amount"`
 	Points      geo.Points `json:"points"`
-	RandomPoint geo.Point  `json:"randomPoint" json:"randomPoint"`
+	RandomPoint geo.Point  `json:"randomPoint"`
 }
 
 type JobResult struct {
-	Index  string
-	Task   string
-	Amount int
+	Index  string `json:"index"`
+	Task   string `json:"task"`
+	Amount int    `json:"amount"`
 
-	Durs stats.Array[time.Duration]
+	Durs stats.Array[time.Duration] `json:"durs"`
 }

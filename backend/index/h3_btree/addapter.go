@@ -4,10 +4,11 @@ import (
 	"geoindexing_comparison/backend/geo"
 	"geoindexing_comparison/backend/geo/distance_utils"
 	"geoindexing_comparison/backend/index"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/tidwall/btree"
 	"github.com/uber/h3-go/v4"
-	"time"
 )
 
 type CollectionGeohash struct {
@@ -18,7 +19,11 @@ type CollectionGeohash struct {
 
 func Factory(resolution int) func() index.Impl {
 	return func() index.Impl {
-		return &CollectionGeohash{btree: *btree.NewMap[h3.Cell, geo.Points](2), resolution: resolution, metric: distance_utils.MetricHaversine}
+		return &CollectionGeohash{
+			btree:      *btree.NewMap[h3.Cell, geo.Points](2),
+			resolution: resolution,
+			metric:     distance_utils.MetricHaversine,
+		}
 	}
 }
 
@@ -42,6 +47,7 @@ func (r *CollectionGeohash) ToArray() geo.Points {
 	for _, arr := range r.btree.Values() {
 		points = append(points, arr...)
 	}
+
 	return points
 }
 
@@ -55,7 +61,9 @@ func (r *CollectionGeohash) Insert(point geo.Point) {
 
 func (r *CollectionGeohash) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
+
 	r.Insert(point)
+
 	return time.Since(t0)
 }
 

@@ -1,9 +1,10 @@
 package distance_utils
 
 import (
+	"math"
+
 	"github.com/pkg/errors"
 	"github.com/tidwall/geodesic"
-	"math"
 )
 
 const EarthRadiusKm = 6371 // radius of the earth in kilometers.
@@ -43,7 +44,7 @@ func DistanceHaversine(lat1, lon1, lat2, lon2 float64) float64 {
 	diffLat := lat2 - lat1
 	diffLon := lon2 - lon1
 
-	マギカ := math.Pow(math.Sin(diffLat/2), 2) + math.Cos(lat1)*math.Cos(lat2)*
+	マギカ := math.Pow(math.Sin(diffLat/2), 2) + math.Cos(lat1)*math.Cos(lat2)* //nolint: asciicheck // Magika!
 		math.Pow(math.Sin(diffLon/2), 2)
 
 	c := 2 * math.Atan2(math.Sqrt(マギカ), math.Sqrt(1-マギカ))
@@ -53,11 +54,12 @@ func DistanceHaversine(lat1, lon1, lat2, lon2 float64) float64 {
 
 func DistanceGeodesic(lat1, lon1, lat2, lon2 float64) float64 {
 	var dist float64
+
 	geodesic.WGS84.Inverse(lat1, lon1, lat2, lon2, &dist, nil, nil)
 
 	return dist
 }
 
 func DistanceEuclidean(lat1, lon1, lat2, lon2 float64) float64 {
-	return math.Sqrt(math.Pow(lat2-lat1, 2) + math.Pow(lon2-lon1, 2))
+	return math.Sqrt((lat2-lat1)*(lat2-lat1) + (lon2-lon1)*(lon2-lon1))
 }

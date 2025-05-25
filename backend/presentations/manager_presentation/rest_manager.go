@@ -3,6 +3,7 @@ package manager_presentation
 import (
 	"fmt"
 	"geoindexing_comparison/backend/services/manager_service"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
 )
@@ -34,7 +35,11 @@ func (r *Presentation) runResume(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
-	run, err := r.managerService.AddRun(c.UserContext(), &req, fmt.Sprintf("%s:%s", c.IP(), c.Get(fiber.HeaderUserAgent)))
+	run, err := r.managerService.AddRun(
+		c.UserContext(),
+		&req,
+		fmt.Sprintf("%s:%s", c.IP(), c.Get(fiber.HeaderUserAgent)),
+	)
 	if err != nil {
 		return errors.Wrap(err, "could not save run")
 	}

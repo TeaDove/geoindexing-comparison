@@ -6,7 +6,6 @@ import (
 )
 
 func ID(rng *rand.Rand) string {
-
 	const (
 		alfabet = "0123456789abcdefghijklmnopqrstuvwxyz"
 		dash    = "-"
@@ -16,7 +15,9 @@ func ID(rng *rand.Rand) string {
 	for range 4 {
 		builder.WriteByte(alfabet[rng.IntN(len(alfabet))])
 	}
+
 	builder.WriteString(dash)
+
 	for range 4 {
 		builder.WriteByte(alfabet[rng.IntN(len(alfabet))])
 	}

@@ -6,6 +6,7 @@ import (
 	"geoindexing_comparison/backend/services/builder_service"
 	"geoindexing_comparison/backend/services/manager_service"
 	"geoindexing_comparison/backend/services/visualizer_service"
+
 	"github.com/pkg/errors"
 	"github.com/teadove/teasutils/utils/logger_utils"
 )

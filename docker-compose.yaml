@@ -3,7 +3,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: DockerfileBackend
+      dockerfile: DockerfileManager
     volumes:
       - ".data:/.data"
       - ".env:/.env"

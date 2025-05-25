@@ -1,8 +1,9 @@
 package geohash_utils
 
 import (
-	"github.com/mmcloughlin/geohash"
 	"iter"
+
+	"github.com/mmcloughlin/geohash"
 )
 
 func geohashNextDirection(direction geohash.Direction) geohash.Direction {
@@ -16,6 +17,7 @@ func geohashNextDirection(direction geohash.Direction) geohash.Direction {
 	case geohash.West:
 		return geohash.North
 	}
+
 	panic("unreachable")
 }
 
@@ -57,11 +59,13 @@ func NeighborIterSquared(v uint64, bits uint) iter.Seq[[]uint64] {
 		bottomLeft := NeighborIntWithPrecision(v, bits, geohash.SouthWest)
 
 		step := 2
+
 		for {
 			perimeter := collectPerimeter(bottomLeft, bits, step, step)
 			if !yield(perimeter) {
 				return
 			}
+
 			step += 2
 			bottomLeft = NeighborIntWithPrecision(bottomLeft, bits, geohash.SouthWest)
 		}
