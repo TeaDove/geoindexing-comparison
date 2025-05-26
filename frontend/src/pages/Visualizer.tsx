@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { API_URL, MAPBOX_TOKEN } from '../config';
-import Notification, { NotificationMessage } from '../components/Notification';
 import '../App.css';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -15,8 +14,6 @@ const Visualizer: React.FC = () => {
     const [selectedIndex, setSelectedIndex] = useState<string>('');
     const [amount, setAmount] = useState<number>(10000);
     const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
-    // const [isLoadingPoints, setIsLoadingPoints] = useState(false); // Commented out
-    const [notification, setNotification] = useState<NotificationMessage | null>(null);
 
     // --- KNN State ---
     const [selectedPoint, setSelectedPoint] = useState<mapboxgl.LngLat | null>(null);
@@ -32,19 +29,15 @@ const Visualizer: React.FC = () => {
     // --- Mapbox State and Refs ---
     const mapContainerRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<Map | null>(null);
-    const selectedMarkerRef = useRef<Marker | null>(null); // Ref for the selected point marker
+    const selectedMarkerRef = useRef<Marker | null>(null);
 
     useEffect(() => {
         const fetchIndexes = async () => {
-            const startTime = performance.now(); // Start timer
-            let status = 500; // Default status
-            let errorMsg: string | undefined;
             try {
                 const response = await fetch(`${API_URL}/indexes`, { headers });
-                status = response.status; // Get status
                 if (!response.ok) {
-                    errorMsg = await response.text() || 'Failed to fetch indexes';
-                    throw new Error(errorMsg);
+                    const error = await response.text() || 'Failed to fetch indexes';
+                    throw new Error(error);
                 }
                 const data: { info: { shortName: string, longName: string } }[] = await response.json();
                 setIndexes(data);
@@ -53,18 +46,6 @@ const Visualizer: React.FC = () => {
                 }
             } catch (error) {
                 console.error('Error fetching indexes:', error);
-                if (error instanceof Error) {
-                    if (!error.message.includes('Failed to fetch indexes')) {
-                        errorMsg = error.message;
-                    }
-                }
-                if (status !== 200 && !errorMsg) {
-                    errorMsg = 'Caught an unknown error';
-                }
-            } finally {
-                const endTime = performance.now(); // End timer
-                const durationMs = endTime - startTime;
-                showNotification(status, '/indexes', 'GET', errorMsg, durationMs); // Show notification with duration
             }
         };
         fetchIndexes();
@@ -163,22 +144,10 @@ const Visualizer: React.FC = () => {
         };
     }, []);
 
-    const showNotification = (status: number, endpoint: string, method: string, error?: string, durationMs?: number) => {
-        console.log(`Notification: ${method} ${endpoint} -> ${status}${error ? ` Error: ${error}` : ''}${durationMs ? ` (${durationMs.toFixed(2)} ms)` : ''}`);
-        setNotification({
-            status,
-            endpoint,
-            method,
-            error,
-            durationMs,
-            timestamp: Date.now(),
-        });
-    };
-
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!selectedIndex) {
-            showNotification(400, '/visualizer', 'POST', 'Please select an index.')
+            console.error('Please select an index.');
             return;
         }
         setIsLoadingGenerate(true);
@@ -198,75 +167,43 @@ const Visualizer: React.FC = () => {
             }
         }
 
-        const startTime = performance.now();
-        let status = 500;
-        let errorMsg: string | undefined;
-        let geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> | null = null;
         try {
             const response = await fetch(`${API_URL}/visualizer`, {
                 method: 'POST',
                 headers,
-                body: JSON.stringify({ index: selectedIndex, amount }),
+                body: JSON.stringify({ amount, index: selectedIndex }),
             });
-            status = response.status;
             if (!response.ok) {
-                errorMsg = await response.text() || 'Failed to generate/load data';
-                throw new Error(errorMsg);
+                const error = await response.text() || 'Failed to generate points';
+                throw new Error(error);
             }
-            geoJsonData = await response.json(); // Expect GeoJSON directly from POST
-            console.log('Visualizer POST successful, received GeoJSON:', geoJsonData);
-
-        } catch (error) {
-            console.error('Error submitting visualizer request:', error);
-            if (error instanceof Error) {
-                if (!error.message.includes('Failed to generate/load data')) {
-                    errorMsg = error.message;
-                }
-            }
-            if (status !== 200 && !errorMsg) {
-                errorMsg = 'Caught an unknown error';
-            }
-        } finally {
-            const endTime = performance.now();
-            const durationMs = endTime - startTime;
-            showNotification(status, '/visualizer', 'POST', errorMsg, durationMs);
+            const geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
 
             // Update map source if request was successful
-            if (status === 200 && geoJsonData && mapRef.current) {
+            if (mapRef.current) {
                 const pointsSource = mapRef.current.getSource('points') as mapboxgl.GeoJSONSource;
                 if (pointsSource) {
-                    // Create a default empty GeoJSON if data is null
-                    const defaultGeoJson: GeoJSON.FeatureCollection<GeoJSON.Point> = {
-                        type: 'FeatureCollection',
-                        features: []
-                    };
-                    // Use the provided data if it exists, otherwise use default
-                    const validGeoJson = geoJsonData || defaultGeoJson;
-                    pointsSource.setData(validGeoJson);
+                    pointsSource.setData(geoJsonData);
                 }
                 const knnSource = mapRef.current.getSource('knn-neighbors') as mapboxgl.GeoJSONSource;
                 if (knnSource) knnSource.setData({ type: 'FeatureCollection', features: [] });
                 const radiusSource = mapRef.current.getSource('radius-search-results') as mapboxgl.GeoJSONSource;
                 if (radiusSource) radiusSource.setData({ type: 'FeatureCollection', features: [] });
-            } else if (status === 200 && geoJsonData && !mapRef.current) {
-                console.error('Map instance not available when trying to update source after generate.');
-                showNotification(500, 'Mapbox', 'Source Update', 'Map not ready after generate');
             }
-
+        } catch (error) {
+            console.error('Error generating points:', error);
+        } finally {
             setIsLoadingGenerate(false);
         }
     };
 
     const handleFindKnn = async () => {
         if (!selectedPoint) {
-            showNotification(400, '/visualizer/knn', 'POST', 'No point selected on the map.');
+            console.error('No point selected on the map.');
             return;
         }
         setIsLoadingKnn(true);
         setKnnNeighborsGeoJson(null);
-        const startTime = performance.now();
-        let status = 500;
-        let errorMsg: string | undefined;
         try {
             const payload = { point: { lon: selectedPoint.lng, lat: selectedPoint.lat }, n: knnN };
             const response = await fetch(`${API_URL}/visualizer/knn`, {
@@ -274,50 +211,30 @@ const Visualizer: React.FC = () => {
                 headers,
                 body: JSON.stringify(payload),
             });
-            status = response.status;
             if (!response.ok) {
-                errorMsg = await response.text() || 'Failed to find KNN';
-                throw new Error(errorMsg);
+                const error = await response.text() || 'Failed to find KNN';
+                throw new Error(error);
             }
             const neighborsData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
             setKnnNeighborsGeoJson(neighborsData);
             console.log('KNN search successful, received neighbors:', neighborsData);
-
         } catch (error) {
             console.error('Error finding KNN:', error);
-            if (error instanceof Error) {
-                if (!error.message.includes('Failed to find KNN')) {
-                    errorMsg = error.message;
-                }
-            }
-            if (status !== 200 && !errorMsg) {
-                errorMsg = 'Caught an unknown error';
-            }
         } finally {
-            const endTime = performance.now();
-            const durationMs = endTime - startTime;
-            showNotification(status, '/visualizer/knn', 'POST', errorMsg, durationMs);
             setIsLoadingKnn(false);
         }
     };
 
-    // --- Handle Radius Search ---
     const handleRadiusSearch = async () => {
         if (!selectedPoint) {
-            showNotification(400, '/visualizer/bbox', 'POST', 'No point selected on the map.');
+            console.error('No point selected on the map.');
             return;
         }
         setIsLoadingRadius(true);
-        setRadiusSearchResultsGeoJson(null); // Clear previous results visually
-        const startTime = performance.now();
-        let status = 500;
-        let errorMsg: string | undefined;
+        setRadiusSearchResultsGeoJson(null);
         try {
-            // Calculate BBox from selectedPoint and radius
-            const earthRadiusMeters = 6378137; // Earth's radius in meters
-            // Convert radius from meters to degrees for latitude
+            const earthRadiusMeters = 6378137;
             const latDiffDegrees = (radius / earthRadiusMeters) * (180 / Math.PI);
-            // Convert radius from meters to degrees for longitude (depends on latitude)
             const lonDiffDegrees = (radius / (earthRadiusMeters * Math.cos(Math.PI * selectedPoint.lat / 180))) * (180 / Math.PI);
 
             const payload = {
@@ -330,29 +247,16 @@ const Visualizer: React.FC = () => {
                 headers,
                 body: JSON.stringify(payload),
             });
-            status = response.status;
             if (!response.ok) {
-                errorMsg = await response.text() || 'Failed to find points in bounding box';
-                throw new Error(errorMsg);
+                const error = await response.text() || 'Failed to find points in bounding box';
+                throw new Error(error);
             }
             const radiusData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
-            setRadiusSearchResultsGeoJson(radiusData); // Update state, triggering useEffect
+            setRadiusSearchResultsGeoJson(radiusData);
             console.log('Bounding box search successful, received points:', radiusData);
-
         } catch (error) {
             console.error('Error finding points in bounding box:', error);
-            if (error instanceof Error) {
-                if (!error.message.includes('Failed to find points in bounding box')) {
-                    errorMsg = error.message;
-                }
-            }
-            if (status !== 200 && !errorMsg) {
-                errorMsg = 'Caught an unknown error during bounding box search';
-            }
         } finally {
-            const endTime = performance.now();
-            const durationMs = endTime - startTime;
-            showNotification(status, '/visualizer/bbox', 'POST', errorMsg, durationMs);
             setIsLoadingRadius(false);
         }
     };
@@ -373,22 +277,16 @@ const Visualizer: React.FC = () => {
     useEffect(() => {
         if (!mapRef.current) return;
         const loadInitialPoints = async () => {
-            const startTime = performance.now();
-            let status = 500;
-            let errorMsg: string | undefined;
-            let geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> | null = null;
-
             try {
                 const response = await fetch(`${API_URL}/visualizer/points`, {
                     method: 'GET',
                     headers,
                 });
-                status = response.status;
                 if (!response.ok) {
-                    errorMsg = await response.text() || 'Failed to load initial points';
-                    throw new Error(errorMsg);
+                    const error = await response.text() || 'Failed to load initial points';
+                    throw new Error(error);
                 }
-                geoJsonData = await response.json();
+                const geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
                 console.log('Initial points loaded successfully');
 
                 // Update map with points if we have data
@@ -401,18 +299,6 @@ const Visualizer: React.FC = () => {
 
             } catch (error) {
                 console.error('Error loading initial points:', error);
-                if (error instanceof Error) {
-                    if (!error.message.includes('Failed to load initial points')) {
-                        errorMsg = error.message;
-                    }
-                }
-                if (status !== 200 && !errorMsg) {
-                    errorMsg = 'Caught an unknown error during initial points load';
-                }
-            } finally {
-                const endTime = performance.now();
-                const durationMs = endTime - startTime;
-                showNotification(status, '/visualizer/points', 'GET', errorMsg, durationMs);
             }
         };
         loadInitialPoints();
@@ -425,23 +311,17 @@ const Visualizer: React.FC = () => {
 
             console.log(`Index selected: ${selectedIndex}. Sending request to backend.`);
 
-            const startTime = performance.now();
-            let status = 500;
-            let errorMsg: string | undefined;
-            let geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> | null = null;
-
             try {
                 const response = await fetch(`${API_URL}/visualizer`, {
                     method: 'POST',
                     headers,
                     body: JSON.stringify({ index: selectedIndex }),
                 });
-                status = response.status;
                 if (!response.ok) {
-                    errorMsg = await response.text() || `Failed to switch index to ${selectedIndex}`;
-                    throw new Error(errorMsg);
+                    const error = await response.text() || `Failed to switch index to ${selectedIndex}`;
+                    throw new Error(error);
                 }
-                geoJsonData = await response.json(); // Get GeoJSON data from response
+                const geoJsonData: GeoJSON.FeatureCollection<GeoJSON.Point> = await response.json();
                 console.log(`Backend acknowledged index switch to ${selectedIndex} and returned points data`);
 
                 // Clear KNN and radius search results, but DO NOT clear selectedPoint
@@ -465,18 +345,6 @@ const Visualizer: React.FC = () => {
 
             } catch (error) {
                 console.error('Error switching index:', error);
-                if (error instanceof Error) {
-                    if (!error.message.includes('Failed to switch index')) {
-                        errorMsg = error.message;
-                    }
-                }
-                if (status !== 200 && !errorMsg) {
-                    errorMsg = 'Caught an unknown error during index switch';
-                }
-            } finally {
-                const endTime = performance.now();
-                const durationMs = endTime - startTime;
-                showNotification(status, `/visualizer (index: ${selectedIndex})`, 'POST', errorMsg, durationMs);
             }
         };
 
@@ -599,8 +467,6 @@ const Visualizer: React.FC = () => {
                             )}
                         </div>
                     </form>
-
-                    <Notification message={notification} />
 
                     <div ref={mapContainerRef} className="mapbox-gl-container" style={{ height: '800px', width: '100%', marginTop: '20px' }} />
                 </div>

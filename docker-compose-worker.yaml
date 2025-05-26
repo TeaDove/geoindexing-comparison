@@ -5,5 +5,4 @@ services:
       context: backend
       dockerfile: DockerfileWorker
     volumes:
-      - ".data:/.data"
       - "./backend/.env:/.env"

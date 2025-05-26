@@ -1,16 +1,16 @@
 GO ?= GO111MODULE=on CGO_ENABLED=1 go
 
-run-backend-manager:
+run-manager:
 	$(GO) run pkg/entrypoints/manager/main.go
 
-run-backend-worker:
+run-worker:
 	$(GO) run pkg/entrypoints/worker/main.go
 
 
-build-backend-manager:
+build-manager:
 	$(GO) build -o bootstrap pkg/entrypoints/manager/main.go
 
-build-backend-worker:
+build-worker:
 	$(GO) build -o bootstrap pkg/entrypoints/worker/main.go
 
 show-pprof:

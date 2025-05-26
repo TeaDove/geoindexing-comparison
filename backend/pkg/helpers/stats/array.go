@@ -2,6 +2,7 @@ package stats
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"math"
 	"sort"
 
@@ -19,7 +20,7 @@ func NewArray[T constraints.Integer](dur []T) Array[T] {
 }
 
 func (r Array[T]) String() string {
-	return fmt.Sprintf("avg: %d, median: %d, min: %d, max: %d, p90: %d, p95: %d, p99: %d, len: %d",
+	return fmt.Sprintf("avg: %f, median: %d, min: %d, max: %d, p90: %d, p95: %d, p99: %d, len: %d",
 		r.Avg(),
 		r.Median(),
 		r.Min(),
@@ -31,17 +32,26 @@ func (r Array[T]) String() string {
 	)
 }
 
-func (r Array[T]) Avg() T {
+func (r Array[T]) QualifiedAvg() float64 {
+	if len(r) < 3 {
+		panic(errors.New("QualifiedAvg requires array to be at lease 3 elements long"))
+	}
+
+	qualifiedArr := r[1 : len(r)-1]
+	return qualifiedArr.Avg()
+}
+
+func (r Array[T]) Avg() float64 {
 	if len(r) == 0 {
 		return 0
 	}
 
-	var avg T
-	for _, dur := range r {
-		avg += dur
+	var sum T
+	for _, el := range r {
+		sum += el
 	}
 
-	return T(int(avg) / len(r))
+	return float64(sum) / float64(len(r))
 }
 
 func (r Array[T]) Median() T {
@@ -87,8 +97,8 @@ func (r Array[T]) Variance() float64 {
 	mean := float64(sum) / float64(len(r))
 
 	var sumDif float64
-	for _, dur := range r {
-		sumDif += math.Pow(float64(dur)-mean, 2)
+	for _, el := range r {
+		sumDif += math.Pow(float64(el)-mean, 2)
 	}
 
 	return sumDif / float64(len(r))
@@ -98,13 +108,13 @@ func (r Array[T]) SE() float64 {
 	return math.Sqrt(r.Variance())
 }
 
-func (r Array[T]) AvgWithSE() [3]T {
+func (r Array[T]) AvgWithSE() [3]float64 {
 	if len(r) == 0 {
-		return [3]T{0, 0, 0}
+		return [3]float64{0, 0, 0}
 	}
 
 	avg := r.Avg()
 	se := r.SE()
 
-	return [3]T{avg - T(se), avg, avg + T(se)}
+	return [3]float64{avg - se, avg, avg + se}
 }
