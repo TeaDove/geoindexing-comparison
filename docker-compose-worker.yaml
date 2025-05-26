@@ -1,0 +1,9 @@
+services:
+  backend-worker:
+    restart: always
+    build:
+      context: backend
+      dockerfile: DockerfileWorker
+    volumes:
+      - ".data:/.data"
+      - "./backend/.env:/.env"
