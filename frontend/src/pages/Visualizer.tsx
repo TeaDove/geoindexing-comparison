@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { API_URL, MAPBOX_TOKEN } from '../config';
 import '../App.css';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
@@ -69,7 +68,7 @@ const Visualizer: React.FC = () => {
             // Set default selected point
             const defaultPoint = new mapboxgl.LngLat(37.609461, 55.728292);
             setSelectedPoint(defaultPoint);
-            const marker = new Marker({ color: '#d62728' })
+            const marker = new Marker({ color: '#1E87F7' })
                 .setLngLat(defaultPoint)
                 .addTo(map);
             selectedMarkerRef.current = marker;
@@ -83,31 +82,31 @@ const Visualizer: React.FC = () => {
                 id: 'points-layer',
                 type: 'circle',
                 source: 'points',
-                paint: { 'circle-radius': 4, 'circle-color': '#007cbf' }
+                paint: { 'circle-radius': 4, 'circle-color': '#10B981' }
             });
 
             // Source and Layer for KNN Neighbors
             map.addSource('knn-neighbors', {
                 type: 'geojson',
-                data: { type: 'FeatureCollection', features: [] } // Initially empty
+                data: { type: 'FeatureCollection', features: [] }
             });
             map.addLayer({
                 id: 'knn-neighbors-layer',
                 type: 'circle',
                 source: 'knn-neighbors',
-                paint: { 'circle-radius': 5, 'circle-color': '#2ca02c' } // Green color
+                paint: { 'circle-radius': 5, 'circle-color': '#FBBF24' }
             });
 
             // Source and Layer for Radius Search Results
             map.addSource('radius-search-results', {
                 type: 'geojson',
-                data: { type: 'FeatureCollection', features: [] } // Initially empty
+                data: { type: 'FeatureCollection', features: [] }
             });
             map.addLayer({
                 id: 'radius-search-layer',
                 type: 'circle',
                 source: 'radius-search-results',
-                paint: { 'circle-radius': 5, 'circle-color': '#ff7f0e' } // Orange color
+                paint: { 'circle-radius': 5, 'circle-color': '#F7701E' }
             });
 
             map.addSource('radius-circle', {
@@ -121,19 +120,17 @@ const Visualizer: React.FC = () => {
             const coordinates = e.lngLat;
             console.log('Map clicked at:', coordinates);
             setSelectedPoint(coordinates);
-            setKnnNeighborsGeoJson(null); // Clear previous KNN results
-            setRadiusSearchResultsGeoJson(null); // Clear previous Radius results
+            setKnnNeighborsGeoJson(null);
+            setRadiusSearchResultsGeoJson(null);
 
-            // Remove previous marker if it exists
             if (selectedMarkerRef.current) {
                 selectedMarkerRef.current.remove();
             }
 
-            // Add a new marker for the selected point (Red)
-            const marker = new Marker({ color: '#d62728' })
+            const marker = new Marker({ color: '#DC2626' })
                 .setLngLat(coordinates)
                 .addTo(map);
-            selectedMarkerRef.current = marker; // Store the new marker instance
+            selectedMarkerRef.current = marker;
         });
 
         // Clean up on unmount
@@ -367,26 +364,21 @@ const Visualizer: React.FC = () => {
 
     return (
         <div className="page-container visualizer-page">
-            <nav>
-                <Link to="/">Вернуться к графикам</Link>
-            </nav>
-            <h1>Визуализация</h1>
-
             <div style={{ display: 'flex', flexDirection: 'row', gap: '32px', alignItems: 'flex-start' }}>
                 {/* Index select panel */}
                 <fieldset
                     id="indexes"
                     style={{
                         minWidth: '280px',
-                        background: '#fffbe9',
-                        border: '2px solid #f5e6c4',
+                        background: 'var(--neutral-light)',
+                        border: '2px solid var(--border-color)',
                         borderRadius: '8px',
                         padding: '24px 24px 16px 24px',
-                        margin: 0,
+                        margin: '10px',
                         height: 'fit-content',
                     }}
                 >
-                    <legend style={{ color: '#d62728', fontWeight: 600, fontSize: '1.2em', marginBottom: '12px' }}>Индексы</legend>
+                    <legend style={{ color: '#DC2626', fontWeight: 600, fontSize: '1.2em', marginBottom: '12px', transform: 'translateX(16px)' }}>Индексы</legend>
                     {indexes.map(index => (
                         index?.info?.shortName && (
                             <div key={index.info.shortName} style={{ marginBottom: '8px' }}>
@@ -407,7 +399,7 @@ const Visualizer: React.FC = () => {
                 </fieldset>
 
                 {/* Controls and map */}
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 0.6 }}>
                     <form onSubmit={handleSubmit} className="visualizer-form">
                         <div className="points-input" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <div>

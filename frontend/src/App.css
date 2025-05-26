@@ -1,16 +1,16 @@
 :root {
-  --primary-color: #FFD700;
-  --secondary-color: #FFE5B4;
-  --accent-color: #DB254A;
-  --highlight-color: #DB3B25;
-  --neutral-light: #fff5f3;
-  --neutral-dark: #fbd5d5;
-  --background-color: #fff9e6;
-  --text-color: #2d3748;
-  --border-color: #FFE5B4;
-  --hover-color: #FFC000;
-  --success-color: #FFD700;
-  --danger-color: #DB254A;
+  --primary-color: #2ABD0C;
+  --secondary-color: #0BBD30;
+  --accent-color: #059669;
+  --highlight-color: #047857;
+  --neutral-light: #F0FDF4;
+  --neutral-dark: #ECFDF5;
+  --background-color: #ffffff;
+  --text-color: #064E3B;
+  --border-color: #A7F3D0;
+  --hover-color: #059669;
+  --success-color: #10B981;
+  --danger-color: #DC2626;
 }
 
 body {
@@ -35,7 +35,7 @@ body {
 
 button {
   background-color: var(--primary-color);
-  color: var(--text-color);
+  color: white;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -48,7 +48,7 @@ button {
 button:hover {
   background-color: var(--hover-color);
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
 }
 
 button:active {
@@ -69,8 +69,8 @@ button:disabled {
 }
 
 .run-settings fieldset {
-  background: #fffbe9;
-  border: 2px solid #f5e6c4;
+  background: var(--neutral-light);
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   padding: 24px 24px 16px 24px;
   margin-bottom: 24px;
@@ -78,7 +78,7 @@ button:disabled {
 }
 
 .run-settings legend {
-  color: #d62728;
+  color: var(--accent-color);
   font-weight: 600;
   font-size: 1.2em;
   margin-bottom: 12px;
@@ -136,7 +136,7 @@ fieldset {
   border-radius: 0.5rem;
   padding: 1.5rem;
   margin-bottom: 1rem;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--neutral-light);
 }
 
 legend {
@@ -235,21 +235,21 @@ fieldset input[type="checkbox"] {
 }
 
 .resume-button {
-  background-color: #28a745;
+  background-color: var(--primary-color);
   color: white;
 }
 
 .resume-button:hover:not(:disabled) {
-  background-color: #218838;
+  background-color: var(--hover-color);
 }
 
 .reset-button {
-  background-color: #dc3545;
+  background-color: var(--danger-color);
   color: white;
 }
 
 .reset-button:hover:not(:disabled) {
-  background-color: #c82333;
+  background-color: #B91C1C;
 }
 
 .resume-button:disabled,
@@ -516,12 +516,12 @@ fieldset input[type="checkbox"] {
 }
 
 .runs-list::-webkit-scrollbar-thumb {
-  background: #FFD700;
+  background: var(--primary-color);
   border-radius: 4px;
 }
 
 .runs-list::-webkit-scrollbar-track {
-  background: #f8f6ed;
+  background: var(--neutral-light);
 }
 
 .chart-header-settings {

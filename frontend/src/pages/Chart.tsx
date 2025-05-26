@@ -120,9 +120,6 @@ const Chart: React.FC = () => {
 
     return (
         <div className="page-container">
-            <nav>
-                <Link to="/visualizer">Go to Visualizer</Link>
-            </nav>
             <div className="chart-layout">
                 <aside className="sidebar">
                     <RunSettingsComponent
