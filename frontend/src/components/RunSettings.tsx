@@ -11,6 +11,9 @@ interface RunSettingsProps {
     pointsStart: number;
     pointsEnd: number;
     pointsStep: number;
+    setPointsStart: (n: number) => void;
+    setPointsEnd: (n: number) => void;
+    setPointsStep: (n: number) => void;
 }
 
 const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading, pointsStart, pointsEnd, pointsStep }: RunSettingsProps) => {

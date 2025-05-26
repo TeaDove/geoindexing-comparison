@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom';
 import type { Task, Index, RunSettings as RunSettingsType, Run } from '../types/index'
 import RunSettingsComponent from '../components/RunSettings'
 import RunsList from '../components/RunsList'
@@ -15,12 +14,9 @@ const Chart: React.FC = () => {
     const [runs, setRuns] = useState<Run[]>([])
     const [selectedRunId, setSelectedRunId] = useState<number | null>(null)
     const [isLoading, setIsLoading] = useState(false)
-    const [pointsStart, setPointsStart] = useState(1000)
-    const [pointsEnd, setPointsEnd] = useState(10000)
-    const [pointsStep, setPointsStep] = useState(100)
-    const [displayStart, setDisplayStart] = useState('1 000')
-    const [displayEnd, setDisplayEnd] = useState('10 000')
-    const [displayStep, setDisplayStep] = useState('100')
+    const [pointsStart, setPointsStart] = useState(1000);
+    const [pointsEnd, setPointsEnd] = useState(10000);
+    const [pointsStep, setPointsStep] = useState(100);
 
     useEffect(() => {
         fetchTasks()
@@ -131,9 +127,66 @@ const Chart: React.FC = () => {
                         pointsStart={pointsStart}
                         pointsEnd={pointsEnd}
                         pointsStep={pointsStep}
+                        setPointsStart={setPointsStart}
+                        setPointsEnd={setPointsEnd}
+                        setPointsStep={setPointsStep}
                     />
                 </aside>
                 <main className="main-content">
+                    <div className="points-input">
+                        <div>
+                            <label htmlFor="pointsStart">Start</label>
+                            <input
+                                id="pointsStart"
+                                type="number"
+                                value={pointsStart}
+                                min={1}
+                                onChange={e => setPointsStart(Number(e.target.value))}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="pointsEnd">End</label>
+                            <input
+                                id="pointsEnd"
+                                type="number"
+                                value={pointsEnd}
+                                min={pointsStart}
+                                onChange={e => setPointsEnd(Number(e.target.value))}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="pointsStep">Step</label>
+                            <input
+                                id="pointsStep"
+                                type="number"
+                                value={pointsStep}
+                                min={1}
+                                onChange={e => setPointsStep(Number(e.target.value))}
+                            />
+                        </div>
+                        <div className="button-group">
+                            <button
+                                onClick={() => handleResume({
+                                    tasks: [], // You may want to pass selected tasks/indexes here
+                                    indexes: [],
+                                    start: pointsStart,
+                                    stop: pointsEnd,
+                                    step: pointsStep
+                                })}
+                                disabled={isLoading}
+                                className="resume-button"
+                            >
+                                ▶
+                            </button>
+                            <button
+                                onClick={handleReset}
+                                disabled={isLoading}
+                                className="reset-button"
+                            >
+                                ⏹
+                            </button>
+                        </div>
+                    </div>
                     <RunsList
                         runs={runs}
                         onRunSelect={setSelectedRunId}
