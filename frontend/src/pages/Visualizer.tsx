@@ -378,7 +378,7 @@ const Visualizer: React.FC = () => {
                         height: 'fit-content',
                     }}
                 >
-                    <legend style={{ color: '#DC2626', fontWeight: 600, fontSize: '1.2em', marginBottom: '12px', transform: 'translateX(16px)' }}>Индексы</legend>
+                    <legend>Индексы</legend>
                     {indexes.map(index => (
                         index?.info?.shortName && (
                             <div key={index.info.shortName} style={{ marginBottom: '8px' }}>
@@ -399,7 +399,7 @@ const Visualizer: React.FC = () => {
                 </fieldset>
 
                 {/* Controls and map */}
-                <div style={{ flex: 0.6 }}>
+                <div className="visualizer-form-container">
                     <form onSubmit={handleSubmit} className="visualizer-form">
                         <div className="points-input" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <div>
@@ -460,7 +460,7 @@ const Visualizer: React.FC = () => {
                         </div>
                     </form>
 
-                    <div ref={mapContainerRef} className="mapbox-gl-container" style={{ height: '800px', width: '100%', marginTop: '20px' }} />
+                    <div ref={mapContainerRef} className="mapbox-gl-container" style={{ height: '800px' }} />
                 </div>
             </div>
         </div>

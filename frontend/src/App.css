@@ -1,7 +1,7 @@
 :root {
   --primary-color: #2ABD0C;
   --secondary-color: #0BBD30;
-  --accent-color: #059669;
+  --accent-color: #DC2626;
   --highlight-color: #047857;
   --neutral-light: #F0FDF4;
   --neutral-dark: #ECFDF5;
@@ -77,7 +77,7 @@ button:disabled {
   min-width: 0;
 }
 
-.run-settings legend {
+legend {
   color: var(--accent-color);
   font-weight: 600;
   font-size: 1.2em;
@@ -85,7 +85,6 @@ button:disabled {
 }
 
 .points-input {
-  width: 75%;
   box-sizing: border-box;
   flex-wrap: wrap;
   display: flex;
@@ -207,18 +206,6 @@ fieldset input[type="checkbox"] {
   }
 }
 
-/* Remove notification-related styles */
-.notification-container,
-.notification,
-.notification-content,
-.notification-header,
-.status-dot,
-.endpoint,
-.status,
-.error-message {
-  display: none;
-}
-
 .button-group {
   display: flex;
   flex-direction: row;
@@ -262,8 +249,6 @@ fieldset input[type="checkbox"] {
 }
 
 .runs-list {
-  width: 75%;
-  margin-right: 2rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   overflow: hidden;
@@ -446,11 +431,15 @@ fieldset input[type="checkbox"] {
 }
 
 .main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
+  width: 50%;
+  padding: 8px;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+
+.visualizer-form-container {
+  width: 70%;
   padding: 8px;
   min-width: 0;
   overflow-y: auto;
