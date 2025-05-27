@@ -241,11 +241,8 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                         <React.Fragment key={task}>
                             <div className="chart-wrapper">
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
-                                    <button onClick={() => handleDownload(task)}>
-                                        Download
-                                    </button>
                                     <button onClick={() => setFullscreenTask(task)}>
-                                        Fullscreen
+                                        ⛶
                                     </button>
                                 </div>
                                 <Line ref={chartRefs.current[task]} data={chartData} options={options} />
