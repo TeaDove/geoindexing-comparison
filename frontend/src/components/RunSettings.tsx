@@ -14,38 +14,52 @@ interface RunSettingsProps {
     setPointsStart: (n: number) => void;
     setPointsEnd: (n: number) => void;
     setPointsStep: (n: number) => void;
+    selectedTasks: string[];
+    selectedIndexes: string[];
+    onTasksChange: (tasks: string[]) => void;
+    onIndexesChange: (indexes: string[]) => void;
 }
 
-const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading, pointsStart, pointsEnd, pointsStep }: RunSettingsProps) => {
-    const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-    const [selectedIndexes, setSelectedIndexes] = useState<string[]>([]);
-
+const RunSettings = ({
+    tasks,
+    indexes,
+    onResume,
+    onReset,
+    isLoading,
+    pointsStart,
+    pointsEnd,
+    pointsStep,
+    selectedTasks,
+    selectedIndexes,
+    onTasksChange,
+    onIndexesChange
+}: RunSettingsProps) => {
     // Set default selections when tasks or indexes change
     useEffect(() => {
         if (tasks.length > 0 && selectedTasks.length === 0) {
-            setSelectedTasks(tasks.slice(0, 2).map(task => task.info.shortName));
+            onTasksChange(tasks.slice(0, 2).map(task => task.info.shortName));
         }
     }, [tasks]);
 
     useEffect(() => {
         if (indexes.length > 0 && selectedIndexes.length === 0) {
-            setSelectedIndexes(indexes.slice(0, 2).map(index => index.info.shortName));
+            onIndexesChange(indexes.slice(0, 2).map(index => index.info.shortName));
         }
     }, [indexes]);
 
     const handleTaskChange = (taskName: string) => {
-        setSelectedTasks(prev =>
-            prev.includes(taskName)
-                ? prev.filter(t => t !== taskName)
-                : [...prev, taskName]
+        onTasksChange(
+            selectedTasks.includes(taskName)
+                ? selectedTasks.filter(t => t !== taskName)
+                : [...selectedTasks, taskName]
         );
     };
 
     const handleIndexChange = (indexName: string) => {
-        setSelectedIndexes(prev =>
-            prev.includes(indexName)
-                ? prev.filter(i => i !== indexName)
-                : [...prev, indexName]
+        onIndexesChange(
+            selectedIndexes.includes(indexName)
+                ? selectedIndexes.filter(i => i !== indexName)
+                : [...selectedIndexes, indexName]
         );
     };
 
@@ -92,23 +106,6 @@ const RunSettings = ({ tasks, indexes, onResume, onReset, isLoading, pointsStart
                     </div>
                 ))}
             </fieldset>
-
-            <div className="button-group">
-                <button
-                    onClick={handleResume}
-                    disabled={isLoading}
-                    className="resume-button"
-                >
-                    ▶
-                </button>
-                <button
-                    onClick={onReset}
-                    disabled={isLoading}
-                    className="reset-button"
-                >
-                    ⏹
-                </button>
-            </div>
         </div>
     );
 };

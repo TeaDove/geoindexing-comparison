@@ -5,6 +5,8 @@ import (
 	"geoindexing_comparison/pkg/generator"
 	"geoindexing_comparison/pkg/repositories/manager_repository"
 	"geoindexing_comparison/pkg/schemas"
+	"github.com/guregu/null/v6"
+	"github.com/pkg/errors"
 	"strconv"
 	"time"
 
@@ -42,6 +44,18 @@ func (r *Service) generateJobs(run *manager_repository.Run) {
 
 func (r *Service) runPending(ctx context.Context, run *manager_repository.Run) error {
 	ctx = logger_utils.WithValue(ctx, "run_id", strconv.Itoa(run.ID))
+
+	if len(run.Tasks) == 0 || len(run.Indexes) == 0 {
+		run.CompletedAt = null.TimeFrom(time.Now())
+		run.Status = manager_repository.RunStatusCancelled
+		err := r.repository.SaveRun(ctx, run)
+		if err != nil {
+			return errors.Wrap(err, "failed to save run")
+		}
+
+		zerolog.Ctx(ctx).Warn().Msg("empty.run")
+		return nil
+	}
 
 	zerolog.Ctx(ctx).Info().Interface("run", run).Msg("run.started")
 

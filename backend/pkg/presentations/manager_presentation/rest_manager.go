@@ -35,6 +35,10 @@ func (r *Presentation) runResume(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to parse request")
 	}
 
+	if len(req.Indexes) == 0 || len(req.Tasks) == 0 || req.Step <= 0 || req.Stop <= req.Start {
+		return errors.New("invalid request")
+	}
+
 	run, err := r.managerService.AddRun(
 		c.UserContext(),
 		&req,

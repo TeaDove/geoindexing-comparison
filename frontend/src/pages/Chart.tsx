@@ -17,6 +17,8 @@ const Chart: React.FC = () => {
     const [pointsStart, setPointsStart] = useState(1000);
     const [pointsEnd, setPointsEnd] = useState(10000);
     const [pointsStep, setPointsStep] = useState(100);
+    const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+    const [selectedIndexes, setSelectedIndexes] = useState<string[]>([]);
 
     useEffect(() => {
         fetchTasks()
@@ -130,6 +132,10 @@ const Chart: React.FC = () => {
                         setPointsStart={setPointsStart}
                         setPointsEnd={setPointsEnd}
                         setPointsStep={setPointsStep}
+                        selectedTasks={selectedTasks}
+                        selectedIndexes={selectedIndexes}
+                        onTasksChange={setSelectedTasks}
+                        onIndexesChange={setSelectedIndexes}
                     />
                 </aside>
                 <main className="main-content">
@@ -167,8 +173,8 @@ const Chart: React.FC = () => {
                         <div className="button-group">
                             <button
                                 onClick={() => handleResume({
-                                    tasks: [], // You may want to pass selected tasks/indexes here
-                                    indexes: [],
+                                    tasks: selectedTasks,
+                                    indexes: selectedIndexes,
                                     start: pointsStart,
                                     stop: pointsEnd,
                                     step: pointsStep
