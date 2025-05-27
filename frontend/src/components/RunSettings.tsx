@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import type { Task, Index, RunSettings } from '../types/index';
 import './RunSettings.css';
 
@@ -6,14 +6,6 @@ interface RunSettingsProps {
     tasks: Task[];
     indexes: Index[];
     onResume: (settings: RunSettings) => void;
-    onReset: () => void;
-    isLoading: boolean;
-    pointsStart: number;
-    pointsEnd: number;
-    pointsStep: number;
-    setPointsStart: (n: number) => void;
-    setPointsEnd: (n: number) => void;
-    setPointsStep: (n: number) => void;
     selectedTasks: string[];
     selectedIndexes: string[];
     onTasksChange: (tasks: string[]) => void;
@@ -23,12 +15,6 @@ interface RunSettingsProps {
 const RunSettings = ({
     tasks,
     indexes,
-    onResume,
-    onReset,
-    isLoading,
-    pointsStart,
-    pointsEnd,
-    pointsStep,
     selectedTasks,
     selectedIndexes,
     onTasksChange,
@@ -61,16 +47,6 @@ const RunSettings = ({
                 ? selectedIndexes.filter(i => i !== indexName)
                 : [...selectedIndexes, indexName]
         );
-    };
-
-    const handleResume = () => {
-        onResume({
-            tasks: selectedTasks,
-            indexes: selectedIndexes,
-            start: pointsStart,
-            stop: pointsEnd,
-            step: pointsStep
-        });
     };
 
     return (

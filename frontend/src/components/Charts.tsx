@@ -126,18 +126,6 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
         };
     }, [selectedRunId, run?.Status, retryCount]);
 
-    // Download chart as image
-    const handleDownload = (task: string) => {
-        const chartRef = chartRefs.current[task];
-        if (chartRef && chartRef.current) {
-            const url = chartRef.current.toBase64Image();
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `chart-${task}.png`;
-            link.click();
-        }
-    };
-
     if (!selectedRunId) {
         return null;
     }
@@ -242,7 +230,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                             <div className="chart-wrapper">
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
                                     <button onClick={() => setFullscreenTask(task)}>
-                                        ⛶
+                                        Fullscreen
                                     </button>
                                 </div>
                                 <Line ref={chartRefs.current[task]} data={chartData} options={options} />

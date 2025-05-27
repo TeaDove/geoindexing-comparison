@@ -40,6 +40,13 @@ func (r *Service) AddRun(ctx context.Context, req *RunRequest, createdBy string)
 }
 
 func (r *Service) StopRuns(ctx context.Context) error {
+	r.jobMu.Lock()
+	defer r.jobMu.Unlock()
+
+	r.currentRun = nil
+	r.jobIdx = 0
+	r.jobs = nil
+
 	err := r.repository.StopRuns(ctx)
 	if err != nil {
 		return errors.Wrap(err, "could not save run")

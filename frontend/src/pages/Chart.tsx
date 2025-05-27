@@ -124,14 +124,6 @@ const Chart: React.FC = () => {
                         tasks={tasks}
                         indexes={indexes}
                         onResume={handleResume}
-                        onReset={handleReset}
-                        isLoading={isLoading}
-                        pointsStart={pointsStart}
-                        pointsEnd={pointsEnd}
-                        pointsStep={pointsStep}
-                        setPointsStart={setPointsStart}
-                        setPointsEnd={setPointsEnd}
-                        setPointsStep={setPointsStep}
                         selectedTasks={selectedTasks}
                         selectedIndexes={selectedIndexes}
                         onTasksChange={setSelectedTasks}
