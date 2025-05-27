@@ -1,16 +1,28 @@
 :root {
-  --primary-color: #2ABD0C;
-  --secondary-color: #0BBD30;
+  --primary-color: #2563EB;
+  /* Bright blue */
+  --secondary-color: #3B82F6;
+  /* Lighter blue */
   --accent-color: #DC2626;
-  --highlight-color: #047857;
-  --neutral-light: #F0FDF4;
-  --neutral-dark: #ECFDF5;
+  /* Red (keeping this as it's used for danger/reset) */
+  --highlight-color: #1D4ED8;
+  /* Dark blue */
+  --neutral-light: #EFF6FF;
+  /* Very light blue */
+  --neutral-dark: #DBEAFE;
+  /* Light blue */
   --background-color: #ffffff;
-  --text-color: #064E3B;
-  --border-color: #A7F3D0;
-  --hover-color: #059669;
-  --success-color: #10B981;
+  /* White */
+  --text-color: #1E3A8A;
+  /* Dark blue */
+  --border-color: #BFDBFE;
+  /* Light blue border */
+  --hover-color: #1D4ED8;
+  /* Dark blue for hover */
+  --success-color: #059669;
+  /* Green (keeping this for success states) */
   --danger-color: #DC2626;
+  /* Red (keeping this for danger states) */
 }
 
 body {
