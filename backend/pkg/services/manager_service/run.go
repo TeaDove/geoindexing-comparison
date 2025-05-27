@@ -37,7 +37,6 @@ func (r *Service) generateJobs(run *manager_repository.Run) {
 		}
 	}
 
-	r.allJobsDone = make(chan struct{})
 	r.jobIdx = 0
 	r.currentRun = run
 }
@@ -61,7 +60,18 @@ func (r *Service) runPending(ctx context.Context, run *manager_repository.Run) e
 
 	r.generateJobs(run)
 
-	<-r.allJobsDone
+	for {
+		curRun, err := r.repository.GetRun(ctx, run.ID)
+		if err != nil {
+			return errors.Wrap(err, "failed to get current run")
+		}
+
+		if curRun.Status != manager_repository.RunStatusPending {
+			break
+		}
+
+		time.Sleep(1 * time.Second)
+	}
 
 	return nil
 }

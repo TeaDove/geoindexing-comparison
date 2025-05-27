@@ -12,11 +12,10 @@ type Service struct {
 
 	repository *manager_repository.Repository
 
-	currentRun  *manager_repository.Run
-	jobMu       sync.Mutex
-	jobIdx      int
-	jobs        []schemas.Job
-	allJobsDone chan struct{}
+	currentRun *manager_repository.Run
+	jobMu      sync.Mutex
+	jobIdx     int
+	jobs       []schemas.Job
 }
 
 func NewService(builderService *builder_service.Service, repository *manager_repository.Repository) *Service {

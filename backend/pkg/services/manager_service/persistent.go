@@ -45,8 +45,6 @@ func (r *Service) StopRuns(ctx context.Context) error {
 		return errors.Wrap(err, "could not save run")
 	}
 
-	// TODO добавить обработку краша
-
 	zerolog.Ctx(ctx).Info().Msg("runs.stopped")
 
 	return nil

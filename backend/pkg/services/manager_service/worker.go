@@ -43,8 +43,6 @@ func (r *Service) ReportJob(ctx context.Context, jobResult *schemas.JobResult) e
 
 	r.jobIdx++
 	if r.jobIdx >= len(r.jobs) {
-		r.allJobsDone <- struct{}{}
-
 		r.currentRun.CompletedAt = null.NewTime(time.Now(), true)
 		r.currentRun.Status = manager_repository.RunStatusCompleted
 
