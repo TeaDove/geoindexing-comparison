@@ -2,7 +2,6 @@ package stats
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"math"
 	"sort"
 
@@ -34,7 +33,7 @@ func (r Array[T]) String() string {
 
 func (r Array[T]) QualifiedAvg() float64 {
 	if len(r) < 3 {
-		panic(errors.New("QualifiedAvg requires array to be at lease 3 elements long"))
+		return r.Avg()
 	}
 
 	qualifiedArr := r[1 : len(r)-1]
