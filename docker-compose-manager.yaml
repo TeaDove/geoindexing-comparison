@@ -6,7 +6,7 @@ services:
       dockerfile: DockerfileManager
     volumes:
       - ".data:/.data"
-      - "./backend/.env:/.env"
+      - ".env:/.env"
 
   frontend:
     build:
