@@ -3,6 +3,7 @@ import { API_URL, MAPBOX_TOKEN } from '../config';
 import '../App.css';
 import mapboxgl, { Map, Marker } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import NumericInput from '../components/NumericInput';
 
 const headers = {
     'Content-Type': 'application/json'
@@ -402,39 +403,30 @@ const Visualizer: React.FC = () => {
                 <div className="visualizer-form-container">
                     <form onSubmit={handleSubmit} className="visualizer-form">
                         <div className="points-input" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div>
-                                <label htmlFor="amount-input">Кол-во точек:</label>
-                                <input
-                                    type="number"
-                                    id="amount-input"
-                                    value={amount}
-                                    onChange={(e) => setAmount(Number(e.target.value))}
-                                    min="1"
-                                    disabled={isLoadingGenerate}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="knn-n-input">Соседи (N):</label>
-                                <input
-                                    type="number"
-                                    id="knn-n-input"
-                                    value={knnN}
-                                    onChange={(e) => setKnnN(Math.max(1, Number(e.target.value)))}
-                                    min="1"
-                                    disabled={isLoadingKnn}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="radius-input">Радиус (m):</label>
-                                <input
-                                    type="number"
-                                    id="radius-input"
-                                    value={radius}
-                                    onChange={(e) => setRadius(Math.max(1, Number(e.target.value)))}
-                                    min="1"
-                                    disabled={isLoadingRadius}
-                                />
-                            </div>
+                            <NumericInput
+                                id="amount-input"
+                                label="Кол-во точек:"
+                                value={amount}
+                                onChange={setAmount}
+                                min={1}
+                                disabled={isLoadingGenerate}
+                            />
+                            <NumericInput
+                                id="knn-n-input"
+                                label="Соседи (N):"
+                                value={knnN}
+                                onChange={setKnnN}
+                                min={1}
+                                disabled={isLoadingKnn}
+                            />
+                            <NumericInput
+                                id="radius-input"
+                                label="Радиус (m):"
+                                value={radius}
+                                onChange={setRadius}
+                                min={1}
+                                disabled={isLoadingRadius}
+                            />
                             <button type="submit" disabled={isLoadingGenerate || isLoadingKnn} className="submit-button">
                                 {isLoadingGenerate ? 'Generating...' : 'Загрузить данные'}
                             </button>

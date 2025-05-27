@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { Task, Index, RunSettings as RunSettingsType, Run } from '../types/index'
 import RunSettingsComponent from '../components/RunSettings'
 import RunsList from '../components/RunsList'
+import NumericInput from '../components/NumericInput'
 import { API_URL } from '../config'
 
 const headers = {
@@ -132,36 +133,27 @@ const Chart: React.FC = () => {
                 </aside>
                 <main className="main-content">
                     <div className="points-input">
-                        <div>
-                            <label htmlFor="pointsStart">Start</label>
-                            <input
-                                id="pointsStart"
-                                type="number"
-                                value={pointsStart}
-                                min={1}
-                                onChange={e => setPointsStart(Number(e.target.value))}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="pointsEnd">End</label>
-                            <input
-                                id="pointsEnd"
-                                type="number"
-                                value={pointsEnd}
-                                min={pointsStart}
-                                onChange={e => setPointsEnd(Number(e.target.value))}
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="pointsStep">Step</label>
-                            <input
-                                id="pointsStep"
-                                type="number"
-                                value={pointsStep}
-                                min={1}
-                                onChange={e => setPointsStep(Number(e.target.value))}
-                            />
-                        </div>
+                        <NumericInput
+                            id="pointsStart"
+                            label="Start"
+                            value={pointsStart}
+                            onChange={setPointsStart}
+                            min={1}
+                        />
+                        <NumericInput
+                            id="pointsEnd"
+                            label="End"
+                            value={pointsEnd}
+                            onChange={setPointsEnd}
+                            min={pointsStart}
+                        />
+                        <NumericInput
+                            id="pointsStep"
+                            label="Step"
+                            value={pointsStep}
+                            onChange={setPointsStep}
+                            min={1}
+                        />
                         <div className="button-group">
                             <button
                                 onClick={() => handleResume({

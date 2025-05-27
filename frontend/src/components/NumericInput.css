@@ -1,0 +1,36 @@
+.numeric-input {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.numeric-input label {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.numeric-input input {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.numeric-input input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--neutral-dark);
+}
+
+.numeric-input input:disabled {
+    background-color: var(--neutral-light);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.numeric-input input:hover:not(:disabled) {
+    border-color: var(--primary-color);
+}
