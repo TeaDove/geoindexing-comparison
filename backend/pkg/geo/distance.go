@@ -6,7 +6,7 @@ package geo
 import "geoindexing_comparison/pkg/geo/distance_utils"
 
 func (r Point) Distance(other Point, metric distance_utils.Metric) float64 {
-	return distance_utils.Distance(r.Lat, r.Lon, other.Lat, other.Lon, metric)
+	return metric(r.Lat, r.Lon, other.Lat, other.Lon)
 }
 
 func (r Point) DistanceHaversine(other Point) float64 {

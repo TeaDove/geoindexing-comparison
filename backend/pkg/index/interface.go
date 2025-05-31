@@ -14,10 +14,6 @@ type Impl interface {
 
 	ToArray() geo.Points
 
-	// String returns string representation of Impl
-	// Allowed to be unoptimized
-	String() string
-
 	// InsertTimed inserts geo.Point to Impl
 	InsertTimed(point geo.Point) time.Duration
 

@@ -1,20 +1,27 @@
-package h3_btree
+package geobrtree
 
 import (
 	"geoindexing_comparison/pkg/geo"
-	"geoindexing_comparison/pkg/geo/h3_utils"
+	"geoindexing_comparison/pkg/geo/geohash_utils"
 	"time"
 )
 
-func (r *CollectionGeohash) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
+func (r *Index) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
-	originHash := r.hash(origin)
+	originGeohash := r.geohash(origin)
 
 	var points geo.Points
 
-	for neighbors := range h3_utils.GridDiskInf(originHash) {
-		points = append(points, r.getMany(neighbors)...)
+	for neighbors := range geohash_utils.NeighborIterSquared(originGeohash, r.geohashBits) {
+		tries := r.getMany(neighbors)
+		for _, tree := range tries {
+			tree.Scan(func(_, _ [2]float64, data geo.Point) bool {
+				points = append(points, data)
+				return true
+			})
+		}
+
 		if len(points) >= n {
 			break
 		}

@@ -10,31 +10,31 @@ import (
 	"github.com/dhconnelly/rtreego"
 )
 
-type CollectionRTree struct {
+type Index struct {
 	impl rtreego.Rtree
 }
 
 func New() index.Impl {
-	return &CollectionRTree{impl: *rtreego.NewTree(2, 1000, 100_000)}
+	return &Index{impl: *rtreego.NewTree(2, 1000, 100_000)}
 }
 
-func (r *CollectionRTree) FromArray(points geo.Points) {
+func (r *Index) FromArray(points geo.Points) {
 	r.impl = *rtreego.NewTree(2, len(points), len(points)+len(points)/4)
 	for _, point := range points {
 		r.impl.Insert(point)
 	}
 }
 
-func (r *CollectionRTree) ToArray() geo.Points {
+func (r *Index) ToArray() geo.Points {
 	var res geo.Points
-	for _, point := range r.impl.NearestNeighbors(r.impl.Size(), rtreego.Point([]float64{0, 0})) {
+	for _, point := range r.impl.NearestNeighbors(r.impl.Size(), []float64{0, 0}) {
 		res = append(res, point.(geo.Point))
 	}
 
 	return res
 }
 
-func (r *CollectionRTree) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
+func (r *Index) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	spatials := r.impl.NearestNeighbors(n, []float64{origin.Lat, origin.Lon})
 	dur := time.Since(t0)
@@ -47,7 +47,7 @@ func (r *CollectionRTree) KNNTimed(origin geo.Point, n int) (geo.Points, time.Du
 	return result, dur
 }
 
-func (r *CollectionRTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
+func (r *Index) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	rect, err := rtreego.NewRectFromPoints(
 		[]float64{bottomLeft.Lat, bottomLeft.Lon},
 		[]float64{upperRight.Lat, upperRight.Lon},
@@ -68,12 +68,12 @@ func (r *CollectionRTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) 
 	return geoPoints, dur
 }
 
-func (r *CollectionRTree) String() string {
+func (r *Index) String() string {
 	// TODO implement me
 	return r.impl.String()
 }
 
-func (r *CollectionRTree) InsertTimed(point geo.Point) time.Duration {
+func (r *Index) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
 
 	r.impl.Insert(point)

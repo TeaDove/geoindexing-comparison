@@ -5,6 +5,7 @@ package geo
 
 import (
 	"encoding/json"
+	"fmt"
 	"geoindexing_comparison/pkg/geo/distance_utils"
 	"geoindexing_comparison/pkg/helpers"
 	"math"
@@ -28,6 +29,11 @@ type Point struct {
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
 }
+
+func (r Point) String() string {
+	return fmt.Sprintf("%s(%f, %f)", r.ID, r.Lat, r.Lon)
+}
+
 type Points []Point
 
 func NewPoint(lat float64, lon float64) Point {

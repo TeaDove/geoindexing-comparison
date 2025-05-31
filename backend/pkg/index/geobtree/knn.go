@@ -1,4 +1,4 @@
-package geohash_btree
+package geobtree
 
 import (
 	"geoindexing_comparison/pkg/geo"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (r *CollectionGeohash) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
+func (r *Index) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
 	originGeohash := r.geohash(origin)

@@ -1,4 +1,4 @@
-package h3_btree
+package h3btree
 
 import (
 	"geoindexing_comparison/pkg/generator"

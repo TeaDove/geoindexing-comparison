@@ -9,8 +9,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/teadove/teasutils/utils/test_utils"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -87,21 +85,6 @@ func TestFromArrayOk(t *testing.T) {
 	}
 }
 
-func TestStringOk(t *testing.T) {
-	t.Parallel()
-
-	for _, tt := range testInputs {
-		t.Run(tt.Name, func(t *testing.T) {
-			t.Parallel()
-
-			indexObj := tt.Index.Builder()
-
-			indexObj.FromArray(tt.Points)
-			indexObj.String()
-		})
-	}
-}
-
 func TestKNNOk(t *testing.T) {
 	t.Parallel()
 
@@ -118,7 +101,6 @@ func TestKNNOk(t *testing.T) {
 				assert.Len(t, points, 10)
 				results = append(results, points)
 			})
-			test_utils.Pprint(tt.Index.Info.ShortName)
 		}
 
 		results[0].EqualMany(results)

@@ -1,4 +1,4 @@
-package geohash_btree
+package geobrtree
 
 import (
 	"geoindexing_comparison/pkg/generator"

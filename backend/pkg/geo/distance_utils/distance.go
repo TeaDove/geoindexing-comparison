@@ -3,7 +3,6 @@ package distance_utils
 import (
 	"math"
 
-	"github.com/pkg/errors"
 	"github.com/tidwall/geodesic"
 )
 
@@ -14,26 +13,7 @@ func degreesToRadians(d float64) float64 {
 	return d * math.Pi / 180
 }
 
-type Metric string
-
-const (
-	MetricHaversine Metric = "Haversine"
-	MetricGeodesic  Metric = "Geodesic"
-	MetricEuclidean Metric = "Euclidean"
-)
-
-func Distance(lat1, lon1, lat2, lon2 float64, metric Metric) float64 {
-	switch metric {
-	case MetricHaversine:
-		return DistanceHaversine(lat1, lon1, lat2, lon2)
-	case MetricGeodesic:
-		return DistanceGeodesic(lat1, lon1, lat2, lon2)
-	case MetricEuclidean:
-		return DistanceEuclidean(lat1, lon1, lat2, lon2)
-	}
-
-	panic(errors.Errorf("unknown metric: %s", metric))
-}
+type Metric func(lat1, lon1, lat2, lon2 float64) float64
 
 func DistanceHaversine(lat1, lon1, lat2, lon2 float64) float64 {
 	lat1 = degreesToRadians(lat1)

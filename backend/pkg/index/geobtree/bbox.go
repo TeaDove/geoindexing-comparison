@@ -1,4 +1,4 @@
-package geohash_btree
+package geobtree
 
 import (
 	"geoindexing_comparison/pkg/geo"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (r *CollectionGeohash) getMany(hashed []uint64) geo.Points {
+func (r *Index) getMany(hashed []uint64) geo.Points {
 	var (
 		points      geo.Points
 		foundPoints geo.Points
@@ -20,13 +20,13 @@ func (r *CollectionGeohash) getMany(hashed []uint64) geo.Points {
 	return points
 }
 
-func (r *CollectionGeohash) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
+func (r *Index) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
 	return r.bbox(bottomLeft, upperRight), time.Since(t0)
 }
 
-func (r *CollectionGeohash) bbox(bottomLeft geo.Point, upperRight geo.Point) geo.Points {
+func (r *Index) bbox(bottomLeft geo.Point, upperRight geo.Point) geo.Points {
 	bbox := geohash_utils.NewBBox(bottomLeft.Lat, bottomLeft.Lon, upperRight.Lat, upperRight.Lon, r.geohashBits)
 	points := r.getMany(bbox.Inner())
 	outerPoints := r.getMany(bbox.Perimeter())

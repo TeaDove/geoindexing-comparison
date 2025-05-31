@@ -6,23 +6,23 @@ import (
 	"time"
 )
 
-type CollectionBruteforce struct {
+type Index struct {
 	impl geo.Points
 }
 
 func New() index.Impl {
-	return &CollectionBruteforce{}
+	return &Index{}
 }
 
-func (r *CollectionBruteforce) FromArray(points geo.Points) {
+func (r *Index) FromArray(points geo.Points) {
 	r.impl = points
 }
 
-func (r *CollectionBruteforce) ToArray() geo.Points {
+func (r *Index) ToArray() geo.Points {
 	return r.impl
 }
 
-func (r *CollectionBruteforce) InsertTimed(point geo.Point) time.Duration {
+func (r *Index) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
 
 	r.impl = append(r.impl, point)
@@ -30,7 +30,7 @@ func (r *CollectionBruteforce) InsertTimed(point geo.Point) time.Duration {
 	return time.Since(t0)
 }
 
-func (r *CollectionBruteforce) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
+func (r *Index) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	points := make(geo.Points, 0, 10)
 
@@ -45,11 +45,11 @@ func (r *CollectionBruteforce) BBoxTimed(bottomLeft geo.Point, upperRight geo.Po
 	return points, dur
 }
 
-func (r *CollectionBruteforce) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
+func (r *Index) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	return r.impl.GetClosestViaSort(origin, n), time.Since(t0)
 }
 
-func (r *CollectionBruteforce) String() string {
+func (r *Index) String() string {
 	return r.impl.String()
 }

@@ -1,4 +1,4 @@
-package h3_btree
+package h3btree
 
 import (
 	"geoindexing_comparison/pkg/geo"
@@ -8,7 +8,7 @@ import (
 	"github.com/uber/h3-go/v4"
 )
 
-func (r *CollectionGeohash) getMany(hashed []h3.Cell) geo.Points {
+func (r *Index) getMany(hashed []h3.Cell) geo.Points {
 	var (
 		points      geo.Points
 		foundPoints geo.Points
@@ -22,7 +22,7 @@ func (r *CollectionGeohash) getMany(hashed []h3.Cell) geo.Points {
 	return points
 }
 
-func (r *CollectionGeohash) bbox(bottomLeft geo.Point, upperRight geo.Point) geo.Points {
+func (r *Index) bbox(bottomLeft geo.Point, upperRight geo.Point) geo.Points {
 	cells, err := h3.PolygonToCellsExperimental(
 		h3.GeoPolygon{
 			GeoLoop: h3.GeoLoop{
@@ -53,7 +53,7 @@ func (r *CollectionGeohash) bbox(bottomLeft geo.Point, upperRight geo.Point) geo
 	return points
 }
 
-func (r *CollectionGeohash) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
+func (r *Index) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 
 	return r.bbox(bottomLeft, upperRight), time.Since(t0)

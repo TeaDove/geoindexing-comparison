@@ -1,4 +1,8 @@
+## Spacial indexes!
+![image.png](frontend/favicon.ico)
 
+
+### TODO
 - [ ] GeoBR-Tree
 - [ ] H3B-Tree
 - [ ] GeoB-Tree

@@ -9,18 +9,18 @@ import (
 	"github.com/kyroy/kdtree/kdrange"
 )
 
-type CollectionKDTree struct {
+type Index struct {
 	impl kdtree.KDTree
 }
 
 func New() index.Impl {
-	r := CollectionKDTree{}
+	r := Index{}
 	r.impl = *kdtree.New([]kdtree.Point{})
 
 	return &r
 }
 
-func (r *CollectionKDTree) FromArray(points geo.Points) {
+func (r *Index) FromArray(points geo.Points) {
 	kdPoints := make([]kdtree.Point, len(points))
 	for idx, point := range points {
 		kdPoints[idx] = &point
@@ -29,7 +29,7 @@ func (r *CollectionKDTree) FromArray(points geo.Points) {
 	r.impl = *kdtree.New(kdPoints)
 }
 
-func (r *CollectionKDTree) ToArray() geo.Points {
+func (r *Index) ToArray() geo.Points {
 	var res geo.Points
 	for _, point := range r.impl.Points() {
 		res = append(res, *point.(*geo.Point))
@@ -56,7 +56,7 @@ func toConcrete(pointsInterface []kdtree.Point) geo.Points {
 	return result
 }
 
-func (r *CollectionKDTree) InsertTimed(point geo.Point) time.Duration {
+func (r *Index) InsertTimed(point geo.Point) time.Duration {
 	t0 := time.Now()
 
 	r.impl.Insert(&point)
@@ -64,7 +64,7 @@ func (r *CollectionKDTree) InsertTimed(point geo.Point) time.Duration {
 	return time.Since(t0)
 }
 
-func (r *CollectionKDTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
+func (r *Index) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	res := r.impl.RangeSearch(
 		kdrange.New(bottomLeft.Lat, upperRight.Lat, bottomLeft.Lon, upperRight.Lon),
@@ -74,7 +74,7 @@ func (r *CollectionKDTree) BBoxTimed(bottomLeft geo.Point, upperRight geo.Point)
 	return toConcrete(res), dur
 }
 
-func (r *CollectionKDTree) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
+func (r *Index) KNNTimed(origin geo.Point, n int) (geo.Points, time.Duration) {
 	t0 := time.Now()
 	res := r.impl.KNN(&origin, n)
 	dur := time.Since(t0)
@@ -82,6 +82,6 @@ func (r *CollectionKDTree) KNNTimed(origin geo.Point, n int) (geo.Points, time.D
 	return toConcrete(res), dur
 }
 
-func (r *CollectionKDTree) String() string {
+func (r *Index) String() string {
 	return r.impl.String()
 }
