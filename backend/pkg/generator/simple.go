@@ -13,10 +13,7 @@ func NewSimplerGenerator() Impl {
 }
 
 func (r *SimpleGenerator) Point(input *Input) geo.Point {
-	return geo.NewPoint(
-		randFloat(r.rng, input.LatLowerBound, input.LatUpperBound),
-		randFloat(r.rng, input.LonLowerBound, input.LonUpperBound),
-	)
+	return RandomPoint(r.rng, input)
 }
 
 func (r *SimpleGenerator) Points(input *Input, amount int) geo.Points {
@@ -26,4 +23,11 @@ func (r *SimpleGenerator) Points(input *Input, amount int) geo.Points {
 	}
 
 	return points
+}
+
+func RandomPoint(rng *rand.Rand, input *Input) geo.Point {
+	return geo.NewPoint(
+		randFloat(rng, input.LatLowerBound, input.LatUpperBound),
+		randFloat(rng, input.LonLowerBound, input.LonUpperBound),
+	)
 }

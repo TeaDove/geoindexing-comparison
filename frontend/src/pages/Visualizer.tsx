@@ -11,7 +11,9 @@ const headers = {
 
 const Visualizer: React.FC = () => {
     const [indexes, setIndexes] = useState<{ info: { shortName: string, longName: string } }[]>([]);
+    const [generators, setGenerators] = useState<{ info: { shortName: string, longName: string, description: string } }[]>([]);
     const [selectedIndex, setSelectedIndex] = useState<string>('');
+    const [selectedGenerator, setSelectedGenerator] = useState<string>('');
     const [amount, setAmount] = useState<number>(10000);
     const [isLoadingGenerate, setIsLoadingGenerate] = useState(false);
 
@@ -48,7 +50,26 @@ const Visualizer: React.FC = () => {
                 console.error('Error fetching indexes:', error);
             }
         };
+
+        const fetchGenerators = async () => {
+            try {
+                const response = await fetch(`${API_URL}/generators`, { headers });
+                if (!response.ok) {
+                    const error = await response.text() || 'Failed to fetch generators';
+                    throw new Error(error);
+                }
+                const data: { info: { shortName: string, longName: string, description: string } }[] = await response.json();
+                setGenerators(data);
+                if (data.length > 0 && data[0]?.info?.shortName) {
+                    setSelectedGenerator(data[0].info.shortName);
+                }
+            } catch (error) {
+                console.error('Error fetching generators:', error);
+            }
+        };
+
         fetchIndexes();
+        fetchGenerators();
     }, []);
 
     useEffect(() => {
@@ -144,15 +165,15 @@ const Visualizer: React.FC = () => {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (!selectedIndex) {
-            console.error('Please select an index.');
+        if (!selectedIndex || !selectedGenerator) {
+            console.error('Please select both an index and a generator.');
             return;
         }
         setIsLoadingGenerate(true);
         // Clear previous points and KNN selection when generating new data
         setSelectedPoint(null);
         setKnnNeighborsGeoJson(null);
-        setRadiusSearchResultsGeoJson(null); // Clear radius search results
+        setRadiusSearchResultsGeoJson(null);
         if (selectedMarkerRef.current) {
             selectedMarkerRef.current.remove();
             selectedMarkerRef.current = null;
@@ -169,7 +190,11 @@ const Visualizer: React.FC = () => {
             const response = await fetch(`${API_URL}/visualizer`, {
                 method: 'POST',
                 headers,
-                body: JSON.stringify({ amount, index: selectedIndex }),
+                body: JSON.stringify({
+                    amount,
+                    index: selectedIndex,
+                    generator: selectedGenerator
+                }),
             });
             if (!response.ok) {
                 const error = await response.text() || 'Failed to generate points';
@@ -365,39 +390,50 @@ const Visualizer: React.FC = () => {
 
     return (
         <div className="page-container visualizer-page">
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '32px', alignItems: 'flex-start' }}>
-                {/* Index select panel */}
-                <fieldset
-                    id="indexes"
-                    style={{
-                        minWidth: '280px',
-                        background: 'var(--neutral-light)',
-                        border: '2px solid var(--border-color)',
-                        borderRadius: '8px',
-                        padding: '24px 24px 16px 24px',
-                        margin: '10px',
-                        height: 'fit-content',
-                    }}
-                >
-                    <legend>Индексы</legend>
-                    {indexes.map(index => (
-                        index?.info?.shortName && (
-                            <div key={index.info.shortName} style={{ marginBottom: '8px' }}>
-                                <input
-                                    type="radio"
-                                    id={`index-${index.info.shortName}`}
-                                    name="index-select"
-                                    value={index.info.shortName}
-                                    checked={selectedIndex === index.info.shortName}
-                                    onChange={(e) => setSelectedIndex(e.target.value)}
-                                    disabled={isLoadingGenerate}
-                                    style={{ marginRight: '8px' }}
-                                />
-                                <label htmlFor={`index-${index.info.shortName}`}>{index.info.longName} ({index.info.shortName})</label>
-                            </div>
-                        )
-                    ))}
-                </fieldset>
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                <aside className="sidebar">
+                    <fieldset id="indexes" >
+                        <legend>Индексы</legend>
+                        {indexes.map(index => (
+                            index?.info?.shortName && (
+                                <div key={index.info.shortName} style={{ marginBottom: '8px' }}>
+                                    <input
+                                        type="radio"
+                                        id={`index-${index.info.shortName}`}
+                                        name="index-select"
+                                        value={index.info.shortName}
+                                        checked={selectedIndex === index.info.shortName}
+                                        onChange={(e) => setSelectedIndex(e.target.value)}
+                                        disabled={isLoadingGenerate}
+                                        style={{ marginRight: '8px' }}
+                                    />
+                                    <label htmlFor={`index-${index.info.shortName}`}>{index.info.longName} ({index.info.shortName})</label>
+                                </div>
+                            )
+                        ))}
+                    </fieldset>
+
+                    <fieldset id="generators">
+                        <legend>Генераторы</legend>
+                        {generators.map(generator => (
+                            generator?.info?.shortName && (
+                                <div key={generator.info.shortName} style={{ marginBottom: '8px' }}>
+                                    <input
+                                        type="radio"
+                                        id={`generator-${generator.info.shortName}`}
+                                        name="generator-select"
+                                        value={generator.info.shortName}
+                                        checked={selectedGenerator === generator.info.shortName}
+                                        onChange={(e) => setSelectedGenerator(e.target.value)}
+                                        disabled={isLoadingGenerate}
+                                        style={{ marginRight: '8px' }}
+                                    />
+                                    <label htmlFor={`index-${generator.info.shortName}`}>{generator.info.longName} ({generator.info.shortName})</label>
+                                </div>
+                            )
+                        ))}
+                    </fieldset>
+                </aside>
 
                 {/* Controls and map */}
                 <div className="visualizer-form-container">

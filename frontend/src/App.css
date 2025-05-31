@@ -80,14 +80,6 @@ button:disabled {
   margin-bottom: 0;
 }
 
-.run-settings fieldset {
-  background: var(--neutral-light);
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  padding: 24px 24px 16px 24px;
-  margin-bottom: 24px;
-  min-width: 0;
-}
 
 legend {
   color: var(--accent-color);
@@ -102,7 +94,7 @@ legend {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   background: rgba(255, 255, 255, 0.95);
   padding: 1.5rem;
   border-radius: 0.5rem;
@@ -144,11 +136,13 @@ legend {
 }
 
 fieldset {
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  background: var(--background-color);
+  background: var(--neutral-light);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px 24px 16px 24px;
+  margin-bottom: 0.3rem;
+  margin-left: 0.5rem;
+  min-width: 0;
 }
 
 legend {
@@ -427,15 +421,13 @@ fieldset input[type="checkbox"] {
 }
 
 .sidebar {
-  width: 280px;
-  min-width: 280px;
-  max-width: 380px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   position: relative;
   flex-shrink: 0;
-  margin-left: 16px;
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
 }
 
 .sidebar nav {
@@ -443,7 +435,7 @@ fieldset input[type="checkbox"] {
 }
 
 .main-content {
-  width: 50%;
+  width: 60%;
   padding: 8px;
   min-width: 0;
   overflow-y: auto;
@@ -452,7 +444,6 @@ fieldset input[type="checkbox"] {
 
 .visualizer-form-container {
   width: 70%;
-  padding: 8px;
   min-width: 0;
   overflow-y: auto;
 }

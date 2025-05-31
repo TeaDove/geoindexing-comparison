@@ -31,13 +31,13 @@ func AllGenerators() []Generator {
 			},
 			Builder: func(rng *rand.Rand) Impl { return &SimpleGenerator{rng: rng} },
 		},
-		//{
-		//	Info: Info{
-		//		ShortName:   "normal_generator",
-		//		LongName:    "Нормальный генератор",
-		//		Description: "Генерирует точки нормально",
-		//	},
-		//	Builder: func() Impl { return &NormalGenerator{ClusterN: 6} },
-		// },
+		{
+			Info: Info{
+				ShortName:   "cluster_generator",
+				LongName:    "Кластеный генератор",
+				Description: "Генерирует точки в 6 кластерах",
+			},
+			Builder: func(rng *rand.Rand) Impl { return &ClusterGenerator{ClusterN: 6, rng: rng} },
+		},
 	}
 }

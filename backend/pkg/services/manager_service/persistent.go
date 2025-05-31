@@ -82,8 +82,8 @@ func (r *Service) GetChartPoints(ctx context.Context, runID int) ([]Point, error
 		points = append(points, Point{
 			RunID: stat.RunID,
 			Idx:   stat.Idx,
-			Index: r.builderService.NameToIndex[stat.Index].Info.LongName,
-			Task:  r.builderService.NameToTask[stat.Task].Info.LongName,
+			Index: r.builderService.IndexMap[stat.Index].Info.LongName,
+			Task:  r.builderService.TaskMap[stat.Task].Info.LongName,
 			X:     float64(stat.Amount),
 			Y:     stat.Durs.QualifiedAvg() / float64(time.Microsecond),
 		})

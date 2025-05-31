@@ -16,12 +16,12 @@ import (
 )
 
 func (r *Service) run(ctx context.Context, job *schemas.Job) schemas.JobResult {
-	taskObj, ok := r.builderService.NameToTask[job.Task]
+	taskObj, ok := r.builderService.TaskMap[job.Task]
 	if !ok {
 		panic(errors.New("task not found"))
 	}
 
-	indexObj, ok := r.builderService.NameToIndex[job.Index]
+	indexObj, ok := r.builderService.IndexMap[job.Index]
 	if !ok {
 		panic(errors.New("index not found"))
 	}

@@ -1,8 +1,13 @@
-Тексты:
+### Тексты
 - [Диплом](https://www.overleaf.com/project/65720de492a7c7ef53cdbd65)
 - [Задание](https://docs.google.com/document/d/1Z4I0YvsdCHyMg3VjQnPnBtcOacJDXMc1jqcAPSq001Y/edit?tab=t.0)
+- [Отзыв](https://docs.google.com/document/d/19WDz8N6DXEfi_qvvY6yL0W_iFdEEBmYi1raUjUaqy_8/edit?usp=sharing)
 
-Литература:
+
+### Специализация 
+Алгоритмы и методы наукоемкого программного обеспечения
+
+### Литература
 - https://onlinelibrary.wiley.com/doi/10.1002/cpe.6029
 - https://sci-hub.ru/https://onlinelibrary.wiley.com/doi/10.1002/cpe.6029
 - https://www.mdpi.com/2071-1050/12/22/9727

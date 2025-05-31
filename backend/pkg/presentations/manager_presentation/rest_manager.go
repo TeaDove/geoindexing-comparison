@@ -18,6 +18,10 @@ func (r *Presentation) getTasks(c *fiber.Ctx) error {
 	return c.JSON(r.builderService.Tasks)
 }
 
+func (r *Presentation) getGenerators(c *fiber.Ctx) error {
+	return c.JSON(r.builderService.Generators)
+}
+
 func (r *Presentation) runs(c *fiber.Ctx) error {
 	runs, err := r.managerService.GetRuns(c.UserContext())
 	if err != nil {

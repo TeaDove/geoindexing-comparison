@@ -40,6 +40,7 @@ func NewPresentation(
 
 	api.Get("/tasks", r.getTasks)
 	api.Get("/indexes", r.getIndexes)
+	api.Get("/generators", r.getGenerators)
 	api.Get("/runs", r.runs)
 	api.Post("/runs/stats", r.getStats)
 	api.Post("/runs/resume", r.runResume)

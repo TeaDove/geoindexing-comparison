@@ -15,10 +15,8 @@ type Service struct {
 
 	mu sync.RWMutex
 
-	generator     generator.Impl
-	generatorInfo generator.Info
-	index         index.Impl
-	indexInfo     index.Info
+	generatorObj generator.Impl
+	indexObj     index.Impl
 
 	points geo.Points
 }
@@ -26,7 +24,11 @@ type Service struct {
 func NewService(builderService *builder_service.Service) (*Service, error) {
 	r := Service{builderService: builderService}
 
-	err := r.SetVisualizer(&NewVisualizerInput{Amount: 10_000, Index: r.builderService.Indexes[0].Info.ShortName})
+	err := r.SetVisualizer(&NewVisualizerInput{
+		Amount:    10_000,
+		Index:     r.builderService.Indexes[0].Info.ShortName,
+		Generator: r.builderService.Generators[0].Info.ShortName,
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to set visualizer")
 	}

@@ -10,8 +10,9 @@ import (
 )
 
 type NewVisualizerInput struct {
-	Amount int    `json:"amount"`
-	Index  string `json:"index"`
+	Generator string `json:"generator"`
+	Amount    int    `json:"amount"`
+	Index     string `json:"index"`
 }
 
 func (r *Service) SetVisualizer(input *NewVisualizerInput) error {
@@ -19,23 +20,27 @@ func (r *Service) SetVisualizer(input *NewVisualizerInput) error {
 	defer r.mu.Unlock()
 
 	if input.Index != "" {
-		idx, ok := r.builderService.NameToIndex[input.Index]
+		idx, ok := r.builderService.IndexMap[input.Index]
 		if !ok {
 			return errors.Errorf("index not found: %s", input.Index)
 		}
 
-		r.indexInfo = idx.Info
-		r.index = idx.Builder()
-		r.index.FromArray(r.points)
+		r.indexObj = idx.Builder()
+		r.indexObj.FromArray(r.points)
 	}
 
-	if input.Amount != 0 {
-		gen := generator.AllGenerators()[0]
+	if input.Amount != 0 || input.Generator != "" {
+		if input.Generator != "" {
+			gen, ok := r.builderService.GeneratorMap[input.Generator]
+			if !ok {
+				return errors.Errorf("generator not found: %s", input.Generator)
+			}
 
-		r.generatorInfo = gen.Info
-		r.generator = gen.Builder(helpers.RNG())
-		r.points = r.generator.Points(&generator.DefaultInput, input.Amount)
-		r.index.FromArray(r.points)
+			r.generatorObj = gen.Builder(helpers.RNG())
+		}
+
+		r.points = r.generatorObj.Points(&generator.DefaultInput, input.Amount)
+		r.indexObj.FromArray(r.points)
 	}
 
 	return nil
@@ -57,7 +62,7 @@ func (r *Service) KNN(input *KNNInput) (geo.Points, time.Duration) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	return r.index.KNNTimed(input.Point, input.N)
+	return r.indexObj.KNNTimed(input.Point, input.N)
 }
 
 type BBoxInput struct {
@@ -69,5 +74,5 @@ func (r *Service) BBox(input *BBoxInput) (geo.Points, time.Duration) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	return r.index.BBoxTimed(input.BottomLeft, input.UpperRight)
+	return r.indexObj.BBoxTimed(input.BottomLeft, input.UpperRight)
 }
