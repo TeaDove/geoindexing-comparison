@@ -3,14 +3,14 @@
 
 
 ### TODO
-- [ ] GeoBR-Tree
-- [ ] H3B-Tree
-- [ ] GeoB-Tree
-- [ ] Styles
+- [X] GeoBR-Tree
+- [X] H3B-Tree
+- [X] GeoB-Tree
+- [X] Styles
 - [ ] Преза
 - [ ] Матпостановка, описать математически результаты
 - [ ] Хистограмки
-- [ ] Generators
+- [X] Generators
 - [ ] Изучить сами индексы
-- [ ] Geodesic/haversine/euqlide
+- [X] Geodesic/haversine/euqlide
 - [ ] Переименовать индексы
