@@ -60,34 +60,3 @@ func (r *Service) StopRuns(ctx context.Context) error {
 func (r *Service) GetRuns(ctx context.Context) ([]manager_repository.Run, error) {
 	return r.repository.GetRuns(ctx)
 }
-
-type Point struct {
-	RunID int `json:"runId"`
-	Idx   int `json:"idx"`
-
-	Index string  `json:"index"`
-	Task  string  `json:"task"`
-	X     float64 `json:"x"`
-	Y     float64 `json:"y"`
-}
-
-func (r *Service) GetChartPoints(ctx context.Context, runID int) ([]Point, error) {
-	stats, err := r.repository.GetStats(ctx, runID)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not get stats")
-	}
-
-	var points []Point
-	for _, stat := range stats {
-		points = append(points, Point{
-			RunID: stat.RunID,
-			Idx:   stat.Idx,
-			Index: r.builderService.IndexMap[stat.Index].Info.LongName,
-			Task:  r.builderService.TaskMap[stat.Task].Info.LongName,
-			X:     float64(stat.Amount),
-			Y:     stat.Durs.QualifiedAvg() / float64(time.Microsecond),
-		})
-	}
-
-	return points, nil
-}

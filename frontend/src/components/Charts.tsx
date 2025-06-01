@@ -8,10 +8,12 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    ChartData,
+    ChartDataset
 } from 'chart.js';
 import * as errorBarPlugin from 'chartjs-chart-error-bars';
-import type { Point, Run } from '../types/index';
+import type { Run } from '../types/index';
 import { API_URL } from '../config';
 
 ChartJS.register(
@@ -25,13 +27,29 @@ ChartJS.register(
 );
 ChartJS.register(errorBarPlugin);
 
+interface Point {
+    x: number;
+    y: number;
+}
+
+interface Dataset {
+    points: Point[];
+    regressionPoints?: Point[];
+}
+
+interface StatsResponse {
+    [task: string]: {
+        [index: string]: Dataset;
+    };
+}
+
 interface ChartsProps {
     selectedRunId: number | null;
     run?: Run;
 }
 
 const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
-    const [points, setPoints] = useState<Point[]>([]);
+    const [stats, setStats] = useState<StatsResponse | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
@@ -64,7 +82,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
         let isMounted = true;
         let intervalId: number;
 
-        const fetchPoints = async () => {
+        const fetchStats = async () => {
             if (!selectedRunId) return;
 
             try {
@@ -77,27 +95,19 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch points');
+                    throw new Error('Failed to fetch stats');
                 }
 
-                const data = await response.json();
+                const data: StatsResponse = await response.json();
                 if (isMounted) {
-                    setPoints(data);
+                    setStats(data);
                     setError(null);
                     setRetryCount(0);
                 }
             } catch (err) {
                 if (isMounted) {
-                    console.error('Error fetching points:', err);
-                    setError(err instanceof Error ? err.message : 'Failed to fetch points');
-
-                    // Retry up to 3 times with exponential backoff
-                    if (retryCount < 3) {
-                        setTimeout(() => {
-                            setRetryCount(prev => prev + 1);
-                            fetchPoints();
-                        }, Math.pow(2, retryCount) * 1000);
-                    }
+                    console.error('Error fetching stats:', err);
+                    setError(err instanceof Error ? err.message : 'Failed to fetch stats');
                 }
             } finally {
                 if (isMounted) {
@@ -108,11 +118,11 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
 
         const startPolling = () => {
             setIsLoading(true);
-            fetchPoints();
+            fetchStats();
 
             // Only poll if run is not completed
             if (run && run.Status !== 'COMPLETED') {
-                intervalId = window.setInterval(fetchPoints, 1000);
+                intervalId = window.setInterval(fetchStats, 1000);
             }
         };
 
@@ -130,7 +140,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
         return null;
     }
 
-    if (isLoading && points.length === 0) {
+    if (isLoading && !stats) {
         return (
             <div className="charts-loading">
                 Loading charts... {retryCount > 0 ? `(Retry ${retryCount}/3)` : ''}
@@ -154,40 +164,33 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
         );
     }
 
-    if (points.length === 0) {
+    if (!stats || Object.keys(stats).length === 0) {
         return <div className="charts-empty">No data available</div>;
     }
 
     try {
-        // Group points by task
-        const tasks = Array.from(new Set(points.map(p => p.task)));
+        // Get all tasks from the stats
+        const tasks = Object.keys(stats);
 
         return (
             <div className="charts-container">
                 {tasks.map(task => {
-                    // Filter points for this task
-                    const taskPoints = points.filter(p => p.task === task);
+                    const taskData = stats[task];
+                    const indexes = Object.keys(taskData);
 
-                    // Group points by index
-                    const datasets = taskPoints.reduce((acc, point) => {
-                        if (!acc[point.index]) {
-                            acc[point.index] = {
-                                label: point.index,
-                                data: [],
-                                borderColor: getColorForIndex(point.index),
-                                tension: 0.4,
-                                cubicInterpolationMode: 'monotone',
-                                showLine: true,
-                                pointStyle: 'circle',
-                                errorBarWhiskerColor: getColorForIndex(point.index),
-                            };
-                        }
-                        acc[point.index].data.push({ x: point.x, y: point.y });
-                        return acc;
-                    }, {} as Record<string, any>);
+                    const datasets: ChartDataset<"line", Point[]>[] = indexes.map(index => ({
+                        label: index,
+                        data: taskData[index].points,
+                        borderColor: getColorForIndex(index),
+                        tension: 0.4,
+                        cubicInterpolationMode: "monotone" as const,
+                        showLine: true,
+                        pointStyle: 'circle',
+                        errorBarWhiskerColor: getColorForIndex(index),
+                    }));
 
-                    const chartData = {
-                        datasets: Object.values(datasets)
+                    const chartData: ChartData<"line", Point[]> = {
+                        datasets
                     };
 
                     const options = {

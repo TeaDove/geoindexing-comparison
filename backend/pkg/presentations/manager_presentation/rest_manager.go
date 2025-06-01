@@ -79,9 +79,5 @@ func (r *Presentation) getStats(c *fiber.Ctx) error {
 		return errors.Wrap(err, "failed to get stats")
 	}
 
-	if points == nil {
-		points = make([]manager_service.Point, 0)
-	}
-
 	return errors.WithStack(c.JSON(points))
 }

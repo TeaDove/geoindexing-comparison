@@ -1,6 +1,7 @@
 package main
 
 import (
+	"geoindexing_comparison/pkg/helpers"
 	"geoindexing_comparison/pkg/presentations/manager_presentation"
 	"geoindexing_comparison/pkg/repositories/manager_repository"
 	"geoindexing_comparison/pkg/services/builder_service"
@@ -14,7 +15,7 @@ import (
 func main() {
 	ctx := logger_utils.NewLoggedCtx()
 
-	runsRepository, err := manager_repository.NewRepository(ctx)
+	runsRepository, err := manager_repository.NewRepository(ctx, helpers.Settings.SqlitePath)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to initialize repository"))
 	}
