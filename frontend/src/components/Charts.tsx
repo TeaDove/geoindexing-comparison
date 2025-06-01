@@ -277,14 +277,12 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                             <div className="chart-wrapper">
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
                                     {hasRegressionPoints && (
-                                        <button
-                                            onClick={() => toggleRegression(task)}
-                                        >
-                                            {showRegression[task] ? 'Скрыть регрессию' : 'Показать регрессию'}
+                                        <button onClick={() => toggleRegression(task)} >
+                                            {showRegression[task] ? '↗' : '⦨'}
                                         </button>
                                     )}
                                     <button onClick={() => setFullscreenTask(task)}>
-                                        Fullscreen
+                                        ⛶
                                     </button>
                                 </div>
                                 <Line ref={chartRefs.current[task]} data={chartData} options={options} />
@@ -294,19 +292,12 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                                     <div className="fullscreen-chart" onClick={e => e.stopPropagation()}>
                                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
                                             {hasRegressionPoints && (
-                                                <button
-                                                    onClick={() => toggleRegression(task)}
-                                                    style={{
-                                                        opacity: showRegression[task] ? 1 : 0.6,
-                                                        backgroundColor: showRegression[task] ? 'var(--primary)' : 'var(--neutral)',
-                                                        color: showRegression[task] ? 'white' : 'var(--text)'
-                                                    }}
-                                                >
-                                                    {showRegression[task] ? 'Скрыть регрессию' : 'Показать регрессию'}
+                                                <button onClick={() => toggleRegression(task)} >
+                                                    {showRegression[task] ? '↗' : '⦨'}
                                                 </button>
                                             )}
                                             <button onClick={() => setFullscreenTask(null)}>
-                                                Close
+                                                ⛶
                                             </button>
                                         </div>
                                         <Line data={chartData} options={options} height={600} />
