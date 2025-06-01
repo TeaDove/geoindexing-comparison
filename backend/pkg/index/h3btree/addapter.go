@@ -6,7 +6,6 @@ import (
 	"geoindexing_comparison/pkg/index"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/tidwall/btree"
 	"github.com/uber/h3-go/v4"
 )
@@ -28,12 +27,7 @@ func Factory(resolution int) func() index.Impl {
 }
 
 func (r *Index) hash(point geo.Point) h3.Cell {
-	cell, err := h3.LatLngToCell(h3.NewLatLng(point.Lat, point.Lon), r.resolution)
-	if err != nil {
-		panic(errors.New("failed to build cell"))
-	}
-
-	return cell
+	return point.H3(r.resolution)
 }
 
 func (r *Index) FromArray(points geo.Points) {

@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"geoindexing_comparison/pkg/geo/distance_utils"
 	"geoindexing_comparison/pkg/helpers"
+	"github.com/teadove/teasutils/utils/must_utils"
+	"github.com/uber/h3-go/v4"
 	"math"
 	"strings"
 
@@ -46,6 +48,10 @@ func NewPoint(lat float64, lon float64) Point {
 
 func (r Point) Geohash(bits uint) uint64 {
 	return geohash.EncodeIntWithPrecision(r.Lat, r.Lon, bits)
+}
+
+func (r Point) H3(resolution int) h3.Cell {
+	return must_utils.Must(h3.LatLngToCell(h3.NewLatLng(r.Lat, r.Lon), resolution))
 }
 
 func (r Point) GeohashString(chars uint) string {
