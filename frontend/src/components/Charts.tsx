@@ -54,6 +54,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
     const [error, setError] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);
     const [fullscreenTask, setFullscreenTask] = useState<string | null>(null);
+    const [showRegression, setShowRegression] = useState<Record<string, boolean>>({});
     const chartRefs = useRef<Record<string, React.MutableRefObject<any>>>({});
 
     // Generate consistent colors for indexes
@@ -136,6 +137,13 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
         };
     }, [selectedRunId, run?.Status, retryCount]);
 
+    const toggleRegression = (task: string) => {
+        setShowRegression(prev => ({
+            ...prev,
+            [task]: !prev[task]
+        }));
+    };
+
     if (!selectedRunId) {
         return null;
     }
@@ -177,20 +185,48 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                 {tasks.map(task => {
                     const taskData = stats[task];
                     const indexes = Object.keys(taskData);
+                    const hasRegressionPoints = indexes.some(index => taskData[index].regressionPoints?.length > 0);
 
-                    const datasets: ChartDataset<"line", Point[]>[] = indexes.map(index => ({
-                        label: index,
-                        data: taskData[index].points,
-                        borderColor: getColorForIndex(index),
-                        tension: 0.4,
-                        cubicInterpolationMode: "monotone" as const,
-                        showLine: true,
-                        pointStyle: 'circle',
-                        errorBarWhiskerColor: getColorForIndex(index),
-                    }));
+                    const datasets: ChartDataset<"line", Point[]>[] = indexes.flatMap(index => {
+                        const baseDataset: ChartDataset<"line", Point[]> = {
+                            label: index,
+                            data: taskData[index].points,
+                            borderColor: getColorForIndex(index),
+                            tension: 0.4,
+                            cubicInterpolationMode: "monotone" as const,
+                            showLine: true,
+                            pointStyle: 'circle',
+                        };
+
+                        // If regression points are enabled and available, add them as a separate dataset
+                        if (showRegression[task] && taskData[index].regressionPoints && taskData[index].regressionPoints.length > 0) {
+                            const regressionDataset: ChartDataset<"line", Point[]> = {
+                                label: `${index} (регрессия)`,
+                                data: taskData[index].regressionPoints,
+                                borderColor: getColorForIndex(index),
+                                backgroundColor: getColorForIndex(index),
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                tension: 0.4,
+                                cubicInterpolationMode: "monotone" as const,
+                                showLine: true,
+                                pointStyle: false,
+                                fill: false,
+                            };
+                            return [baseDataset, regressionDataset];
+                        }
+
+                        return [baseDataset];
+                    });
 
                     const chartData: ChartData<"line", Point[]> = {
-                        datasets
+                        datasets: datasets.map(dataset => {
+                            const isRegression = typeof dataset.label === 'string' && dataset.label.includes('регрессия');
+                            return {
+                                ...dataset,
+                                borderColor: dataset.borderColor + (isRegression ? '66' : ''), // Add 40% opacity for regression lines
+                            };
+                        })
                     };
 
                     const options = {
@@ -198,6 +234,7 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                         plugins: {
                             legend: {
                                 position: 'top' as const,
+                                align: 'start' as const,
                             },
                             title: {
                                 display: true,
@@ -232,6 +269,13 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                         <React.Fragment key={task}>
                             <div className="chart-wrapper">
                                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
+                                    {hasRegressionPoints && (
+                                        <button
+                                            onClick={() => toggleRegression(task)}
+                                        >
+                                            {showRegression[task] ? 'Скрыть регрессию' : 'Показать регрессию'}
+                                        </button>
+                                    )}
                                     <button onClick={() => setFullscreenTask(task)}>
                                         Fullscreen
                                     </button>
@@ -241,9 +285,23 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                             {isFullscreen && (
                                 <div className="fullscreen-modal" onClick={() => setFullscreenTask(null)}>
                                     <div className="fullscreen-chart" onClick={e => e.stopPropagation()}>
-                                        <button style={{ float: 'right', marginBottom: 8 }} onClick={() => setFullscreenTask(null)}>
-                                            Close
-                                        </button>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginBottom: 8 }}>
+                                            {hasRegressionPoints && (
+                                                <button
+                                                    onClick={() => toggleRegression(task)}
+                                                    style={{
+                                                        opacity: showRegression[task] ? 1 : 0.6,
+                                                        backgroundColor: showRegression[task] ? 'var(--primary)' : 'var(--neutral)',
+                                                        color: showRegression[task] ? 'white' : 'var(--text)'
+                                                    }}
+                                                >
+                                                    {showRegression[task] ? 'Скрыть регрессию' : 'Показать регрессию'}
+                                                </button>
+                                            )}
+                                            <button onClick={() => setFullscreenTask(null)}>
+                                                Close
+                                            </button>
+                                        </div>
                                         <Line data={chartData} options={options} height={600} />
                                     </div>
                                 </div>
