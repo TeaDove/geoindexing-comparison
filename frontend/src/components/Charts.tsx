@@ -185,12 +185,19 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                 {tasks.map(task => {
                     const taskData = stats[task];
                     const indexes = Object.keys(taskData);
-                    const hasRegressionPoints = indexes.some(index => taskData[index].regressionPoints?.length > 0);
+                    const hasRegressionPoints = indexes.some(index => {
+                        const dataset = taskData[index];
+                        const regressionPoints = dataset?.regressionPoints;
+                        return regressionPoints !== undefined && regressionPoints.length > 0;
+                    });
 
                     const datasets: ChartDataset<"line", Point[]>[] = indexes.flatMap(index => {
+                        const dataset = taskData[index];
+                        if (!dataset) return [];
+
                         const baseDataset: ChartDataset<"line", Point[]> = {
                             label: index,
-                            data: taskData[index].points,
+                            data: dataset.points,
                             borderColor: getColorForIndex(index),
                             tension: 0.4,
                             cubicInterpolationMode: "monotone" as const,
@@ -199,10 +206,10 @@ const Charts: React.FC<ChartsProps> = ({ selectedRunId, run }) => {
                         };
 
                         // If regression points are enabled and available, add them as a separate dataset
-                        if (showRegression[task] && taskData[index].regressionPoints && taskData[index].regressionPoints.length > 0) {
+                        if (showRegression[task] && dataset.regressionPoints && dataset.regressionPoints.length > 0) {
                             const regressionDataset: ChartDataset<"line", Point[]> = {
                                 label: `${index} (регрессия)`,
-                                data: taskData[index].regressionPoints,
+                                data: dataset.regressionPoints,
                                 borderColor: getColorForIndex(index),
                                 backgroundColor: getColorForIndex(index),
                                 borderWidth: 2,
