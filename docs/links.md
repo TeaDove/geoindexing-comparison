@@ -2,7 +2,7 @@
 - [Диплом](https://www.overleaf.com/project/65720de492a7c7ef53cdbd65)
 - [Задание](https://docs.google.com/document/d/1Z4I0YvsdCHyMg3VjQnPnBtcOacJDXMc1jqcAPSq001Y/edit?tab=t.0)
 - [Отзыв](https://docs.google.com/document/d/19WDz8N6DXEfi_qvvY6yL0W_iFdEEBmYi1raUjUaqy_8/edit?usp=sharing)
-
+- [Презентация](https://docs.google.com/presentation/d/1qRloVf8j5EYyAWaAUeofIOuI03LsiFuw/edit?usp=sharing&ouid=109487284558704250484&rtpof=true&sd=true)
 
 ### Специализация 
 Алгоритмы и методы наукоемкого программного обеспечения
